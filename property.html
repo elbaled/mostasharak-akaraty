@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>تفاصيل العقار | مستشارك العقاري</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Tahoma, sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      color: #172033;
+      padding-bottom: 30px;
+    }
+
+    .header {
+      background: #071b35;
+      color: white;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .back {
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .header h1 {
+      font-size: 19px;
+    }
+
+    .gallery {
+      height: 280px;
+      position: relative;
+      background:
+        linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.08)),
+        url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85")
+        center/cover;
+    }
+
+    .featured {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #d6a84f;
+      color: white;
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .favorite {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 50%;
+      background: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .container {
+      padding: 20px 16px;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .title-row h2 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .location {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .price {
+      color: #b48732;
+      font-size: 20px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .details {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .detail {
+      background: white;
+      border-radius: 14px;
+      padding: 15px;
+      border: 1px solid #eee;
+    }
+
+    .detail .icon {
+      font-size: 22px;
+      margin-bottom: 7px;
+    }
+
+    .detail span {
+      display: block;
+      color: #777;
+      font-size: 12px;
+    }
+
+    .detail strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 15px;
+    }
+
+    .section {
+      margin-top: 25px;
+    }
+
+    .section h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .description {
+      background: white;
+      border-radius: 15px;
+      padding: 16px;
+      line-height: 1.8;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .map {
+      height: 190px;
+      border-radius: 17px;
+      background:
+        linear-gradient(rgba(7,27,53,.65), rgba(7,27,53,.65)),
+        url("https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80")
+        center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .map h3 {
+      margin-bottom: 8px;
+    }
+
+    .map button {
+      margin-top: 12px;
+      border: none;
+      background: #d6a84f;
+      color: white;
+      padding: 11px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .contact {
+      margin-top: 25px;
+      background: #071b35;
+      color: white;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .contact h3 {
+      margin-bottom: 8px;
+    }
+
+    .contact p {
+      color: #d7dce4;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .contact button {
+      width: 100%;
+      border: none;
+      background: #d6a84f;
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <button class="back" onclick="history.back()">
+      →
+    </button>
+
+    <h1>تفاصيل العقار</h1>
+
+  </header>
+
+
+  <div class="gallery">
+
+    <div class="featured">
+      ⭐ عقار مميز
+    </div>
+
+    <button class="favorite" onclick="toggleFavorite(this)">
+      ♡
+    </button>
+
+  </div>
+
+
+  <main class="container">
+
+    <div class="title-row">
+
+      <div>
+        <h2>شقة مميزة للبيع</h2>
+
+        <div class="location">
+          📍 مدينة بدر - الحي المتميز
+        </div>
+      </div>
+
+      <div class="price">
+        2,500,000 ج
+      </div>
+
+    </div>
+
+
+    <div class="details">
+
+      <div class="detail">
+        <div class="icon">📐</div>
+        <span>المساحة</span>
+        <strong>150 م²</strong>
+      </div>
+
+      <div class="detail">
+        <div class="icon">🛏️</div>
+        <span>غرف النوم</span>
+        <strong>3 غرف</strong>
+      </div>
+
+      <div class="detail">
+        <div class="icon">🚿</div>
+        <span>الحمامات</span>
+        <strong>2 حمام</strong>
+      </div>
+
+      <div class="detail">
+        <div class="icon">🏢</div>
+        <span>الدور</span>
+        <strong>الرابع</strong>
+      </div>
+
+      <div class="detail">
+        <div class="icon">🛗</div>
+        <span>الأسانسير</span>
+        <strong>متوفر</strong>
+      </div>
+
+      <div class="detail">
+        <div class="icon">🚗</div>
+        <span>الجراج</span>
+        <strong>متوفر</strong>
+      </div>
+
+    </div>
+
+
+    <section class="section">
+
+      <h3>وصف العقار</h3>
+
+      <div class="description">
+
+        شقة مميزة للبيع في مدينة بدر - الحي المتميز.
+        تتميز بموقع جيد وقريبة من الخدمات والمواصلات.
+        الشقة مناسبة للسكن والاستثمار، وتشطيبها جيد.
+
+      </div>
+
+    </section>
+
+
+    <section class="section">
+
+      <h3>موقع العقار</h3>
+
+      <div class="map">
+
+        <h3>📍 مدينة بدر</h3>
+
+        <p>
+          الحي المتميز
+        </p>
+
+        <button onclick="openMap()">
+          فتح الموقع على الخريطة
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <div class="contact">
+
+      <h3>
+        هل أعجبك العقار؟
+      </h3>
+
+      <p>
+        تواصل مع مستشارك العقاري لمعرفة المزيد أو تحديد موعد للمعاينة.
+      </p>
+
+      <button onclick="contactAdvisor()">
+        📞 تواصل مع المستشار العقاري
+      </button>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    function toggleFavorite(button) {
+
+      if (button.innerHTML.trim() === "♡") {
+        button.innerHTML = "♥";
+        button.style.color = "#d6a84f";
+      } else {
+        button.innerHTML = "♡";
+        button.style.color = "";
+      }
+
+    }
+
+
+    function openMap() {
+
+      window.open(
+        "https://www.google.com/maps/search/?api=1&query=مدينة+بدر+مصر",
+        "_blank"
+      );
+
+    }
+
+
+    function contactAdvisor() {
+
+      window.location.href =
+        "tel:01000000000";
+
+    }
+
+  </script>
+
+</body>
+</html>
