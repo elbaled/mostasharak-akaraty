@@ -624,6 +624,191 @@
 <script type="module">
   // هنا هنضع كود Firebase
 </script>
+<!-- Firebase -->
+<script type="module">
+
+  import { initializeApp } 
+    from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+
+  import { 
+    getDatabase, 
+    ref, 
+    onValue 
+  } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-database.js";
+
+
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
+    authDomain: "mostasharak-akaraty.firebaseapp.com",
+    databaseURL: "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
+    projectId: "mostasharak-akaraty",
+    storageBucket: "mostasharak-akaraty.firebasestorage.app",
+    messagingSenderId: "287363939919",
+    appId: "1:287363939919:web:e53f13b518c6273043f43a",
+    measurementId: "G-QK6EW9G8CB"
+  };
+
+
+  // تشغيل Firebase
+  const app = initializeApp(firebaseConfig);
+
+  // تشغيل Realtime Database
+  const database = getDatabase(app);
+
+
+  // قراءة العقارات
+  const propertiesRef = ref(database, "properties");
+
+
+  onValue(propertiesRef, (snapshot) => {
+
+    const data = snapshot.val();
+
+    console.log("العقارات من Firebase:", data);
+
+    if (!data) {
+      console.log("لا توجد عقارات في قاعدة البيانات");
+      return;
+    }
+
+
+    // إنشاء قسم العقارات من Firebase
+    let section = document.getElementById("firebaseProperties");
+
+
+    if (!section) {
+
+      section = document.createElement("section");
+
+      section.id = "firebaseProperties";
+
+      section.style.padding = "20px";
+
+      section.innerHTML = `
+        <h2 style="
+          text-align:right;
+          margin-bottom:20px;
+          color:#172033;
+        ">
+          🏠 عقاراتنا
+        </h2>
+
+        <div id="firebasePropertiesContainer"
+             style="
+               display:grid;
+               grid-template-columns:repeat(1,1fr);
+               gap:15px;
+             ">
+        </div>
+      `;
+
+      const main = document.querySelector("main");
+
+      if (main) {
+        main.appendChild(section);
+      } else {
+        document.body.appendChild(section);
+      }
+    }
+
+
+    const container =
+      document.getElementById("firebasePropertiesContainer");
+
+
+    container.innerHTML = "";
+
+
+    // عرض كل العقارات
+    Object.entries(data).forEach(([id, property]) => {
+
+      const card = document.createElement("div");
+
+      card.style.background = "#ffffff";
+      card.style.borderRadius = "18px";
+      card.style.padding = "15px";
+      card.style.boxShadow = "0 4px 15px rgba(0,0,0,0.08)";
+
+
+      card.innerHTML = `
+
+        <div style="
+          background:#eef1f5;
+          border-radius:14px;
+          height:180px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:60px;
+          margin-bottom:12px;
+        ">
+          🏠
+        </div>
+
+
+        <h3 style="
+          margin-bottom:8px;
+          color:#172033;
+        ">
+          ${property.title || "عقار بدون اسم"}
+        </h3>
+
+
+        <p style="
+          color:#777;
+          margin-bottom:8px;
+        ">
+          📍 ${property.city || "غير محدد"}
+        </p>
+
+
+        <p style="
+          color:#777;
+          margin-bottom:8px;
+        ">
+          📐 المساحة:
+          ${property.area || "-"} م²
+        </p>
+
+
+        <p style="
+          color:#b48732;
+          font-size:19px;
+          font-weight:bold;
+          margin-bottom:15px;
+        ">
+          💰 ${property.price || "-"} جنيه
+        </p>
+
+
+        <button
+          style="
+            width:100%;
+            border:none;
+            background:#d6a84f;
+            color:white;
+            padding:13px;
+            border-radius:11px;
+            font-size:15px;
+            cursor:pointer;
+          "
+          onclick="window.location.href='property.html?id=${id}'"
+        >
+          عرض التفاصيل
+        </button>
+
+      `;
+
+
+      container.appendChild(card);
+
+    });
+
+  });
+
+
+</script>
 
 </body>
 </html>
