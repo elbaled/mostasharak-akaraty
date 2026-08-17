@@ -1,211 +1,161 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>دخول الإدارة | مستشارك العقاري</title>
+  <title>دخول الإدارة - مستشارك العقاري</title>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       font-family: Arial, Tahoma, sans-serif;
     }
 
     body {
+      margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #071b35, #123b68);
       display: flex;
       align-items: center;
       justify-content: center;
+      background: linear-gradient(135deg, #071b35, #123b68);
       padding: 20px;
     }
 
-    .login-card {
+    .box {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       background: white;
-      border-radius: 25px;
       padding: 30px 22px;
+      border-radius: 22px;
       box-shadow: 0 15px 40px rgba(0,0,0,.25);
     }
 
     .logo {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 15px;
-      border-radius: 20px;
-      background: #d6a84f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
+      text-align: center;
+      font-size: 50px;
+      margin-bottom: 10px;
     }
 
     h1 {
       text-align: center;
       color: #071b35;
-      font-size: 24px;
-      margin-bottom: 7px;
+      margin: 0 0 8px;
     }
 
     .subtitle {
       text-align: center;
       color: #777;
       font-size: 13px;
-      margin-bottom: 28px;
-    }
-
-    .input-group {
-      margin-bottom: 17px;
+      margin-bottom: 25px;
     }
 
     label {
       display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
       color: #172033;
       font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 7px;
     }
 
     input {
       width: 100%;
       padding: 14px;
+      margin-bottom: 17px;
       border: 1px solid #ddd;
-      border-radius: 12px;
-      outline: none;
+      border-radius: 11px;
       font-size: 14px;
-      direction: ltr;
+      outline: none;
     }
 
-    input:focus {
-      border-color: #123b68;
-    }
-
-    .login-btn {
+    button {
       width: 100%;
-      border: none;
+      padding: 14px;
+      border: 0;
+      border-radius: 11px;
       background: #123b68;
       color: white;
-      padding: 14px;
-      border-radius: 12px;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 8px;
     }
 
-    .login-btn:disabled {
+    button:disabled {
       opacity: .6;
-      cursor: not-allowed;
     }
 
-    .message {
+    #message {
       display: none;
       margin-top: 15px;
       padding: 12px;
       border-radius: 10px;
       text-align: center;
       font-size: 13px;
-    }
-
-    .error {
-      display: block;
-      background: #ffe8e8;
-      color: #b42318;
+      line-height: 1.6;
     }
 
     .success {
-      display: block;
-      background: #e8f7ed;
-      color: #18753c;
+      display: block !important;
+      background: #e7f7ed;
+      color: #16723a;
     }
 
-    .back {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: #123b68;
-      text-decoration: none;
-      font-size: 13px;
+    .error {
+      display: block !important;
+      background: #ffe7e7;
+      color: #b42318;
     }
   </style>
 </head>
 
+
 <body>
 
-  <div class="login-card">
+  <div class="box">
 
-    <div class="logo">
-      🏠
-    </div>
+    <div class="logo">🏠</div>
 
     <h1>مستشارك العقاري</h1>
 
-    <p class="subtitle">
+    <div class="subtitle">
       تسجيل دخول الإدارة
-    </p>
+    </div>
+
 
     <form id="loginForm">
 
-      <div class="input-group">
+      <label>
+        البريد الإلكتروني
+      </label>
 
-        <label for="email">
-          البريد الإلكتروني
-        </label>
-
-        <input
-          type="email"
-          id="email"
-          placeholder="admin@example.com"
-          required
-          autocomplete="username"
-        >
-
-      </div>
-
-
-      <div class="input-group">
-
-        <label for="password">
-          كلمة المرور
-        </label>
-
-        <input
-          type="password"
-          id="password"
-          placeholder="••••••••"
-          required
-          autocomplete="current-password"
-        >
-
-      </div>
-
-
-      <button
-        type="submit"
-        class="login-btn"
-        id="loginBtn"
+      <input
+        type="email"
+        id="email"
+        placeholder="admin@example.com"
+        required
       >
+
+
+      <label>
+        كلمة المرور
+      </label>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="كلمة المرور"
+        required
+      >
+
+
+      <button id="loginBtn" type="submit">
         🔐 تسجيل الدخول
       </button>
 
     </form>
 
 
-    <div
-      id="message"
-      class="message"
-    ></div>
-
-
-    <a
-      href="index.html"
-      class="back"
-    >
-      ← العودة للموقع
-    </a>
+    <div id="message"></div>
 
   </div>
 
@@ -219,7 +169,7 @@
       getAuth,
       signInWithEmailAndPassword
     }
-    from "https://www.gstatic.com/firebasejs/12.7.1/firebase-auth.js";
+      from "https://www.gstatic.com/firebasejs/12.7.1/firebase-auth.js";
 
 
     const firebaseConfig = {
@@ -246,7 +196,6 @@
 
       measurementId:
         "G-QK6EW9G8CB"
-
     };
 
 
@@ -271,25 +220,31 @@
       document.getElementById("message");
 
 
-    form.addEventListener("submit", async (event) => {
+    form.addEventListener("submit", async function(event) {
 
       event.preventDefault();
 
-
-      message.className = "message";
+      message.className = "";
+      message.style.display = "none";
       message.textContent = "";
 
-
       button.disabled = true;
-      button.textContent = "جاري تسجيل الدخول...";
+      button.textContent = "جاري التحقق...";
 
 
       try {
 
-        await signInWithEmailAndPassword(
-          auth,
-          email.value.trim(),
-          password.value
+        const result =
+          await signInWithEmailAndPassword(
+            auth,
+            email.value.trim(),
+            password.value
+          );
+
+
+        console.log(
+          "Firebase login:",
+          result.user.email
         );
 
 
@@ -297,42 +252,86 @@
           "تم تسجيل الدخول بنجاح ✅";
 
         message.className =
-          "message success";
+          "success";
 
 
-        setTimeout(() => {
-
-  console.log("تم تسجيل دخول الأدمن بنجاح");
-
-}, 800);
-        }, 800);
+        button.disabled = false;
+        button.textContent =
+          "تم الدخول بنجاح";
 
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "Firebase Error:",
+          error
+        );
 
 
-        let text =
-          "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+        let errorMessage =
+          "حدث خطأ أثناء تسجيل الدخول.";
 
 
-        if (error.code === "auth/too-many-requests") {
+        if (
+          error.code ===
+          "auth/invalid-credential"
+        ) {
 
-          text =
-            "تمت محاولات كثيرة. حاول مرة أخرى لاحقًا.";
+          errorMessage =
+            "الإيميل أو كلمة المرور غير صحيحة.";
+
+        }
+
+        else if (
+          error.code ===
+          "auth/user-not-found"
+        ) {
+
+          errorMessage =
+            "هذا الحساب غير موجود.";
+
+        }
+
+        else if (
+          error.code ===
+          "auth/wrong-password"
+        ) {
+
+          errorMessage =
+            "كلمة المرور غير صحيحة.";
+
+        }
+
+        else if (
+          error.code ===
+          "auth/invalid-email"
+        ) {
+
+          errorMessage =
+            "صيغة البريد الإلكتروني غير صحيحة.";
+
+        }
+
+        else if (
+          error.code ===
+          "auth/operation-not-allowed"
+        ) {
+
+          errorMessage =
+            "تسجيل الدخول بالإيميل غير مفعل في Firebase.";
 
         }
 
 
-        message.textContent = text;
+        message.textContent =
+          errorMessage +
+          " (" + error.code + ")";
 
         message.className =
-          "message error";
+          "error";
 
 
         button.disabled = false;
-
         button.textContent =
           "🔐 تسجيل الدخول";
 
