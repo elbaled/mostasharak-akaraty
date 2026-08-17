@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>دخول الإدارة | مستشارك العقاري</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Tahoma, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #071b35, #123b68);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 25px;
+      padding: 30px 22px;
+      box-shadow: 0 15px 40px rgba(0,0,0,.25);
+    }
+
+    .logo {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 15px;
+      border-radius: 20px;
+      background: #d6a84f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #071b35;
+      font-size: 24px;
+      margin-bottom: 7px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    .input-group {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      color: #172033;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      outline: none;
+      font-size: 14px;
+      direction: ltr;
+    }
+
+    input:focus {
+      border-color: #123b68;
+    }
+
+    .login-btn {
+      width: 100%;
+      border: none;
+      background: #123b68;
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .login-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .error {
+      display: block;
+      background: #ffe8e8;
+      color: #b42318;
+    }
+
+    .success {
+      display: block;
+      background: #e8f7ed;
+      color: #18753c;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #123b68;
+      text-decoration: none;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-card">
+
+    <div class="logo">
+      🏠
+    </div>
+
+    <h1>مستشارك العقاري</h1>
+
+    <p class="subtitle">
+      تسجيل دخول الإدارة
+    </p>
+
+    <form id="loginForm">
+
+      <div class="input-group">
+
+        <label for="email">
+          البريد الإلكتروني
+        </label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="admin@example.com"
+          required
+          autocomplete="username"
+        >
+
+      </div>
+
+
+      <div class="input-group">
+
+        <label for="password">
+          كلمة المرور
+        </label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="••••••••"
+          required
+          autocomplete="current-password"
+        >
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="login-btn"
+        id="loginBtn"
+      >
+        🔐 تسجيل الدخول
+      </button>
+
+    </form>
+
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+
+    <a
+      href="index.html"
+      class="back"
+    >
+      ← العودة للموقع
+    </a>
+
+  </div>
+
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword
+    }
+    from "https://www.gstatic.com/firebasejs/12.7.1/firebase-auth.js";
+
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
+
+      authDomain:
+        "mostasharak-akaraty.firebaseapp.com",
+
+      databaseURL:
+        "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
+
+      projectId:
+        "mostasharak-akaraty",
+
+      storageBucket:
+        "mostasharak-akaraty.firebasestorage.app",
+
+      messagingSenderId:
+        "287363939919",
+
+      appId:
+        "1:287363939919:web:e53f13b518c6273043f43a",
+
+      measurementId:
+        "G-QK6EW9G8CB"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+
+    const form =
+      document.getElementById("loginForm");
+
+    const email =
+      document.getElementById("email");
+
+    const password =
+      document.getElementById("password");
+
+    const button =
+      document.getElementById("loginBtn");
+
+    const message =
+      document.getElementById("message");
+
+
+    form.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+
+      message.className = "message";
+      message.textContent = "";
+
+
+      button.disabled = true;
+      button.textContent = "جاري تسجيل الدخول...";
+
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email.value.trim(),
+          password.value
+        );
+
+
+        message.textContent =
+          "تم تسجيل الدخول بنجاح ✅";
+
+        message.className =
+          "message success";
+
+
+        setTimeout(() => {
+
+          window.location.href =
+            "admin.html";
+
+        }, 800);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        let text =
+          "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+
+        if (error.code === "auth/too-many-requests") {
+
+          text =
+            "تمت محاولات كثيرة. حاول مرة أخرى لاحقًا.";
+
+        }
+
+
+        message.textContent = text;
+
+        message.className =
+          "message error";
+
+
+        button.disabled = false;
+
+        button.textContent =
+          "🔐 تسجيل الدخول";
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
