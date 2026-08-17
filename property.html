@@ -391,5 +391,248 @@
 
   </script>
 
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  get
+}
+from "https://www.gstatic.com/firebasejs/12.7.1/firebase-database.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
+  authDomain: "mostasharak-akaraty.firebaseapp.com",
+  databaseURL: "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
+  projectId: "mostasharak-akaraty",
+  storageBucket: "mostasharak-akaraty.firebasestorage.app",
+  messagingSenderId: "287363939919",
+  appId: "1:287363939919:web:e53f13b518c6273043f43a",
+  measurementId: "G-QK6EW9G8CB"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const database = getDatabase(app);
+
+
+// الحصول على رقم العقار من الرابط
+const params = new URLSearchParams(window.location.search);
+
+const propertyId = params.get("id");
+
+
+if (!propertyId) {
+
+  document.body.innerHTML = `
+    <div style="
+      text-align:center;
+      padding:80px 20px;
+      font-family:Arial;
+    ">
+      <h2>⚠️ العقار غير موجود</h2>
+      <p>لم يتم تحديد العقار المطلوب.</p>
+    </div>
+  `;
+
+} else {
+
+
+  const propertyRef =
+    ref(database, "properties/" + propertyId);
+
+
+  try {
+
+    const snapshot = await get(propertyRef);
+
+
+    if (!snapshot.exists()) {
+
+      document.body.innerHTML = `
+        <div style="
+          text-align:center;
+          padding:80px 20px;
+          font-family:Arial;
+        ">
+          <h2>⚠️ العقار غير موجود</h2>
+          <p>قد يكون العقار تم حذفه أو الرابط غير صحيح.</p>
+        </div>
+      `;
+
+    } else {
+
+      const property = snapshot.val();
+
+
+      // العنوان
+      const title =
+        document.querySelector(".title-row h2");
+
+      if (title) {
+        title.textContent =
+          property.title || "عقار بدون اسم";
+      }
+
+
+      // المدينة والموقع
+      const location =
+        document.querySelector(".location");
+
+      if (location) {
+
+        location.textContent =
+          "📍 " +
+          (property.city || "") +
+          (property.area ? " - " + property.area : "");
+
+      }
+
+
+      // السعر
+      const price =
+        document.querySelector(".price");
+
+      if (price) {
+
+        price.textContent =
+          Number(property.price || 0).toLocaleString("ar-EG") +
+          " ج";
+
+      }
+
+
+      // تفاصيل العقار
+      const details =
+        document.querySelector(".details");
+
+
+      if (details) {
+
+        details.innerHTML = `
+
+          <div class="detail">
+            <div class="icon">📐</div>
+            <span>المساحة</span>
+            <strong>
+              ${property.area || "-"} م²
+            </strong>
+          </div>
+
+
+          <div class="detail">
+            <div class="icon">🛏️</div>
+            <span>غرف النوم</span>
+            <strong>
+              ${property.bedrooms || "-"} غرف
+            </strong>
+          </div>
+
+
+          <div class="detail">
+            <div class="icon">🚿</div>
+            <span>الحمامات</span>
+            <strong>
+              ${property.bathrooms || "-"} حمام
+            </strong>
+          </div>
+
+
+          <div class="detail">
+            <div class="icon">🏠</div>
+            <span>نوع العقار</span>
+            <strong>
+              ${property.type || "-"}
+            </strong>
+          </div>
+
+        `;
+
+      }
+
+
+      // الوصف
+      const description =
+        document.querySelector(".description");
+
+      if (description) {
+
+        description.textContent =
+          property.description ||
+          "لا يوجد وصف لهذا العقار.";
+
+      }
+
+
+      // حالة العقار المميز
+      const featured =
+        document.querySelector(".featured");
+
+      if (featured) {
+
+        if (property.featured === true) {
+
+          featured.style.display = "block";
+
+        } else {
+
+          featured.style.display = "none";
+
+        }
+
+      }
+
+
+      // الخريطة
+      const mapButton =
+        document.querySelector(".map button");
+
+
+      if (mapButton &&
+          property.latitude &&
+          property.longitude) {
+
+        mapButton.onclick = function () {
+
+          const url =
+            "https://www.google.com/maps/search/?api=1&query=" +
+            property.latitude +
+            "," +
+            property.longitude;
+
+          window.open(url, "_blank");
+
+        };
+
+      }
+
+
+      console.log(
+        "تم تحميل العقار:",
+        property
+      );
+
+    }
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "حدث خطأ أثناء تحميل بيانات العقار."
+    );
+
+  }
+
+}
+
+</script>
+
 </body>
 </html>
