@@ -4,8 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>دخول الإدارة - مستشارك العقاري</title>
+  <title>دخول الإدارة | مستشارك العقاري</title>
 
   <style>
     * {
@@ -19,36 +18,47 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #071b35, #123b68);
       padding: 20px;
+      background: linear-gradient(135deg, #071b35, #123b68);
     }
 
-    .box {
+    .login-box {
       width: 100%;
       max-width: 400px;
-      background: white;
+      background: #fff;
       padding: 30px 22px;
-      border-radius: 22px;
+      border-radius: 24px;
       box-shadow: 0 15px 40px rgba(0,0,0,.25);
     }
 
     .logo {
-      text-align: center;
-      font-size: 50px;
-      margin-bottom: 10px;
+      width: 75px;
+      height: 75px;
+      margin: 0 auto 15px;
+      border-radius: 20px;
+      background: #d6a84f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
     }
 
     h1 {
       text-align: center;
       color: #071b35;
-      margin: 0 0 8px;
+      margin: 0;
+      font-size: 25px;
     }
 
     .subtitle {
       text-align: center;
       color: #777;
-      font-size: 13px;
-      margin-bottom: 25px;
+      margin: 8px 0 28px;
+      font-size: 14px;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
     }
 
     label {
@@ -56,24 +66,28 @@
       margin-bottom: 7px;
       font-weight: bold;
       color: #172033;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     input {
       width: 100%;
       padding: 14px;
-      margin-bottom: 17px;
       border: 1px solid #ddd;
-      border-radius: 11px;
-      font-size: 14px;
+      border-radius: 12px;
+      font-size: 15px;
       outline: none;
+      direction: ltr;
+    }
+
+    input:focus {
+      border-color: #123b68;
     }
 
     button {
       width: 100%;
-      padding: 14px;
       border: 0;
-      border-radius: 11px;
+      border-radius: 12px;
+      padding: 14px;
       background: #123b68;
       color: white;
       font-size: 16px;
@@ -85,13 +99,12 @@
     }
 
     #message {
-      display: none;
       margin-top: 15px;
       padding: 12px;
       border-radius: 10px;
       text-align: center;
-      font-size: 13px;
-      line-height: 1.6;
+      font-size: 14px;
+      display: none;
     }
 
     .success {
@@ -105,48 +118,61 @@
       background: #ffe7e7;
       color: #b42318;
     }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #123b68;
+      text-decoration: none;
+      font-size: 13px;
+    }
   </style>
 </head>
 
-
 <body>
 
-  <div class="box">
+  <div class="login-box">
 
     <div class="logo">🏠</div>
 
     <h1>مستشارك العقاري</h1>
 
     <div class="subtitle">
-      تسجيل دخول الإدارة
+      تسجيل دخول الإدارة 🔐
     </div>
-
 
     <form id="loginForm">
 
-      <label>
-        البريد الإلكتروني
-      </label>
+      <div class="input-group">
 
-      <input
-        type="email"
-        id="email"
-        placeholder="admin@example.com"
-        required
-      >
+        <label for="email">
+          البريد الإلكتروني
+        </label>
 
+        <input
+          type="email"
+          id="email"
+          placeholder="admin@example.com"
+          required
+        >
 
-      <label>
-        كلمة المرور
-      </label>
+      </div>
 
-      <input
-        type="password"
-        id="password"
-        placeholder="كلمة المرور"
-        required
-      >
+      <div class="input-group">
 
+        <label for="password">
+          كلمة المرور
+        </label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="كلمة المرور"
+          required
+        >
+
+      </div>
 
       <button id="loginBtn" type="submit">
         🔐 تسجيل الدخول
@@ -154,22 +180,27 @@
 
     </form>
 
-
     <div id="message"></div>
+
+    <a class="back" href="index.html">
+      ← العودة للموقع
+    </a>
 
   </div>
 
 
+  <!-- Firebase -->
+
   <script type="module">
 
     import { initializeApp }
-      from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+      from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
     import {
       getAuth,
       signInWithEmailAndPassword
     }
-      from "https://www.gstatic.com/firebasejs/12.7.1/firebase-auth.js";
+      from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
     const firebaseConfig = {
@@ -204,142 +235,150 @@
     const auth = getAuth(app);
 
 
-    const form =
+    const loginForm =
       document.getElementById("loginForm");
 
-    const email =
+    const emailInput =
       document.getElementById("email");
 
-    const password =
+    const passwordInput =
       document.getElementById("password");
 
-    const button =
+    const loginBtn =
       document.getElementById("loginBtn");
 
     const message =
       document.getElementById("message");
 
 
-    form.addEventListener("submit", async function(event) {
+    loginForm.addEventListener(
+      "submit",
+      async function(event) {
 
-      event.preventDefault();
-
-      message.className = "";
-      message.style.display = "none";
-      message.textContent = "";
-
-      button.disabled = true;
-      button.textContent = "جاري التحقق...";
+        event.preventDefault();
 
 
-      try {
+        message.style.display = "none";
+        message.className = "";
+        message.textContent = "";
 
-        const result =
-          await signInWithEmailAndPassword(
-            auth,
-            email.value.trim(),
-            password.value
+
+        loginBtn.disabled = true;
+        loginBtn.textContent =
+          "جاري تسجيل الدخول...";
+
+
+        const email =
+          emailInput.value.trim();
+
+        const password =
+          passwordInput.value;
+
+
+        try {
+
+          const userCredential =
+            await signInWithEmailAndPassword(
+              auth,
+              email,
+              password
+            );
+
+
+          console.log(
+            "تم تسجيل الدخول:",
+            userCredential.user.email
           );
 
 
-        console.log(
-          "Firebase login:",
-          result.user.email
-        );
+          message.textContent =
+            "تم تسجيل الدخول بنجاح ✅";
+
+          message.className =
+            "success";
 
 
-        message.textContent =
-          "تم تسجيل الدخول بنجاح ✅";
+          loginBtn.disabled = false;
 
-        message.className =
-          "success";
-
-
-        button.disabled = false;
-        button.textContent =
-          "تم الدخول بنجاح";
+          loginBtn.textContent =
+            "تم تسجيل الدخول ✅";
 
 
-      } catch (error) {
+        } catch (error) {
 
-        console.error(
-          "Firebase Error:",
-          error
-        );
-
-
-        let errorMessage =
-          "حدث خطأ أثناء تسجيل الدخول.";
+          console.error(
+            "Firebase Error:",
+            error
+          );
 
 
-        if (
-          error.code ===
-          "auth/invalid-credential"
-        ) {
+          let text =
+            "حدث خطأ أثناء تسجيل الدخول.";
 
-          errorMessage =
-            "الإيميل أو كلمة المرور غير صحيحة.";
+
+          if (
+            error.code ===
+            "auth/invalid-credential"
+          ) {
+
+            text =
+              "الإيميل أو كلمة المرور غير صحيحة.";
+
+          } else if (
+            error.code ===
+            "auth/invalid-email"
+          ) {
+
+            text =
+              "البريد الإلكتروني غير صحيح.";
+
+          } else if (
+            error.code ===
+            "auth/user-disabled"
+          ) {
+
+            text =
+              "هذا الحساب تم تعطيله.";
+
+          } else if (
+            error.code ===
+            "auth/too-many-requests"
+          ) {
+
+            text =
+              "تم إيقاف المحاولات مؤقتًا. حاول لاحقًا.";
+
+          } else if (
+            error.code ===
+            "auth/operation-not-allowed"
+          ) {
+
+            text =
+              "تسجيل الدخول بالبريد الإلكتروني غير مفعل في Firebase.";
+
+          }
+
+
+          message.textContent =
+            text + " [" + error.code + "]";
+
+          message.className =
+            "error";
+
+
+          loginBtn.disabled = false;
+
+          loginBtn.textContent =
+            "🔐 تسجيل الدخول";
 
         }
-
-        else if (
-          error.code ===
-          "auth/user-not-found"
-        ) {
-
-          errorMessage =
-            "هذا الحساب غير موجود.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/wrong-password"
-        ) {
-
-          errorMessage =
-            "كلمة المرور غير صحيحة.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/invalid-email"
-        ) {
-
-          errorMessage =
-            "صيغة البريد الإلكتروني غير صحيحة.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/operation-not-allowed"
-        ) {
-
-          errorMessage =
-            "تسجيل الدخول بالإيميل غير مفعل في Firebase.";
-
-        }
-
-
-        message.textContent =
-          errorMessage +
-          " (" + error.code + ")";
-
-        message.className =
-          "error";
-
-
-        button.disabled = false;
-        button.textContent =
-          "🔐 تسجيل الدخول";
 
       }
 
-    });
+    );
 
   </script>
 
 </body>
+
 </html>
