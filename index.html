@@ -519,46 +519,7 @@
   </div>
 
   <div class="properties">
-
-    <div class="property">
-
-      <div class="property-image">
-
-        <div class="badge">
-          مميز
-        </div>
-
-        <button class="favorite">
-          ♡
-        </button>
-
-      </div>
-
-      <div class="property-info">
-
-        <h4>شقة مميزة للبيع</h4>
-
-        <div class="location">
-          📍 مدينة بدر - الحي المتميز
-        </div>
-
-        <div class="details">
-          <span>📐 150 م²</span>
-          <span>🛏️ 3 غرف</span>
-          <span>🚿 2 حمام</span>
-        </div>
-
-        <div class="price">
-          2,500,000 جنيه
-        </div>
-
-        <button class="view-btn" onclick="window.location.href='property.html'">
-  عرض تفاصيل العقار
-        </button>
-      </div>
-
-    </div>
-
+    <!-- سيتم إضافة العقارات هنا من خلال Firebase بنفس التصميم -->
   </div>
 
 
@@ -631,20 +592,8 @@
 
 <!-- Firebase -->
 <script type="module">
-  // هنا هنضع كود Firebase
-</script>
-<!-- Firebase -->
-<script type="module">
-
-  import { initializeApp } 
-    from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
-
-  import { 
-    getDatabase, 
-    ref, 
-    onValue 
-  } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-database.js";
-
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-database.js";
 
   // Firebase Configuration
   const firebaseConfig = {
@@ -658,165 +607,63 @@
     measurementId: "G-QK6EW9G8CB"
   };
 
-
   // تشغيل Firebase
   const app = initializeApp(firebaseConfig);
-
-  // تشغيل Realtime Database
   const database = getDatabase(app);
-
-
-  // قراءة العقارات
   const propertiesRef = ref(database, "properties");
 
-
   onValue(propertiesRef, (snapshot) => {
-
     const data = snapshot.val();
-
     console.log("العقارات من Firebase:", data);
 
+    // بنستهدف قسم "العقارات المميزة" اللي موجود بالفعل في الـ HTML
+    const container = document.querySelector(".properties");
+
     if (!data) {
-      console.log("لا توجد عقارات في قاعدة البيانات");
+      container.innerHTML = "<p style='text-align:center; color:#777; width:100%;'>لا توجد عقارات مضافة حالياً.</p>";
       return;
     }
 
-
-    // إنشاء قسم العقارات من Firebase
-    let section = document.getElementById("firebaseProperties");
-
-
-    if (!section) {
-
-      section = document.createElement("section");
-
-      section.id = "firebaseProperties";
-
-      section.style.padding = "20px";
-
-      section.innerHTML = `
-        <h2 style="
-          text-align:right;
-          margin-bottom:20px;
-          color:#172033;
-        ">
-          🏠 عقاراتنا
-        </h2>
-
-        <div id="firebasePropertiesContainer"
-             style="
-               display:grid;
-               grid-template-columns:repeat(1,1fr);
-               gap:15px;
-             ">
-        </div>
-      `;
-
-      const main = document.querySelector("main");
-
-      if (main) {
-        main.appendChild(section);
-      } else {
-        document.body.appendChild(section);
-      }
-    }
-
-
-    const container =
-      document.getElementById("firebasePropertiesContainer");
-
-
+    // تفريغ المحتوى الثابت (Hardcoded) عشان نحط البيانات الحقيقية
     container.innerHTML = "";
-
 
     // عرض كل العقارات
     Object.entries(data).forEach(([id, property]) => {
-
+      
+      // هنا بنقوله لو العقار ليه صورة اعرضها، لو ملوش اعرض صورة افتراضية
+      const imageUrl = property.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+      
+      // الكارت الجديد بنفس تصميمك الاحترافي
       const card = document.createElement("div");
-
-      card.style.background = "#ffffff";
-      card.style.borderRadius = "18px";
-      card.style.padding = "15px";
-      card.style.boxShadow = "0 4px 15px rgba(0,0,0,0.08)";
-
+      card.className = "property";
 
       card.innerHTML = `
-
-        <div style="
-          background:#eef1f5;
-          border-radius:14px;
-          height:180px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:60px;
-          margin-bottom:12px;
-        ">
-          🏠
+        <div class="property-image" style="background: linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.08)), url('${imageUrl}') center/cover;">
+          <div class="badge">مميز</div>
+          <button class="favorite">♡</button>
         </div>
-
-
-        <h3 style="
-          margin-bottom:8px;
-          color:#172033;
-        ">
-          ${property.title || "عقار بدون اسم"}
-        </h3>
-
-
-        <p style="
-          color:#777;
-          margin-bottom:8px;
-        ">
-          📍 ${property.city || "غير محدد"}
-        </p>
-
-
-        <p style="
-          color:#777;
-          margin-bottom:8px;
-        ">
-          📐 المساحة:
-          ${property.area || "-"} م²
-        </p>
-
-
-        <p style="
-          color:#b48732;
-          font-size:19px;
-          font-weight:bold;
-          margin-bottom:15px;
-        ">
-          💰 ${property.price || "-"} جنيه
-        </p>
-
-
-        <button
-          style="
-            width:100%;
-            border:none;
-            background:#d6a84f;
-            color:white;
-            padding:13px;
-            border-radius:11px;
-            font-size:15px;
-            cursor:pointer;
-          "
-          onclick="window.location.href='property.html?id=${id}'"
-        >
-          عرض التفاصيل
-        </button>
-
+        <div class="property-info">
+          <h4>${property.title || "عقار بدون اسم"}</h4>
+          <div class="location">
+            📍 ${property.city || "المدينة غير محددة"} ${property.location ? '- ' + property.location : ''}
+          </div>
+          <div class="details">
+            <span>📐 ${property.area || "-"} م²</span>
+            <span>🛏️ ${property.rooms || "-"} غرف</span>
+            <span>🚿 ${property.bathrooms || "-"} حمام</span>
+          </div>
+          <div class="price">
+            ${property.price ? Number(property.price).toLocaleString() : "-"} جنيه
+          </div>
+          <button class="view-btn" onclick="window.location.href='property.html?id=${id}'">
+            عرض تفاصيل العقار
+          </button>
+        </div>
       `;
 
-
       container.appendChild(card);
-
     });
-
   });
-
-
 </script>
 
 </body>
