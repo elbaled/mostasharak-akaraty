@@ -38,6 +38,9 @@
       color: white;
       font-size: 22px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .header h1 {
@@ -51,6 +54,7 @@
         linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.08)),
         url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85")
         center/cover;
+      transition: background-image 0.3s ease;
     }
 
     .featured {
@@ -75,10 +79,13 @@
       background: white;
       font-size: 22px;
       cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     .container {
       padding: 20px 16px;
+      max-width: 900px;
+      margin: auto;
     }
 
     .title-row {
@@ -110,6 +117,15 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .details {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .gallery {
+        height: 380px;
+      }
     }
 
     .detail {
@@ -152,13 +168,15 @@
       line-height: 1.8;
       color: #555;
       font-size: 14px;
+      white-space: pre-line;
+      border: 1px solid #eee;
     }
 
     .map {
       height: 190px;
       border-radius: 17px;
       background:
-        linear-gradient(rgba(7,27,53,.65), rgba(7,27,53,.65)),
+        linear-gradient(rgba(7,27,53,.75), rgba(7,27,53,.75)),
         url("https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80")
         center/cover;
       display: flex;
@@ -182,6 +200,7 @@
       padding: 11px 20px;
       border-radius: 10px;
       cursor: pointer;
+      font-weight: bold;
     }
 
     .contact {
@@ -203,8 +222,20 @@
       margin-bottom: 18px;
     }
 
+    .contact-buttons {
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    @media (min-width: 500px) {
+      .contact-buttons {
+        flex-direction: row;
+      }
+    }
+
     .contact button {
-      width: 100%;
+      flex: 1;
       border: none;
       background: #d6a84f;
       color: white;
@@ -212,6 +243,11 @@
       border-radius: 12px;
       font-size: 15px;
       cursor: pointer;
+      font-weight: bold;
+    }
+
+    .contact button.whatsapp-btn {
+      background: #25D366;
     }
   </style>
 </head>
@@ -219,18 +255,14 @@
 <body>
 
   <header class="header">
-
-    <button class="back" onclick="history.back()">
+    <button class="back" onclick="window.location.href='index.html'">
       →
     </button>
-
     <h1>تفاصيل العقار</h1>
-
   </header>
 
 
-  <div class="gallery">
-
+  <div class="gallery" id="propertyGallery">
     <div class="featured">
       ⭐ عقار مميز
     </div>
@@ -238,129 +270,111 @@
     <button class="favorite" onclick="toggleFavorite(this)">
       ♡
     </button>
-
   </div>
 
 
   <main class="container">
 
     <div class="title-row">
-
       <div>
-        <h2>شقة مميزة للبيع</h2>
-
+        <h2>جاري التحميل...</h2>
         <div class="location">
-          📍 مدينة بدر - الحي المتميز
+          📍 ...
         </div>
       </div>
 
       <div class="price">
-        2,500,000 ج
+        ... ج
       </div>
-
     </div>
 
 
     <div class="details">
-
       <div class="detail">
         <div class="icon">📐</div>
         <span>المساحة</span>
-        <strong>150 م²</strong>
+        <strong>- م²</strong>
       </div>
 
       <div class="detail">
         <div class="icon">🛏️</div>
         <span>غرف النوم</span>
-        <strong>3 غرف</strong>
+        <strong>- غرف</strong>
       </div>
 
       <div class="detail">
         <div class="icon">🚿</div>
         <span>الحمامات</span>
-        <strong>2 حمام</strong>
+        <strong>- حمام</strong>
       </div>
 
       <div class="detail">
         <div class="icon">🏢</div>
         <span>الدور</span>
-        <strong>الرابع</strong>
+        <strong>-</strong>
       </div>
 
       <div class="detail">
         <div class="icon">🛗</div>
         <span>الأسانسير</span>
-        <strong>متوفر</strong>
+        <strong>-</strong>
       </div>
 
       <div class="detail">
         <div class="icon">🚗</div>
         <span>الجراج</span>
-        <strong>متوفر</strong>
+        <strong>-</strong>
       </div>
-
     </div>
 
 
     <section class="section">
-
       <h3>وصف العقار</h3>
-
       <div class="description">
-
-        شقة مميزة للبيع في مدينة بدر - الحي المتميز.
-        تتميز بموقع جيد وقريبة من الخدمات والمواصلات.
-        الشقة مناسبة للسكن والاستثمار، وتشطيبها جيد.
-
+        جاري تحميل تفاصيل ووصف العقار...
       </div>
-
     </section>
 
 
     <section class="section">
-
       <h3>موقع العقار</h3>
-
       <div class="map">
-
-        <h3>📍 مدينة بدر</h3>
-
-        <p>
-          الحي المتميز
-        </p>
-
-        <button onclick="openMap()">
+        <h3 id="mapCity">📍 مدينة بدر</h3>
+        <p id="mapArea">الحي المتميز</p>
+        <button id="mapBtn" onclick="openMap()">
           فتح الموقع على الخريطة
         </button>
-
       </div>
-
     </section>
 
 
     <div class="contact">
-
-      <h3>
-        هل أعجبك العقار؟
-      </h3>
-
+      <h3>هل أعجبك العقار؟</h3>
       <p>
         تواصل مع مستشارك العقاري لمعرفة المزيد أو تحديد موعد للمعاينة.
       </p>
 
-      <button onclick="contactAdvisor()">
-        📞 تواصل مع المستشار العقاري
-      </button>
-
+      <div class="contact-buttons">
+        <button onclick="contactAdvisor()">
+          📞 اتصال بالمستشار العقاري
+        </button>
+        <button class="whatsapp-btn" id="whatsappBtn" onclick="contactWhatsapp()">
+          💬 تواصل عبر واتساب
+        </button>
+      </div>
     </div>
 
   </main>
 
 
   <script>
+    // متغيرات عامة للتواصل والخريطة
+    let currentPropertyTitle = "";
+    let currentPropertyPrice = "";
+    let advisorPhone = "01000000000"; // ضع رقم هاتفك هنا
+    let advisorWhatsapp = "201000000000"; // ضع رقم الواتساب بكود الدولة هنا
 
     function toggleFavorite(button) {
-
       if (button.innerHTML.trim() === "♡") {
         button.innerHTML = "♥";
         button.style.color = "#d6a84f";
@@ -368,271 +382,189 @@
         button.innerHTML = "♡";
         button.style.color = "";
       }
-
     }
 
-
     function openMap() {
-
       window.open(
         "https://www.google.com/maps/search/?api=1&query=مدينة+بدر+مصر",
         "_blank"
       );
-
     }
-
 
     function contactAdvisor() {
-
-      window.location.href =
-        "tel:01000000000";
-
+      window.location.href = "tel:" + advisorPhone;
     }
 
+    function contactWhatsapp() {
+      const msg = encodeURIComponent(`مرحباً مستشارك العقاري، أستفسر عن العقار: "${currentPropertyTitle}" المعروض بسعر ${currentPropertyPrice} ج.`);
+      window.open(`https://wa.me/${advisorWhatsapp}?text=${msg}`, "_blank");
+    }
   </script>
 
-<script type="module">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-database.js";
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
+      authDomain: "mostasharak-akaraty.firebaseapp.com",
+      databaseURL: "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
+      projectId: "mostasharak-akaraty",
+      storageBucket: "mostasharak-akaraty.firebasestorage.app",
+      messagingSenderId: "287363939919",
+      appId: "1:287363939919:web:e53f13b518c6273043f43a",
+      measurementId: "G-QK6EW9G8CB"
+    };
 
-import {
-  getDatabase,
-  ref,
-  get
-}
-from "https://www.gstatic.com/firebasejs/12.7.1/firebase-database.js";
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
+    // الحصول على رقم العقار من الرابط
+    const params = new URLSearchParams(window.location.search);
+    const propertyId = params.get("id");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
-  authDomain: "mostasharak-akaraty.firebaseapp.com",
-  databaseURL: "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
-  projectId: "mostasharak-akaraty",
-  storageBucket: "mostasharak-akaraty.firebasestorage.app",
-  messagingSenderId: "287363939919",
-  appId: "1:287363939919:web:e53f13b518c6273043f43a",
-  measurementId: "G-QK6EW9G8CB"
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const database = getDatabase(app);
-
-
-// الحصول على رقم العقار من الرابط
-const params = new URLSearchParams(window.location.search);
-
-const propertyId = params.get("id");
-
-
-if (!propertyId) {
-
-  document.body.innerHTML = `
-    <div style="
-      text-align:center;
-      padding:80px 20px;
-      font-family:Arial;
-    ">
-      <h2>⚠️ العقار غير موجود</h2>
-      <p>لم يتم تحديد العقار المطلوب.</p>
-    </div>
-  `;
-
-} else {
-
-
-  const propertyRef =
-    ref(database, "properties/" + propertyId);
-
-
-  try {
-
-    const snapshot = await get(propertyRef);
-
-
-    if (!snapshot.exists()) {
-
+    if (!propertyId) {
       document.body.innerHTML = `
-        <div style="
-          text-align:center;
-          padding:80px 20px;
-          font-family:Arial;
-        ">
+        <div style="text-align:center; padding:80px 20px; font-family:Arial;">
           <h2>⚠️ العقار غير موجود</h2>
-          <p>قد يكون العقار تم حذفه أو الرابط غير صحيح.</p>
+          <p style="margin-top:10px; color:#666;">لم يتم تحديد العقار المطلوب.</p>
+          <a href="index.html" style="display:inline-block; margin-top:20px; background:#123b68; color:white; padding:10px 20px; border-radius:10px; text-decoration:none;">العودة للرئيسية</a>
         </div>
       `;
-
     } else {
+      const propertyRef = ref(database, "properties/" + propertyId);
 
-      const property = snapshot.val();
+      try {
+        const snapshot = await get(propertyRef);
 
-
-      // العنوان
-      const title =
-        document.querySelector(".title-row h2");
-
-      if (title) {
-        title.textContent =
-          property.title || "عقار بدون اسم";
-      }
-
-
-      // المدينة والموقع
-      const location =
-        document.querySelector(".location");
-
-      if (location) {
-
-        location.textContent =
-          "📍 " +
-          (property.city || "") +
-          (property.area ? " - " + property.area : "");
-
-      }
-
-
-      // السعر
-      const price =
-        document.querySelector(".price");
-
-      if (price) {
-
-        price.textContent =
-          Number(property.price || 0).toLocaleString("ar-EG") +
-          " ج";
-
-      }
-
-
-      // تفاصيل العقار
-      const details =
-        document.querySelector(".details");
-
-
-      if (details) {
-
-        details.innerHTML = `
-
-          <div class="detail">
-            <div class="icon">📐</div>
-            <span>المساحة</span>
-            <strong>
-              ${property.area || "-"} م²
-            </strong>
-          </div>
-
-
-          <div class="detail">
-            <div class="icon">🛏️</div>
-            <span>غرف النوم</span>
-            <strong>
-              ${property.bedrooms || "-"} غرف
-            </strong>
-          </div>
-
-
-          <div class="detail">
-            <div class="icon">🚿</div>
-            <span>الحمامات</span>
-            <strong>
-              ${property.bathrooms || "-"} حمام
-            </strong>
-          </div>
-
-
-          <div class="detail">
-            <div class="icon">🏠</div>
-            <span>نوع العقار</span>
-            <strong>
-              ${property.type || "-"}
-            </strong>
-          </div>
-
-        `;
-
-      }
-
-
-      // الوصف
-      const description =
-        document.querySelector(".description");
-
-      if (description) {
-
-        description.textContent =
-          property.description ||
-          "لا يوجد وصف لهذا العقار.";
-
-      }
-
-
-      // حالة العقار المميز
-      const featured =
-        document.querySelector(".featured");
-
-      if (featured) {
-
-        if (property.featured === true) {
-
-          featured.style.display = "block";
-
+        if (!snapshot.exists()) {
+          document.body.innerHTML = `
+            <div style="text-align:center; padding:80px 20px; font-family:Arial;">
+              <h2>⚠️ العقار غير موجود</h2>
+              <p style="margin-top:10px; color:#666;">قد يكون العقار تم حذفه أو الرابط غير صحيح.</p>
+              <a href="index.html" style="display:inline-block; margin-top:20px; background:#123b68; color:white; padding:10px 20px; border-radius:10px; text-decoration:none;">العودة للرئيسية</a>
+            </div>
+          `;
         } else {
+          const property = snapshot.val();
 
-          featured.style.display = "none";
+          // تحديث المتغيرات العامة للواتساب
+          window.currentPropertyTitle = property.title || "عقار بدون اسم";
+          window.currentPropertyPrice = Number(property.price || 0).toLocaleString("ar-EG");
 
+          // 1. تحديث صورة العقار
+          const gallery = document.getElementById("propertyGallery");
+          if (gallery && property.image) {
+            gallery.style.backgroundImage = `linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.08)), url("${property.image}")`;
+          }
+
+          // 2. العنوان
+          const title = document.querySelector(".title-row h2");
+          if (title) {
+            title.textContent = property.title || "عقار بدون اسم";
+          }
+
+          // 3. المدينة والموقع (الحي)
+          const location = document.querySelector(".location");
+          const district = property.location || property.district || "";
+          if (location) {
+            location.textContent = "📍 " + (property.city || "مدينة بدر") + (district ? " - " + district : "");
+          }
+
+          // 4. السعر
+          const price = document.querySelector(".price");
+          if (price) {
+            price.textContent = Number(property.price || 0).toLocaleString("ar-EG") + " ج";
+          }
+
+          // 5. تفاصيل العقار (الحفاظ على الـ 6 خانات أو عرض المتاح)
+          const details = document.querySelector(".details");
+          if (details) {
+            const roomsCount = property.bedrooms || property.rooms || "-";
+            details.innerHTML = `
+              <div class="detail">
+                <div class="icon">📐</div>
+                <span>المساحة</span>
+                <strong>${property.area || "-"} م²</strong>
+              </div>
+
+              <div class="detail">
+                <div class="icon">🛏️</div>
+                <span>غرف النوم</span>
+                <strong>${roomsCount} غرف</strong>
+              </div>
+
+              <div class="detail">
+                <div class="icon">🚿</div>
+                <span>الحمامات</span>
+                <strong>${property.bathrooms || "-"} حمام</strong>
+              </div>
+
+              <div class="detail">
+                <div class="icon">🏠</div>
+                <span>نوع العقار</span>
+                <strong>${property.type || property.category || "شقة"}</strong>
+              </div>
+
+              <div class="detail">
+                <div class="icon">🏢</div>
+                <span>الدور</span>
+                <strong>${property.floor || "غير محدد"}</strong>
+              </div>
+
+              <div class="detail">
+                <div class="icon">🛗</div>
+                <span>الأسانسير / الجراج</span>
+                <strong>${property.elevator || "متوفر"}</strong>
+              </div>
+            `;
+          }
+
+          // 6. الوصف
+          const description = document.querySelector(".description");
+          if (description) {
+            description.textContent = property.description || "لا يوجد وصف إضافي لهذا العقار.";
+          }
+
+          // 7. حالة العقار المميز
+          const featured = document.querySelector(".featured");
+          if (featured) {
+            if (property.featured === false) {
+              featured.style.display = "none";
+            } else {
+              featured.style.display = "block";
+            }
+          }
+
+          // 8. تحديث بيانات الخريطة
+          const mapCity = document.getElementById("mapCity");
+          const mapArea = document.getElementById("mapArea");
+          const mapButton = document.getElementById("mapBtn");
+
+          if (mapCity) mapCity.textContent = "📍 " + (property.city || "مدينة بدر");
+          if (mapArea) mapArea.textContent = district || "الموقع على الخريطة";
+
+          if (mapButton) {
+            mapButton.onclick = function () {
+              if (property.latitude && property.longitude) {
+                const url = `https://www.google.com/maps/search/?api=1&query=${property.latitude},${property.longitude}`;
+                window.open(url, "_blank");
+              } else {
+                const searchQuery = encodeURIComponent(`${property.city || 'مدينة بدر'} ${district} مصر`);
+                window.open(`https://www.google.com/maps/search/?api=1&query=${searchQuery}`, "_blank");
+              }
+            };
+          }
+
+          console.log("تم تحميل العقار بنجاح:", property);
         }
 
+      } catch (error) {
+        console.error(error);
+        alert("حدث خطأ أثناء تحميل بيانات العقار.");
       }
-
-
-      // الخريطة
-      const mapButton =
-        document.querySelector(".map button");
-
-
-      if (mapButton &&
-          property.latitude &&
-          property.longitude) {
-
-        mapButton.onclick = function () {
-
-          const url =
-            "https://www.google.com/maps/search/?api=1&query=" +
-            property.latitude +
-            "," +
-            property.longitude;
-
-          window.open(url, "_blank");
-
-        };
-
-      }
-
-
-      console.log(
-        "تم تحميل العقار:",
-        property
-      );
-
     }
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "حدث خطأ أثناء تحميل بيانات العقار."
-    );
-
-  }
-
-}
-
-</script>
+  </script>
 
 </body>
 </html>
