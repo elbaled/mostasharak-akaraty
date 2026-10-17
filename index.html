@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مستشارك العقاري | بدر والشروق والمدن الجديدة</title>
-    <!-- Tailwind CSS للتصميم -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome للأيقونات -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- خط Cairo من جوجل -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- خط Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         body {
             font-family: 'Cairo', sans-serif;
             background-color: #f8fafc;
+            overflow-x: hidden;
         }
         .hero-bg {
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.85)), 
+            background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.88)), 
                         url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
@@ -25,12 +26,304 @@
         .gold-gradient {
             background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
         }
+
+        /* ===================================================
+           أنيميشن الفيلم المعماري (20 ثانية - 7 مراحل كاملة)
+           =================================================== */
+        #introScreen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.9s ease, visibility 0.9s ease;
+        }
+
+        /* خلفية شبكة هندسية (Blueprint Grid) */
+        .blueprint-bg {
+            background-image: 
+                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+            background-size: 25px 25px;
+        }
+
+        #sceneWrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* عند انتهاء البناء يصغر البيت ليتحول إلى لوجو بجانب الاسم */
+        .logo-mode #houseSvgContainer {
+            transform: scale(0.42);
+        }
+
+        #houseSvgContainer {
+            width: 340px;
+            height: 280px;
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
+        }
+
+        @media (min-width: 768px) {
+            #houseSvgContainer {
+                width: 460px;
+                height: 360px;
+            }
+        }
+
+        /* إخفاء الطبقات قبل مرحلتها */
+        .layer {
+            opacity: 0;
+            transition: all 0.8s ease-in-out;
+        }
+        .layer.active {
+            opacity: 1;
+        }
+
+        /* تأثير طلوع الأساسات والأعمدة من الأرض */
+        #layer-foundation {
+            transform: translateY(30px);
+        }
+        #layer-foundation.active {
+            transform: translateY(0);
+        }
+
+        /* تأثير بناء الطوب */
+        #layer-bricks {
+            transform: scaleY(0);
+            transform-origin: bottom;
+        }
+        #layer-bricks.active {
+            transform: scaleY(1);
+        }
+
+        /* تأثير سريان المياه والكهرباء (رسم الخطوط تدريجياً) */
+        .pipe-line {
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            transition: stroke-dashoffset 2.2s ease-in-out;
+        }
+        .active .pipe-line {
+            stroke-dashoffset: 0;
+        }
+
+        .elec-glow {
+            animation: pulseGlow 1s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            from { filter: drop-shadow(0 0 2px #facc15); }
+            to { filter: drop-shadow(0 0 10px #facc15); }
+        }
+
+        /* تأثير قفل الباب في النهاية */
+        #mainDoorPanel {
+            transform-origin: 205px 250px;
+            transform: scaleX(0.15); /* الباب مفتوح في البداية */
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .door-closed #mainDoorPanel {
+            transform: scaleX(1); /* الباب يتقفل بالكامل */
+        }
+
+        /* إضاءة الشبابيك والفيلا بعد التشطيب */
+        .window-glass {
+            fill: #1e293b;
+            transition: fill 1s ease, filter 1s ease;
+        }
+        .lights-on .window-glass {
+            fill: #fef08a;
+            filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.9));
+        }
+
+        /* مؤشر الكتابة حرف حرف */
+        .typing-cursor::after {
+            content: '|';
+            color: #f59e0b;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body class="text-slate-800">
 
-    <!-- شريط التنقل (Navbar) -->
-    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+    <!-- ==========================================
+         شاشة الانترو السينمائي (20 ثانية)
+         ========================================== -->
+    <div id="introScreen" class="blueprint-bg px-4 select-none">
+        
+        <!-- زر تخطي الانترو -->
+        <button onclick="finishIntroNow()" class="absolute top-6 left-6 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-xs font-bold px-4 py-2 rounded-full border border-white/20 backdrop-blur-sm transition z-50 flex items-center gap-2">
+            <span>تخطي العرض</span>
+            <i class="fa-solid fa-forward-step"></i>
+        </button>
+
+        <!-- عداد المراحل الهندسية أعلى الشاشة -->
+        <div id="constructionStatusBox" class="mb-4 text-center transition-opacity duration-500">
+            <span id="stageBadge" class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1 rounded-full text-xs md:text-sm font-bold tracking-wide">
+                <i class="fa-solid fa-helmet-safety ml-1"></i> جاري تجهيز الموقع وحفر الأساسات...
+            </span>
+        </div>
+
+        <!-- حاوية الرسم الهندسي للفيلا والشعار -->
+        <div id="sceneWrapper" class="w-full max-w-4xl flex flex-col items-center justify-center">
+            
+            <div id="houseSvgContainer" class="relative flex items-center justify-center">
+                <svg viewBox="0 0 450 320" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    
+                    <!-- خط الأرض الثابت -->
+                    <line x1="20" y1="290" x2="430" y2="290" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+
+                    <!-- المرحلة 1: القواعد الخرسانية والأعمدة المسلحة -->
+                    <g id="layer-foundation" class="layer">
+                        <!-- قواعد خرسانية تحت الأرض -->
+                        <rect x="65" y="275" width="320" height="18" rx="3" fill="#64748b" stroke="#94a3b8" stroke-width="2"/>
+                        <rect x="80" y="265" width="290" height="12" fill="#475569"/>
+                        <!-- أعمدة خرسانية دور أرضي وأول -->
+                        <rect x="85" y="90" width="12" height="175" fill="#94a3b8"/>
+                        <rect x="175" y="90" width="12" height="175" fill="#94a3b8"/>
+                        <rect x="265" y="90" width="12" height="175" fill="#94a3b8"/>
+                        <rect x="353" y="90" width="12" height="175" fill="#94a3b8"/>
+                        <!-- بلاطة سقف الدور الأول -->
+                        <rect x="75" y="172" width="300" height="10" fill="#64748b"/>
+                        <!-- بلاطة سقف الدور الثاني -->
+                        <rect x="70" y="85" width="310" height="12" fill="#64748b"/>
+                    </g>
+
+                    <!-- المرحلة 2: بناء الطوب الأحمر والهيكل -->
+                    <g id="layer-bricks" class="layer">
+                        <!-- خلفية الطوب الأحمر للدور الأرضي -->
+                        <rect x="97" y="182" width="256" height="83" fill="#b45309" opacity="0.85"/>
+                        <!-- خلفية الطوب الأحمر للدور العلوي -->
+                        <rect x="97" y="97" width="256" height="75" fill="#b45309" opacity="0.85"/>
+                        <!-- خطوط فواصل الطوب الهندسية -->
+                        <g stroke="#78350f" stroke-width="1.5" opacity="0.6">
+                            <line x1="97" y1="115" x2="353" y2="115"/>
+                            <line x1="97" y1="135" x2="353" y2="135"/>
+                            <line x1="97" y1="155" x2="353" y2="155"/>
+                            <line x1="97" y1="200" x2="353" y2="200"/>
+                            <line x1="97" y1="220" x2="353" y2="220"/>
+                            <line x1="97" y1="240" x2="353" y2="240"/>
+                        </g>
+                        <!-- هيكل السقف المائل (الجمالون) -->
+                        <polygon points="60,85 225,25 390,85" fill="#92400e" stroke="#f59e0b" stroke-width="2"/>
+                    </g>
+
+                    <!-- المرحلة 3: شبكة السباكة والمياه والخزان -->
+                    <g id="layer-plumbing" class="layer">
+                        <!-- خزان المياه العلوي -->
+                        <rect x="290" y="42" width="45" height="43" rx="6" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+                        <line x1="295" y1="55" x2="330" y2="55" stroke="#bae6fd" stroke-width="2"/>
+                        <!-- مواسير المياه الزرقاء الممتدة في الحوائط -->
+                        <path class="pipe-line" d="M 312 85 L 312 255 L 120 255 L 120 120 L 240 120 L 240 210" fill="none" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path class="pipe-line" d="M 312 150 L 160 150" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4"/>
+                        <!-- محابس ونقاط مياه -->
+                        <circle cx="312" cy="150" r="5" fill="#0284c7" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="120" cy="200" r="5" fill="#0284c7" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="240" cy="120" r="5" fill="#0284c7" stroke="#fff" stroke-width="1.5"/>
+                    </g>
+
+                    <!-- المرحلة 4: شبكة الكهرباء والإمدادات واللوحة -->
+                    <g id="layer-electricity" class="layer">
+                        <!-- لوحة توزيع الكهرباء الرئيسية -->
+                        <rect x="195" y="195" width="22" height="30" rx="2" fill="#eab308" stroke="#fef08a" stroke-width="2"/>
+                        <!-- مسارات خراطيم الكهرباء الصفراء -->
+                        <path class="pipe-line elec-glow" d="M 206 195 L 206 110 L 135 110 L 135 140" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                        <path class="pipe-line elec-glow" d="M 206 110 L 315 110 L 315 140" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                        <path class="pipe-line elec-glow" d="M 206 225 L 135 225 L 135 205" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                        <path class="pipe-line elec-glow" d="M 206 225 L 315 225 L 315 205" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                        <!-- بواطات ولمبات التأسيس -->
+                        <circle cx="135" cy="140" r="6" fill="#fef08a" class="elec-glow"/>
+                        <circle cx="315" cy="140" r="6" fill="#fef08a" class="elec-glow"/>
+                        <circle cx="135" cy="205" r="6" fill="#fef08a" class="elec-glow"/>
+                        <circle cx="315" cy="205" r="6" fill="#fef08a" class="elec-glow"/>
+                    </g>
+
+                    <!-- المرحلة 5: المحارة، تشطيب الواجهة الفاخرة، الشبابيك، والحديقة -->
+                    <g id="layer-finishing" class="layer">
+                        <!-- جسم الفيلا المتشطب (يغطي الطوب والمواسير) -->
+                        <rect x="85" y="92" width="280" height="183" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+                        <!-- ديكورات حجر هاشمي / تجليد خشبي في الواجهة -->
+                        <rect x="85" y="92" width="55" height="183" fill="#e2e8f0"/>
+                        <rect x="190" y="92" width="70" height="183" fill="#f1f5f9"/>
+                        <!-- فاصل الديكور الذهبي بين الدورين -->
+                        <rect x="80" y="172" width="290" height="8" rx="2" fill="#d97706"/>
+                        
+                        <!-- السقف القرميد الحديث -->
+                        <polygon points="55,92 225,20 395,92" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+                        <polygon points="165,92 225,45 285,92" fill="#334155" stroke="#d97706" stroke-width="2"/>
+
+                        <!-- الشبابيك الزجاجية (الدور العلوي) -->
+                        <rect x="100" y="110" width="45" height="45" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
+                        <line x1="122.5" y1="110" x2="122.5" y2="155" stroke="#0f172a" stroke-width="2"/>
+                        
+                        <rect x="202" y="105" width="46" height="55" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
+                        <!-- بلكونة الدور العلوي -->
+                        <rect x="192" y="152" width="66" height="12" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
+
+                        <rect x="295" y="110" width="50" height="45" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
+                        <line x1="320" y1="110" x2="320" y2="155" stroke="#0f172a" stroke-width="2"/>
+
+                        <!-- شبابيك الدور الأرضي -->
+                        <rect x="100" y="195" width="45" height="50" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
+                        <rect x="295" y="195" width="50" height="50" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
+
+                        <!-- حلق الباب الرئيسي (مفتوح وجواه إضاءة ترحيبية) -->
+                        <rect x="202" y="195" width="46" height="75" rx="3" fill="#fef08a" stroke="#78350f" stroke-width="4"/>
+                        
+                        <!-- ضلفة الباب الخشبي المصفح (تتقفل في المرحلة 6) -->
+                        <g id="mainDoorPanel">
+                            <rect x="204" y="197" width="42" height="72" fill="#451a03" stroke="#d97706" stroke-width="1.5"/>
+                            <!-- مقبض الباب الذهبي -->
+                            <circle cx="240" cy="235" r="3" fill="#fbbf24"/>
+                            <rect x="212" y="205" width="26" height="22" rx="2" fill="#78350f" stroke="#b45309" stroke-width="1"/>
+                            <rect x="212" y="235" width="26" height="25" rx="2" fill="#78350f" stroke="#b45309" stroke-width="1"/>
+                        </g>
+
+                        <!-- سلالم المدخل واللاندسكيب (أشجار صغيرة) -->
+                        <rect x="192" y="270" width="66" height="8" rx="2" fill="#94a3b8"/>
+                        <rect x="184" y="278" width="82" height="10" rx="2" fill="#64748b"/>
+                        <!-- أشجار الزينة على الجانبين -->
+                        <circle cx="65" cy="255" r="18" fill="#15803d"/>
+                        <rect x="62" y="270" width="6" height="18" fill="#78350f"/>
+                        <circle cx="385" cy="255" r="18" fill="#15803d"/>
+                        <rect x="382" y="270" width="6" height="18" fill="#78350f"/>
+                    </g>
+
+                </svg>
+            </div>
+
+            <!-- نص اللوجو الذي يظهر حرفاً بحرف بعد اكتمال الفيلا -->
+            <div id="brandLogoArea" class="text-center mt-2 hidden">
+                <h1 id="typewriterTitle" class="text-4xl md:text-6xl font-black text-white tracking-wide typing-cursor mb-2"></h1>
+                <p id="typewriterSub" class="text-amber-400 font-bold text-sm md:text-lg opacity-0 transition-opacity duration-700">
+                    بدر • الشروق • المدن الجديدة
+                </p>
+            </div>
+
+        </div>
+
+        <!-- شريط التقدم الزمني للـ 20 ثانية أسفل الانترو -->
+        <div id="progressContainer" class="w-64 md:w-96 bg-slate-800 h-2 rounded-full overflow-hidden mt-8 border border-slate-700">
+            <div id="introProgressBar" class="gold-gradient h-full w-0 transition-all duration-300"></div>
+        </div>
+        <p id="progressPercent" class="text-gray-400 text-xs mt-2 font-bold">0% مكتمل</p>
+
+    </div>
+
+    <!-- ==========================================
+         شريط التنقل الرئيسي للموقع (Navbar)
+         ========================================== -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
                 <i class="fa-solid fa-building-wheat text-amber-500 text-3xl"></i>
@@ -53,17 +346,17 @@
         </div>
     </nav>
 
-    <!-- الواجهة الرئيسية (Hero Section / انترو الموقع) -->
-    <header class="hero-bg text-white py-24 px-4 text-center">
+    <!-- الواجهة الرئيسية (Hero Section) -->
+    <header class="hero-bg text-white py-20 px-4 text-center">
         <div class="container mx-auto max-w-4xl">
             <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 inline-block">
                 🌟 دليلك الأول للعقارات في المدن الجديدة
             </span>
-            <h2 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">
                 ابحث عن عقارك المثالي في <span class="text-amber-500">بدر والشروق</span> والمدن الجديدة
             </h2>
-            <p class="text-gray-300 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-                شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري بدون تشعبات.
+            <p class="text-gray-300 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+                شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري.
             </p>
 
             <!-- صندوق البحث والفلترة -->
@@ -121,33 +414,33 @@
             <span id="propertiesCount" class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-sm">0 عقار متاح</span>
         </div>
 
-        <!-- شبكة العقارات -->
-        <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- العقارات تظهر هنا أوتوماتيك -->
-        </div>
+        <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <!-- نافذة تفاصيل العقار الكاملة (Modal) -->
+    <!-- نافذة تفاصيل العقار الكاملة (Modal) - تدعم زر الرجوع في الموبايل بدون الخروج من الموقع -->
     <div id="propertyDetailsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="closeDetailsModal()" class="absolute top-4 left-4 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 w-10 h-10 rounded-full flex items-center justify-center text-xl transition z-20">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <div id="modalDetailsContent">
-                <!-- محتوى تفاصيل العقار هيتحط هنا بالجافاسكريبت -->
+            <div id="modalDetailsContent"></div>
+
+            <div class="mt-6 pt-4 border-t text-center">
+                <button onclick="closeDetailsModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-6 py-2.5 rounded-xl transition">
+                    <i class="fa-solid fa-arrow-right ml-2"></i> العودة لقائمة العقارات
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- نافذة لوحة تحكم الأدمن (Modal) -->
+    <!-- لوحة تحكم الأدمن -->
     <div id="adminModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="toggleAdminModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <!-- شاشة تسجيل الدخول للأدمن -->
             <div id="adminLoginSection">
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
@@ -159,25 +452,23 @@
                 <div class="max-w-sm mx-auto space-y-4">
                     <div>
                         <label class="block text-sm font-semibold mb-1">كلمة المرور</label>
-                        <input type="password" id="adminPasswordInput" placeholder="أدخل كلمة المرور (الافتراضية: 1234)" class="w-full border rounded-lg p-3 focus:outline-amber-500">
+                        <input type="password" id="adminPasswordInput" placeholder="الافتراضية: 1234" class="w-full border rounded-lg p-3 focus:outline-amber-500">
                     </div>
                     <button onclick="loginAdmin()" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow">دخول للوحة التحكم</button>
                 </div>
             </div>
 
-            <!-- شاشة إضافة العقارات -->
             <div id="adminDashboardSection" class="hidden">
                 <div class="flex justify-between items-center border-b pb-3 mb-6">
-                    <h3 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-plus-circle text-amber-600 ml-2"></i>إضافة عقار أو عرض جديد</h3>
-                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200 font-bold">تسجيل خروج</button>
+                    <h3 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-plus-circle text-amber-600 ml-2"></i>إضافة عقار جديد</h3>
+                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold">تسجيل خروج</button>
                 </div>
 
-                <!-- إعدادات رقم التليفون الأساسي -->
                 <div class="bg-slate-100 p-4 rounded-xl mb-6 border border-slate-200">
                     <label class="block text-sm font-bold mb-2 text-slate-700">رقم الهاتف / واتساب المستشار العقاري:</label>
                     <div class="flex gap-2">
                         <input type="text" id="consultantPhoneInput" class="flex-1 border rounded-lg p-2 text-left bg-white" dir="ltr" placeholder="010xxxxxxxx">
-                        <button type="button" onclick="savePhone()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700">حفظ الرقم</button>
+                        <button type="button" onclick="savePhone()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold">حفظ الرقم</button>
                     </div>
                 </div>
 
@@ -185,11 +476,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-bold mb-1">عنوان الإعلان *</label>
-                            <input type="text" id="propTitle" required placeholder="مثال: شقة لقطة للإيجار بمدينة بدر الحي الأول" class="w-full border rounded-lg p-2.5">
+                            <input type="text" id="propTitle" required placeholder="مثال: شقة للإيجار بمدينة بدر" class="w-full border rounded-lg p-2.5">
                         </div>
                         <div>
                             <label class="block text-sm font-bold mb-1">السعر *</label>
-                            <input type="text" id="propPrice" required placeholder="مثال: 4,500 ج/شهرياً أو 1,200,000 كاش" class="w-full border rounded-lg p-2.5">
+                            <input type="text" id="propPrice" required placeholder="مثال: 4,500 ج/شهرياً" class="w-full border rounded-lg p-2.5">
                         </div>
                     </div>
 
@@ -225,22 +516,22 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-bold mb-1">المساحة (بالمتر) *</label>
-                            <input type="number" id="propArea" required placeholder="مثال: 135" class="w-full border rounded-lg p-2.5">
+                            <label class="block text-sm font-bold mb-1">المساحة (م²) *</label>
+                            <input type="number" id="propArea" required placeholder="135" class="w-full border rounded-lg p-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-1">صور العقار (يمكنك تحديد عدة صور) *</label>
+                            <label class="block text-sm font-bold mb-1">صور العقار *</label>
                             <input type="file" id="propImageFile" accept="image/*" multiple class="w-full border rounded-lg p-2 text-sm bg-gray-50">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold mb-1">تفاصيل ومميزات العقار *</label>
-                        <textarea id="propDesc" rows="3" required placeholder="اكتب كل التفاصيل هنا..." class="w-full border rounded-lg p-2.5"></textarea>
+                        <textarea id="propDesc" rows="3" required placeholder="اكتب تفاصيل العقار..." class="w-full border rounded-lg p-2.5"></textarea>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow-lg hover:opacity-95 transition">
-                        <i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار على الموقع
+                    <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow">
+                        <i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار
                     </button>
                 </form>
             </div>
@@ -256,13 +547,13 @@
         </div>
     </footer>
 
-    <!-- الأكواد البرمجية (JavaScript) -->
+    <!-- الجافاسكريبت الكامل -->
     <script>
         const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; 
         const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; 
         const ADMIN_PASS = "1234";
 
-        const isOnlineConfigured = !FIREBASE_URL.includes("https://mostasharak-akaraty-default-rtdb.firebaseio.com/") && FIREBASE_URL.startsWith("https://");
+        const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
 
         const defaultProperties = [
             {
@@ -301,6 +592,121 @@
         let isAdminLoggedIn = false;
         let currentSlideIndex = {};
         let modalSlideIndex = 0;
+        let introTimers = [];
+
+        // ========================================================
+        // إدارة أنيميشن الـ 20 ثانية (7 مراحل بناء + كتابة حرف حرف)
+        // ========================================================
+        function updateIntroStatus(text, percent) {
+            const badge = document.getElementById('stageBadge');
+            const bar = document.getElementById('introProgressBar');
+            const pct = document.getElementById('progressPercent');
+            if (badge) badge.innerHTML = text;
+            if (bar) bar.style.width = percent + '%';
+            if (pct) pct.innerText = percent + '% مكتمل';
+        }
+
+        function typeWriterEffect(text, elementId, speed = 110) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            el.innerHTML = "";
+            let i = 0;
+            function typeChar() {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    introTimers.push(setTimeout(typeChar, speed));
+                } else {
+                    el.classList.remove('typing-cursor');
+                    document.getElementById('typewriterSub').style.opacity = '1';
+                }
+            }
+            typeChar();
+        }
+
+        function start20SecConstructionIntro() {
+            // المرحلة 1 (0s - 3s): صب القواعد والأساسات الخرسانية والأعمدة
+            introTimers.push(setTimeout(() => {
+                document.getElementById('layer-foundation').classList.add('active');
+                updateIntroStatus('<i class="fa-solid fa-trowel-bricks ml-1"></i> المرحلة 1/6: صب القواعد الخرسانية ورفع الأعمدة...', 15);
+            }, 300));
+
+            // المرحلة 2 (3s - 6s): بناء الطوب الأحمر والجمالون
+            introTimers.push(setTimeout(() => {
+                document.getElementById('layer-bricks').classList.add('active');
+                updateIntroStatus('<i class="fa-solid fa-cubes ml-1"></i> المرحلة 2/6: بناء الجدران والطوب الأحمر والأسقف...', 32);
+            }, 3200));
+
+            // المرحلة 3 (6s - 9s): تأسيس السباكة ومواسير المياه والخزان
+            introTimers.push(setTimeout(() => {
+                document.getElementById('layer-plumbing').classList.add('active');
+                updateIntroStatus('<i class="fa-solid fa-faucet-drip ml-1 text-sky-400"></i> المرحلة 3/6: مد شبكات المياه والسباكة والخزانات...', 50);
+            }, 6200));
+
+            // المرحلة 4 (9s - 12s): تأسيس الكهرباء والإمدادات الذكية
+            introTimers.push(setTimeout(() => {
+                document.getElementById('layer-electricity').classList.add('active');
+                updateIntroStatus('<i class="fa-solid fa-bolt ml-1 text-yellow-400"></i> المرحلة 4/6: تأسيس شبكات الكهرباء والإضاءة...', 68);
+            }, 9200));
+
+            // المرحلة 5 (12s - 15s): المحارة، الواجهات الفاخرة، الشبابيك واللاندسكيب
+            introTimers.push(setTimeout(() => {
+                document.getElementById('layer-finishing').classList.add('active');
+                updateIntroStatus('<i class="fa-solid fa-paint-roller ml-1 text-emerald-400"></i> المرحلة 5/6: التشطيبات النهائية للواجهة والزجاج...', 85);
+            }, 12200));
+
+            // المرحلة 6 (15s - 17.5s): إغلاق الباب الرئيسي وإنارة الفيلا بالكامل
+            introTimers.push(setTimeout(() => {
+                const svgContainer = document.getElementById('houseSvgContainer');
+                svgContainer.classList.add('door-closed', 'lights-on');
+                updateIntroStatus('<i class="fa-solid fa-key ml-1 text-amber-400"></i> المرحلة 6/6: إغلاق الباب الرئيسي وتسليم المفتاح!', 100);
+            }, 15200));
+
+            // المرحلة 7 (17.5s - 20.5s): تصغير الفيلا كشعار وكتابة "مستشارك العقاري" حرف حرف
+            introTimers.push(setTimeout(() => {
+                document.getElementById('constructionStatusBox').style.opacity = '0';
+                document.getElementById('progressContainer').style.opacity = '0';
+                document.getElementById('progressPercent').style.opacity = '0';
+                
+                const wrapper = document.getElementById('sceneWrapper');
+                wrapper.classList.add('logo-mode');
+                
+                const brandArea = document.getElementById('brandLogoArea');
+                brandArea.classList.remove('hidden');
+
+                // كتابة جملة "مستشارك العقاري" حرف حرف
+                typeWriterEffect("مستشارك العقاري", "typewriterTitle", 110);
+            }, 17500));
+
+            // إغلاق الانترو عند الثانية 21 والدخول السلس للموقع
+            introTimers.push(setTimeout(() => {
+                finishIntroNow();
+            }, 21200));
+        }
+
+        function finishIntroNow() {
+            introTimers.forEach(t => clearTimeout(t));
+            const screen = document.getElementById('introScreen');
+            if (screen) {
+                screen.style.opacity = '0';
+                setTimeout(() => screen.style.display = 'none', 850);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            start20SecConstructionIntro();
+            loadData();
+        });
+
+        // ========================================================
+        // دعم زر الرجوع في الموبايل (Back Button) لعدم الخروج من الموقع
+        // ========================================================
+        window.addEventListener('popstate', (event) => {
+            const detailsModal = document.getElementById('propertyDetailsModal');
+            if (!detailsModal.classList.contains('hidden')) {
+                detailsModal.classList.add('hidden');
+            }
+        });
 
         async function loadData() {
             if (isOnlineConfigured) {
@@ -323,7 +729,7 @@
                     }
                     renderProperties();
                 } catch (error) {
-                    console.error("خطأ في الاتصال بقاعدة البيانات:", error);
+                    console.error("خطأ في الاتصال:", error);
                 }
             } else {
                 properties = JSON.parse(localStorage.getItem('realEstateData')) || defaultProperties;
@@ -341,7 +747,6 @@
         async function savePhone() {
             const newPhone = document.getElementById('consultantPhoneInput').value.trim();
             if (!newPhone) return;
-
             consultantPhone = newPhone;
             localStorage.setItem('consultantPhone', consultantPhone);
 
@@ -353,7 +758,7 @@
             }
             updatePhoneUI();
             renderProperties();
-            alert('تم تحديث رقم الهاتف والواتساب بنجاح!');
+            alert('تم تحديث رقم الهاتف بنجاح!');
         }
 
         function fileToBase64(file) {
@@ -377,20 +782,16 @@
             try {
                 if (files.length > 0) {
                     for (let i = 0; i < files.length; i++) {
-                        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري رفع الصورة (${i + 1} من ${files.length})...`;
-                        
+                        submitBtn.innerHTML = `جاري رفع الصورة (${i + 1} من ${files.length})...`;
                         if (!IMGBB_API_KEY.includes("YOUR_IMGBB")) {
                             const formData = new FormData();
                             formData.append('image', files[i]);
-
                             const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                                 method: 'POST',
                                 body: formData
                             });
                             const imgData = await imgRes.json();
-                            if (imgData.success) {
-                                uploadedImages.push(imgData.data.url);
-                            }
+                            if (imgData.success) uploadedImages.push(imgData.data.url);
                         } else {
                             const base64Img = await fileToBase64(files[i]);
                             uploadedImages.push(base64Img);
@@ -402,8 +803,7 @@
                     uploadedImages.push('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80');
                 }
 
-                submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري حفظ الإعلان...`;
-
+                submitBtn.innerHTML = `جاري الحفظ...`;
                 const newProp = {
                     firebaseKey: "local_" + Date.now(),
                     id: Date.now(),
@@ -432,13 +832,11 @@
                 document.getElementById('addPropertyForm').reset();
                 toggleAdminModal();
                 alert('تم نشر العقار بنجاح!');
-
             } catch (err) {
-                console.error(err);
                 alert('حدث خطأ أثناء الرفع.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار على الموقع';
+                submitBtn.innerHTML = 'نشر العقار';
             }
         }
 
@@ -446,125 +844,94 @@
             if(event) event.stopPropagation();
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
-
-            const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+            const imgList = prop.images || [prop.image];
             if (imgList.length <= 1) return;
 
-            if (currentSlideIndex[propKey] === undefined) {
-                currentSlideIndex[propKey] = 0;
-            }
-
+            if (currentSlideIndex[propKey] === undefined) currentSlideIndex[propKey] = 0;
             currentSlideIndex[propKey] = (currentSlideIndex[propKey] + direction + imgList.length) % imgList.length;
 
-            const imgElement = document.getElementById(`img-${propKey}`);
-            const counterElement = document.getElementById(`counter-${propKey}`);
-            
-            if (imgElement) imgElement.src = imgList[currentSlideIndex[propKey]];
-            if (counterElement) counterElement.innerText = `${currentSlideIndex[propKey] + 1} / ${imgList.length}`;
+            document.getElementById(`img-${propKey}`).src = imgList[currentSlideIndex[propKey]];
+            document.getElementById(`counter-${propKey}`).innerText = `${currentSlideIndex[propKey] + 1} / ${imgList.length}`;
         }
 
-        // عرض تفاصيل العقار الكاملة في النافذة المنبثقة (Modal)
         function openPropertyDetails(propKey) {
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
 
+            // إضافة حالة في تاريخ المتصفح عشان لو داس زر الرجوع في الموبايل يقفل المودال وميخرجش من الموقع
+            history.pushState({ modalOpen: true }, "");
+
             modalSlideIndex = 0;
-            const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+            const imgList = prop.images || [prop.image];
             const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
-            const whatsappMsg = encodeURIComponent(`مرحباً مستشارك العقاري، أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
+            const whatsappMsg = encodeURIComponent(`أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
             const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
 
-            const contentDiv = document.getElementById('modalDetailsContent');
-            contentDiv.innerHTML = `
+            document.getElementById('modalDetailsContent').innerHTML = `
                 <div class="relative h-72 md:h-96 bg-gray-900 rounded-xl overflow-hidden mb-6">
                     <img id="modalMainImg" src="${imgList[0]}" class="w-full h-full object-cover">
-                    <span class="absolute top-4 right-4 ${badgeColor} text-white font-bold px-4 py-1.5 rounded-full shadow-lg">
+                    <span class="absolute top-4 right-4 ${badgeColor} text-white font-bold px-4 py-1.5 rounded-full shadow">
                         ${prop.status} • ${prop.type}
                     </span>
-                    <span class="absolute bottom-4 right-4 bg-slate-900/80 backdrop-blur-sm text-amber-400 font-bold px-3.5 py-1.5 rounded-lg">
+                    <span class="absolute bottom-4 right-4 bg-slate-900/80 text-amber-400 font-bold px-3.5 py-1.5 rounded-lg">
                         <i class="fa-solid fa-location-dot ml-1"></i>${prop.city}
                     </span>
                     ${imgList.length > 1 ? `
-                        <button onclick="changeModalSlide(-1, '${propKey}')" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-lg">
+                        <button onclick="changeModalSlide(-1, '${propKey}')" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow">
                             <i class="fa-solid fa-chevron-right"></i>
                         </button>
-                        <button onclick="changeModalSlide(1, '${propKey}')" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-lg">
+                        <button onclick="changeModalSlide(1, '${propKey}')" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow">
                             <i class="fa-solid fa-chevron-left"></i>
                         </button>
-                        <span id="modalCounter" class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full font-bold text-sm">
-                            1 / ${imgList.length}
-                        </span>
+                        <span id="modalCounter" class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full font-bold text-sm">1 / ${imgList.length}</span>
                     ` : ''}
                 </div>
-
                 <div class="space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b pb-4">
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 leading-snug">${prop.title}</h2>
+                        <h2 class="text-2xl font-extrabold text-slate-900">${prop.title}</h2>
                         <span class="text-amber-600 font-extrabold text-2xl">${prop.price}</span>
                     </div>
-
                     <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
-                                <i class="fa-solid fa-ruler-combined"></i>
-                            </div>
-                            <div>
-                                <span class="block text-xs text-gray-500">المساحة</span>
-                                <span class="font-bold text-slate-800">${prop.area} متر مربع</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
-                                <i class="fa-solid fa-city"></i>
-                            </div>
-                            <div>
-                                <span class="block text-xs text-gray-500">المدينة / الموقع</span>
-                                <span class="font-bold text-slate-800">${prop.city}</span>
-                            </div>
-                        </div>
+                        <div><span class="text-xs text-gray-500 block">المساحة</span><span class="font-bold">${prop.area} م²</span></div>
+                        <div><span class="text-xs text-gray-500 block">المدينة</span><span class="font-bold">${prop.city}</span></div>
                     </div>
-
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-lg mb-2">التفاصيل الكاملة والمميزات:</h4>
-                        <p class="text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-xl border">${prop.desc}</p>
-                    </div>
-
+                    <div><h4 class="font-bold mb-2">التفاصيل الكاملة:</h4><p class="text-gray-700 bg-gray-50 p-4 rounded-xl border whitespace-pre-line leading-relaxed">${prop.desc}</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4 border-t">
-                        <a href="https://wa.me/${waPhone}?text=${whatsappMsg}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-3 shadow transition">
-                            <i class="fa-brands fa-whatsapp text-2xl"></i>
-                            <span>تواصل واتساب مع المستشار</span>
+                        <a href="https://wa.me/${waPhone}?text=${whatsappMsg}" target="_blank" class="bg-emerald-600 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> تواصل واتساب
                         </a>
-                        <a href="tel:${consultantPhone}" class="bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-3 shadow transition">
-                            <i class="fa-solid fa-phone"></i>
-                            <span>اتصال هاتفي مباشر</span>
+                        <a href="tel:${consultantPhone}" class="bg-slate-900 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow">
+                            <i class="fa-solid fa-phone"></i> اتصال مباشر
                         </a>
                     </div>
                 </div>
             `;
-
             document.getElementById('propertyDetailsModal').classList.remove('hidden');
         }
 
         function closeDetailsModal() {
-            document.getElementById('propertyDetailsModal').classList.add('hidden');
+            const detailsModal = document.getElementById('propertyDetailsModal');
+            if (!detailsModal.classList.contains('hidden')) {
+                detailsModal.classList.add('hidden');
+                if (history.state && history.state.modalOpen) {
+                    history.back();
+                }
+            }
         }
 
         function changeModalSlide(direction, propKey) {
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
             const imgList = prop.images || [prop.image];
-
             modalSlideIndex = (modalSlideIndex + direction + imgList.length) % imgList.length;
             document.getElementById('modalMainImg').src = imgList[modalSlideIndex];
             document.getElementById('modalCounter').innerText = `${modalSlideIndex + 1} / ${imgList.length}`;
         }
 
         async function deleteProperty(firebaseKey) {
-            if (confirm('هل أنت متأكد من حذف هذا العقار؟')) {
+            if (confirm('حذف هذا العقار؟')) {
                 if (isOnlineConfigured) {
-                    await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, {
-                        method: 'DELETE'
-                    });
+                    await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, { method: 'DELETE' });
                     await loadData();
                 } else {
                     properties = properties.filter(p => p.firebaseKey !== firebaseKey);
@@ -590,11 +957,7 @@
             grid.innerHTML = '';
 
             if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm">
-                        <i class="fa-regular fa-folder-open text-5xl text-gray-300 mb-3"></i>
-                        <p class="text-gray-500 font-semibold">لا توجد عروض مطابقة حالياً.</p>
-                    </div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm"><p class="text-gray-500 font-semibold">لا توجد عروض مطابقة حالياً.</p></div>`;
                 return;
             }
 
@@ -604,49 +967,33 @@
                 currentSlideIndex[prop.firebaseKey] = 0;
 
                 const sliderControlsHTML = imgList.length > 1 ? `
-                    <button onclick="changeSlide('${prop.firebaseKey}', -1, event)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10">
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                    </button>
-                    <button onclick="changeSlide('${prop.firebaseKey}', 1, event)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10">
-                        <i class="fa-solid fa-chevron-left text-xs"></i>
-                    </button>
-                    <span id="counter-${prop.firebaseKey}" class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2.5 py-0.5 rounded-full font-semibold z-10">
-                        1 / ${imgList.length}
-                    </span>
+                    <button onclick="changeSlide('${prop.firebaseKey}', -1, event)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center z-10"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    <button onclick="changeSlide('${prop.firebaseKey}', 1, event)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center z-10"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <span id="counter-${prop.firebaseKey}" class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2.5 py-0.5 rounded-full z-10">1 / ${imgList.length}</span>
                 ` : '';
 
                 const deleteBtnHTML = isAdminLoggedIn ? `
-                    <button onclick="event.stopPropagation(); deleteProperty('${prop.firebaseKey}')" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow hover:bg-red-700 flex items-center justify-center z-20" title="حذف الإعلان">
-                        <i class="fa-solid fa-trash text-sm"></i>
-                    </button>
+                    <button onclick="event.stopPropagation(); deleteProperty('${prop.firebaseKey}')" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow flex items-center justify-center z-20"><i class="fa-solid fa-trash text-sm"></i></button>
                 ` : '';
 
                 grid.innerHTML += `
-                    <div onclick="openPropertyDetails('${prop.firebaseKey}')" class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col cursor-pointer group">
+                    <div onclick="openPropertyDetails('${prop.firebaseKey}')" class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition border border-gray-100 flex flex-col cursor-pointer group">
                         <div class="relative h-60 bg-gray-200 select-none">
-                            <img id="img-${prop.firebaseKey}" src="${imgList[0]}" alt="${prop.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            
+                            <img id="img-${prop.firebaseKey}" src="${imgList[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             ${sliderControlsHTML}
-
-                            <span class="absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow z-10">
-                                ${prop.status} • ${prop.type}
-                            </span>
-                            <span class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-sm text-amber-400 text-xs font-bold px-3 py-1 rounded-lg z-10">
-                                <i class="fa-solid fa-location-dot ml-1"></i>${prop.city}
-                            </span>
+                            <span class="absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-3 py-1.5 rounded-full z-10">${prop.status} • ${prop.type}</span>
+                            <span class="absolute bottom-3 right-3 bg-slate-900/80 text-amber-400 text-xs font-bold px-3 py-1 rounded-lg z-10"><i class="fa-solid fa-location-dot ml-1"></i>${prop.city}</span>
                             ${deleteBtnHTML}
                         </div>
-                        
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
-                                <h4 class="font-bold text-lg text-slate-900 leading-snug mb-2 group-hover:text-amber-600 transition">${prop.title}</h4>
+                                <h4 class="font-bold text-lg text-slate-900 mb-2 group-hover:text-amber-600 transition">${prop.title}</h4>
                                 <p class="text-amber-600 font-extrabold text-xl mb-3">${prop.price}</p>
-                                <p class="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">${prop.desc}</p>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">${prop.desc}</p>
                             </div>
-
                             <div class="border-t pt-3 flex items-center justify-between">
-                                <span class="text-xs text-gray-500"><i class="fa-solid fa-ruler-combined text-amber-500 ml-1"></i><b>${prop.area} م²</b></span>
-                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition">عرض التفاصيل الكاملة ←</span>
+                                <span class="text-xs text-gray-500">مساحة: <b>${prop.area} م²</b></span>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition">عرض التفاصيل ←</span>
                             </div>
                         </div>
                     </div>
@@ -661,22 +1008,15 @@
             renderProperties();
         }
 
-        function toggleAdminModal() {
-            document.getElementById('adminModal').classList.toggle('hidden');
-        }
-
+        function toggleAdminModal() { document.getElementById('adminModal').classList.toggle('hidden'); }
         function loginAdmin() {
-            const pass = document.getElementById('adminPasswordInput').value;
-            if (pass === ADMIN_PASS) {
+            if (document.getElementById('adminPasswordInput').value === ADMIN_PASS) {
                 isAdminLoggedIn = true;
                 document.getElementById('adminLoginSection').classList.add('hidden');
                 document.getElementById('adminDashboardSection').classList.remove('hidden');
                 renderProperties();
-            } else {
-                alert('كلمة المرور غير صحيحة!');
-            }
+            } else alert('كلمة المرور غير صحيحة!');
         }
-
         function logoutAdmin() {
             isAdminLoggedIn = false;
             document.getElementById('adminPasswordInput').value = '';
@@ -685,8 +1025,6 @@
             toggleAdminModal();
             renderProperties();
         }
-
-        loadData();
     </script>
 </body>
 </html>
