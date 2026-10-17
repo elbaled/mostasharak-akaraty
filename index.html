@@ -248,12 +248,12 @@
         // =========================================================================
         // 1. إعدادات الربط المجاني (حط المفاتيح هنا لما تعملها، أو سيبها وهتشتغل محلياً)
         // =========================================================================
-        const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY"; // مفتاح موقع api.imgbb.com لرفع الصور
-        const FIREBASE_URL = "YOUR_FIREBASE_DB_URL"; // رابط Firebase Realtime Database بدون / في الآخر
-        const ADMIN_PASS = "1234"; // كلمة مرور لوحة الأدمن
+        const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; // مفتاح موقع api.imgbb.com لرفع الصور
+        const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; // رابط Firebase Realtime Database بدون / في الآخر
+        const ADMIN_PASS = "5555"; // كلمة مرور لوحة الأدمن
 
         // التحقق هل تم وضع روابط Firebase و ImgBB أم نعمل بالنظام المحلي التجريبي
-        const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
+        const isOnlineConfigured = !FIREBASE_URL.includes("https://mostasharak-akaraty-default-rtdb.firebaseio.com/") && FIREBASE_URL.startsWith("https://");
 
         // بيانات افتراضية بصور متعددة عشان الموقع يظهر مليان وشغال أول ما تفتحه
         const defaultProperties = [
