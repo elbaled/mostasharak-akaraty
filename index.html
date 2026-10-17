@@ -1,670 +1,489 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>مستشارك العقاري | بدر والمدن الجديدة</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Tahoma, sans-serif;
-    }
-
-    body {
-      background: #f5f7fa;
-      color: #172033;
-    }
-
-    /* الهيدر */
-    header {
-      background: linear-gradient(135deg, #071b35, #123b68);
-      color: white;
-      padding: 22px 18px 28px;
-      border-radius: 0 0 28px 28px;
-    }
-
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-icon {
-      width: 45px;
-      height: 45px;
-      border-radius: 14px;
-      background: #d6a84f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-    }
-
-    .logo h1 {
-      font-size: 20px;
-    }
-
-    .logo p {
-      font-size: 12px;
-      opacity: .8;
-      margin-top: 4px;
-    }
-
-    .notification {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 19px;
-    }
-
-    /* العنوان */
-    .welcome h2 {
-      font-size: 25px;
-      margin-bottom: 8px;
-    }
-
-    .welcome p {
-      font-size: 14px;
-      opacity: .85;
-      line-height: 1.7;
-    }
-
-    /* البحث */
-    .search-box {
-      margin-top: 20px;
-      background: white;
-      border-radius: 15px;
-      padding: 5px;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-box span {
-      padding: 0 10px;
-      color: #888;
-      font-size: 20px;
-    }
-
-    .search-box input {
-      border: none;
-      outline: none;
-      flex: 1;
-      padding: 13px 5px;
-      font-size: 14px;
-    }
-
-    .search-box button {
-      border: none;
-      background: #d6a84f;
-      color: white;
-      border-radius: 11px;
-      padding: 11px 16px;
-      cursor: pointer;
-    }
-
-    /* المحتوى */
-    main {
-      padding: 22px 16px 90px;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .section-title h3 {
-      font-size: 18px;
-    }
-
-    .section-title a {
-      color: #b48732;
-      font-size: 13px;
-      text-decoration: none;
-    }
-
-    /* المدن */
-    .cities {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
-
-    .city {
-      min-width: 105px;
-      padding: 12px;
-      text-align: center;
-      background: white;
-      border-radius: 14px;
-      border: 1px solid #eee;
-      cursor: pointer;
-    }
-
-    .city.active {
-      background: #123b68;
-      color: white;
-    }
-
-    .city span {
-      display: block;
-      font-size: 21px;
-      margin-bottom: 5px;
-    }
-
-    .city small {
-      font-size: 12px;
-    }
-
-    /* التصنيفات */
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 28px;
-    }
-
-    .category {
-      background: white;
-      border-radius: 15px;
-      padding: 14px 5px;
-      text-align: center;
-      border: 1px solid #eee;
-      cursor: pointer;
-    }
-
-    .category .icon {
-      font-size: 25px;
-      margin-bottom: 7px;
-    }
-
-    .category p {
-      font-size: 11px;
-    }
-
-    /* العقارات */
-    .properties {
-      display: grid;
-      gap: 15px;
-    }
-
-    .property {
-      background: white;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 5px 18px rgba(0,0,0,.06);
-    }
-
-    .property-image {
-      height: 180px;
-      background:
-        linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.08)),
-        url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80")
-        center/cover;
-      position: relative;
-    }
-
-    .badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #d6a84f;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-    }
-
-    .favorite {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      width: 35px;
-      height: 35px;
-      border: none;
-      border-radius: 50%;
-      background: white;
-      cursor: pointer;
-      font-size: 17px;
-    }
-
-    .property-info {
-      padding: 15px;
-    }
-
-    .property-info h4 {
-      font-size: 17px;
-      margin-bottom: 7px;
-    }
-
-    .location {
-      color: #777;
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
-
-    .details {
-      display: flex;
-      justify-content: space-between;
-      color: #666;
-      font-size: 12px;
-      margin-bottom: 14px;
-    }
-
-    .price {
-      color: #b48732;
-      font-size: 19px;
-      font-weight: bold;
-    }
-
-    .view-btn {
-      width: 100%;
-      border: none;
-      background: #123b68;
-      color: white;
-      padding: 12px;
-      border-radius: 11px;
-      margin-top: 12px;
-      cursor: pointer;
-    }
-
-    /* الخريطة */
-    .map-card {
-      margin-top: 25px;
-      min-height: 150px;
-      border-radius: 20px;
-      padding: 20px;
-      background:
-        linear-gradient(rgba(7,27,53,.8), rgba(7,27,53,.8)),
-        url("https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80")
-        center/cover;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .map-card h3 {
-      margin-bottom: 8px;
-    }
-
-    .map-card p {
-      font-size: 13px;
-      opacity: .85;
-      margin-bottom: 15px;
-    }
-
-    .map-btn {
-      width: fit-content;
-      border: none;
-      background: #d6a84f;
-      color: white;
-      padding: 10px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    /* التواصل */
-    .contact {
-      margin-top: 20px;
-      background: #fff;
-      border-radius: 18px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .contact h3 {
-      margin-bottom: 8px;
-    }
-
-    .contact p {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 15px;
-    }
-
-    .contact button {
-      border: none;
-      background: #123b68;
-      color: white;
-      padding: 12px 25px;
-      border-radius: 12px;
-      cursor: pointer;
-    }
-
-    /* الشريط السفلي */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      height: 70px;
-      background: white;
-      box-shadow: 0 -4px 18px rgba(0,0,0,.08);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .nav-item {
-      text-align: center;
-      color: #888;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .nav-item span {
-      display: block;
-      font-size: 21px;
-      margin-bottom: 4px;
-    }
-
-    .nav-item.active {
-      color: #123b68;
-      font-weight: bold;
-    }
-
-    @media (min-width: 700px) {
-      main {
-        max-width: 900px;
-        margin: auto;
-      }
-
-      .properties {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .bottom-nav {
-        max-width: 900px;
-        margin: auto;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستشارك العقاري | بدر والشروق والمدن الجديدة</title>
+    <!-- Tailwind CSS للتصميم -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- خط Cairo من جوجل -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc;
+        }
+        .hero-bg {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.85)), 
+                        url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        }
+    </style>
 </head>
-
-<body>
-
-<header>
-
-  <div class="top">
-
-    <div class="logo">
-      <div class="logo-icon">🏠</div>
-
-      <div>
-        <h1>مستشارك العقاري</h1>
-        <p>بدر والمدن الجديدة</p>
-      </div>
-    </div>
-
-    <div class="notification">🔔</div>
-    <a href="admin-login.html" style="
-  display:inline-block;
-  margin-top:12px;
-  color:white;
-  font-size:12px;
-  text-decoration:none;
-">
-  🔐 دخول الإدارة
-    </a>
-
-  </div>
-
-  <div class="welcome">
-    <h2>ابحث عن عقارك بسهولة</h2>
-    <p>
-      عقارات مختارة بعناية في مدينة بدر والمدن الجديدة
-    </p>
-  </div>
-
-  <div class="search-box">
-    <span>🔎</span>
-    <input
-      type="text"
-      placeholder="ابحث عن شقة، أرض، محل..."
-    >
-    <button>بحث</button>
-  </div>
-
-</header>
-
-
-<main>
-
-  <!-- المدن -->
-
-  <div class="section-title">
-    <h3>المدن</h3>
-    <a href="#">عرض الكل</a>
-  </div>
-
-  <div class="cities">
-
-    <div class="city active">
-      <span>🏙️</span>
-      <small>مدينة بدر</small>
-    </div>
-
-    <div class="city">
-      <span>🏢</span>
-      <small>العاصمة الإدارية</small>
-    </div>
-
-    <div class="city">
-      <span>🏘️</span>
-      <small>الشروق</small>
-    </div>
-
-    <div class="city">
-      <span>🏙️</span>
-      <small>المدن الجديدة</small>
-    </div>
-
-  </div>
-
-
-  <!-- التصنيفات -->
-
-  <div class="section-title" style="margin-top:25px;">
-    <h3>نوع العقار</h3>
-  </div>
-
-  <div class="categories">
-
-    <div class="category">
-      <div class="icon">🏠</div>
-      <p>شقق للبيع</p>
-    </div>
-
-    <div class="category">
-      <div class="icon">🔑</div>
-      <p>شقق للإيجار</p>
-    </div>
-
-    <div class="category">
-      <div class="icon">🌳</div>
-      <p>أراضي</p>
-    </div>
-
-    <div class="category">
-      <div class="icon">🏪</div>
-      <p>تجاري</p>
-    </div>
-
-  </div>
-
-
-  <!-- العقارات المميزة -->
-
-  <div class="section-title">
-    <h3>عقارات مميزة</h3>
-    <a href="#">عرض الكل</a>
-  </div>
-
-  <div class="properties">
-    <!-- سيتم إضافة العقارات هنا من خلال Firebase بنفس التصميم -->
-  </div>
-
-
-  <!-- الخريطة -->
-
-  <div class="map-card">
-
-    <h3>📍 استكشف العقارات على الخريطة</h3>
-
-    <p>
-      اكتشف العقارات الموجودة بالقرب من الموقع الذي تبحث عنه.
-    </p>
-
-    <button class="map-btn">
-      فتح الخريطة
-    </button>
-
-  </div>
-
-
-  <!-- التواصل -->
-
-  <div class="contact">
-
-    <h3>تحتاج مساعدة في اختيار عقارك؟</h3>
-
-    <p>
-      تواصل مع مستشارك العقاري وسنساعدك في العثور على العقار المناسب.
-    </p>
-
-    <button>
-      📞 تواصل مع المستشار
-    </button>
-
-  </div>
-
-</main>
-
-
-<!-- الشريط السفلي -->
-
-<nav class="bottom-nav">
-
-  <div class="nav-item active">
-    <span>🏠</span>
-    الرئيسية
-  </div>
-
-  <div class="nav-item">
-    <span>🔎</span>
-    بحث
-  </div>
-
-  <div class="nav-item">
-    <span>📍</span>
-    الخريطة
-  </div>
-
-  <div class="nav-item">
-    <span>❤️</span>
-    المفضلة
-  </div>
-
-  <div class="nav-item">
-    <span>👤</span>
-    حسابي
-  </div>
-
-</nav>
-
-<!-- Firebase -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-database.js";
-
-  // Firebase Configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
-    authDomain: "mostasharak-akaraty.firebaseapp.com",
-    databaseURL: "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
-    projectId: "mostasharak-akaraty",
-    storageBucket: "mostasharak-akaraty.firebasestorage.app",
-    messagingSenderId: "287363939919",
-    appId: "1:287363939919:web:e53f13b518c6273043f43a",
-    measurementId: "G-QK6EW9G8CB"
-  };
-
-  // تشغيل Firebase
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-  const propertiesRef = ref(database, "properties");
-
-  onValue(propertiesRef, (snapshot) => {
-    const data = snapshot.val();
-    console.log("العقارات من Firebase:", data);
-
-    // بنستهدف قسم "العقارات المميزة" اللي موجود بالفعل في الـ HTML
-    const container = document.querySelector(".properties");
-
-    if (!data) {
-      container.innerHTML = "<p style='text-align:center; color:#777; width:100%;'>لا توجد عقارات مضافة حالياً.</p>";
-      return;
-    }
-
-    // تفريغ المحتوى الثابت (Hardcoded) عشان نحط البيانات الحقيقية
-    container.innerHTML = "";
-
-    // عرض كل العقارات
-    Object.entries(data).forEach(([id, property]) => {
-      
-      // هنا بنقوله لو العقار ليه صورة اعرضها، لو ملوش اعرض صورة افتراضية
-      const imageUrl = property.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
-      
-      // الكارت الجديد بنفس تصميمك الاحترافي
-      const card = document.createElement("div");
-      card.className = "property";
-
-      card.innerHTML = `
-        <div class="property-image" style="background: linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.08)), url('${imageUrl}') center/cover;">
-          <div class="badge">مميز</div>
-          <button class="favorite">♡</button>
+<body class="text-slate-800">
+
+    <!-- شريط التنقل (Navbar) -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <i class="fa-solid fa-building-wheat text-amber-500 text-3xl"></i>
+                <div>
+                    <h1 class="text-2xl font-bold text-white tracking-wide">مستشارك العقاري</h1>
+                    <p class="text-xs text-amber-400">بدر • الشروق • المدن الجديدة</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <a id="topPhoneBtn" href="tel:01000000000" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
+                    <i class="fa-solid fa-phone"></i>
+                    <span id="navPhoneText">01000000000</span>
+                </a>
+                <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <span>لوحة الأدمن</span>
+                </button>
+            </div>
         </div>
-        <div class="property-info">
-          <h4>${property.title || "عقار بدون اسم"}</h4>
-          <div class="location">
-            📍 ${property.city || "المدينة غير محددة"} ${property.location ? '- ' + property.location : ''}
-          </div>
-          <div class="details">
-            <span>📐 ${property.area || "-"} م²</span>
-            <span>🛏️ ${property.rooms || "-"} غرف</span>
-            <span>🚿 ${property.bathrooms || "-"} حمام</span>
-          </div>
-          <div class="price">
-            ${property.price ? Number(property.price).toLocaleString() : "-"} جنيه
-          </div>
-          <button class="view-btn" onclick="window.location.href='property.html?id=${id}'">
-            عرض تفاصيل العقار
-          </button>
+    </nav>
+
+    <!-- الواجهة الرئيسية (Hero Section) -->
+    <header class="hero-bg text-white py-20 px-4 text-center">
+        <div class="container mx-auto max-w-4xl">
+            <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">
+                دليلك الأول للعقارات في المدن الجديدة
+            </span>
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                ابحث عن عقارك المثالي في <span class="text-amber-500">بدر والشروق</span> والمدن الجديدة
+            </h2>
+            <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
+                شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري.
+            </p>
+
+            <!-- صندوق البحث والفلترة -->
+            <div class="bg-white p-4 rounded-xl shadow-2xl max-w-3xl mx-auto text-slate-800 grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                    <label class="block text-xs text-gray-500 text-right mb-1 font-semibold">المدينة</label>
+                    <select id="filterCity" onchange="renderProperties()" class="w-full bg-gray-100 border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:border-amber-500 font-semibold">
+                        <option value="all">كل المدن</option>
+                        <option value="مدينة بدر">مدينة بدر</option>
+                        <option value="مدينة الشروق">مدينة الشروق</option>
+                        <option value="العبور">مدينة العبور</option>
+                        <option value="العاصمة الإدارية">العاصمة الإدارية</option>
+                        <option value="التجمع الخامس">التجمع الخامس</option>
+                        <option value="مدن أخرى">مدن جديدة أخرى</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-500 text-right mb-1 font-semibold">نوع العقار</label>
+                    <select id="filterType" onchange="renderProperties()" class="w-full bg-gray-100 border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:border-amber-500 font-semibold">
+                        <option value="all">الكل (شقق، محلات، أراضي)</option>
+                        <option value="شقة">شقق سكنية</option>
+                        <option value="محل تجاري">محلات تجارية</option>
+                        <option value="أرض فاضية">أراضي فضاء</option>
+                        <option value="فيلا / دوبلكس">فيلات ودوبلكس</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-500 text-right mb-1 font-semibold">نوع العرض</label>
+                    <select id="filterStatus" onchange="renderProperties()" class="w-full bg-gray-100 border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:border-amber-500 font-semibold">
+                        <option value="all">إيجار وتمليك</option>
+                        <option value="إيجار">للإيجار</option>
+                        <option value="تمليك">للبيع / تمليك</option>
+                    </select>
+                </div>
+
+                <div class="flex items-end">
+                    <button onclick="resetFilters()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>عرض الكل</span>
+                    </button>
+                </div>
+            </div>
         </div>
-      `;
+    </header>
 
-      container.appendChild(card);
-    });
-  });
-</script>
+    <!-- قسم عرض العقارات -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="flex justify-between items-center mb-8 border-b pb-4">
+            <div>
+                <h3 class="text-2xl font-bold text-slate-900">أحدث العروض العقارية</h3>
+                <p class="text-gray-500 text-sm">عروض محدثة باستمرار للشقق والأراضي والمحلات</p>
+            </div>
+            <span id="propertiesCount" class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-sm">0 عقار متاح</span>
+        </div>
 
+        <!-- شبكة العقارات -->
+        <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- العقارات هتظهر هنا بالجافاسكريبت -->
+        </div>
+    </main>
+
+    <!-- نافذة لوحة تحكم الأدمن (Modal) -->
+    <div id="adminModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
+            <button onclick="toggleAdminModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- شاشة تسجيل الدخول للأدمن -->
+            <div id="adminLoginSection">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">دخول إدارة الموقع</h3>
+                    <p class="text-gray-500 text-sm">خاص بالمستشار العقاري لإضافة وحذف العروض</p>
+                </div>
+                <div class="max-w-sm mx-auto space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">كلمة المرور</label>
+                        <input type="password" id="adminPasswordInput" placeholder="أدخل كلمة المرور (الافتراضية: 1234)" class="w-full border rounded-lg p-3 focus:outline-amber-500">
+                    </div>
+                    <button onclick="loginAdmin()" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow">دخول للوحة التحكم</button>
+                </div>
+            </div>
+
+            <!-- شاشة إضافة العقارات (تظهر بعد تسجيل الدخول) -->
+            <div id="adminDashboardSection" class="hidden">
+                <div class="flex justify-between items-center border-b pb-3 mb-6">
+                    <h3 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-plus-circle text-amber-600 ml-2"></i>إضافة عقار أو عرض جديد</h3>
+                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200">تسجيل خروج</button>
+                </div>
+
+                <!-- إعدادات رقم التليفون الأساسي -->
+                <div class="bg-slate-100 p-4 rounded-xl mb-6 border border-slate-200">
+                    <label class="block text-sm font-bold mb-2 text-slate-700">رقم الهاتف / واتساب المستشار العقاري (يظهر للعملاء):</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="consultantPhoneInput" class="flex-1 border rounded-lg p-2 text-left" dir="ltr" placeholder="010xxxxxxxx">
+                        <button onclick="savePhone()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700">حفظ الرقم</button>
+                    </div>
+                </div>
+
+                <form id="addPropertyForm" onsubmit="addProperty(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">عنوان الإعلان *</label>
+                            <input type="text" id="propTitle" required placeholder="مثال: شقة لقطة للإيجار بمدينة بدر الحي الأول" class="w-full border rounded-lg p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">السعر (جنيه) *</label>
+                            <input type="text" id="propPrice" required placeholder="مثال: 4,500 ج/شهرياً أو 1,200,000 كاش" class="w-full border rounded-lg p-2.5">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">المدينة *</label>
+                            <select id="propCity" class="w-full border rounded-lg p-2.5 bg-white">
+                                <option value="مدينة بدر">مدينة بدر</option>
+                                <option value="مدينة الشروق">مدينة الشروق</option>
+                                <option value="العبور">مدينة العبور</option>
+                                <option value="العاصمة الإدارية">العاصمة الإدارية</option>
+                                <option value="التجمع الخامس">التجمع الخامس</option>
+                                <option value="مدن أخرى">مدن جديدة أخرى</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">نوع العقار *</label>
+                            <select id="propType" class="w-full border rounded-lg p-2.5 bg-white">
+                                <option value="شقة">شقة سكنية</option>
+                                <option value="محل تجاري">محل تجاري</option>
+                                <option value="أرض فاضية">أرض فاضية</option>
+                                <option value="فيلا / دوبلكس">فيلا / دوبلكس</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">نوع العرض *</label>
+                            <select id="propStatus" class="w-full border rounded-lg p-2.5 bg-white">
+                                <option value="إيجار">إيجار</option>
+                                <option value="تمليك">بيع / تمليك</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">المساحة (بالمتر) *</label>
+                            <input type="number" id="propArea" required placeholder="مثال: 135" class="w-full border rounded-lg p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">صورة العقار (رفع من جهازك)</label>
+                            <input type="file" id="propImageFile" accept="image/*" class="w-full border rounded-lg p-2 text-sm bg-gray-50">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold mb-1">تفاصيل ومميزات العقار *</label>
+                        <textarea id="propDesc" rows="3" required placeholder="اكتب التفاصيل: الدور الكام، عدد الغرف، التشطيب، قريب من إيه..." class="w-full border rounded-lg p-2.5"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow-lg hover:opacity-95 transition">
+                        <i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار على الموقع
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- الفوتر (Footer) -->
+    <footer class="bg-slate-900 text-gray-400 py-8 text-center border-t border-slate-800 mt-16">
+        <div class="container mx-auto px-4">
+            <h4 class="text-white font-bold text-lg mb-2">مستشارك العقاري</h4>
+            <p class="text-sm mb-4">متخصصون في التسويق والاستشارات العقارية بمدينة بدر والشروق والمدن الجديدة</p>
+            <p class="text-xs text-gray-500">جميع الحقوق محفوظة © 2026</p>
+        </div>
+    </footer>
+
+    <!-- الأكواد البرمجية (JavaScript) -->
+    <script>
+        // الرقم الافتراضي للمستشار العقاري
+        let consultantPhone = localStorage.getItem('consultantPhone') || '01012345678';
+        let isAdminLoggedIn = false;
+
+        // بيانات مبدئية عشان الموقع ميظهرش فاضي أول ما يفتح
+        const defaultProperties = [
+            {
+                id: 1,
+                title: "شقة مميزة للإيجار بمدينة بدر - الحي المتميز",
+                price: "4,500 ج / شهرياً",
+                city: "مدينة بدر",
+                type: "شقة",
+                status: "إيجار",
+                area: 140,
+                desc: "3 غرف نوم + ريسبشن كبير + 2 حمام. تشطيب سوبر لوكس، أول سكن، قريبة من الخدمات والجامعة الروسية.",
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 2,
+                title: "شقة تمليك لقطة في الشروق - المنطقة الثامنة",
+                price: "2,100,000 جنيه",
+                city: "مدينة الشروق",
+                type: "شقة",
+                status: "تمليك",
+                area: 165,
+                desc: "شقة واجهة بحري صريح، الدور الثاني، أسانسير شغال، حصة في الأرض والجراج، استلام فوري.",
+                image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 3,
+                title: "قطعة أرض فضاء للبيع بمدينة بدر - بيت الوطن",
+                price: "3,400,000 جنيه",
+                city: "مدينة بدر",
+                type: "أرض فاضية",
+                status: "تمليك",
+                area: 450,
+                desc: "أرض ناصية على شارع رئيسي، خالصة الأقساط، رخصة مباني بدروم وأرضي و 3 أدوار متكررة.",
+                image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 4,
+                title: "محل تجاري للإيجار بمول حيوي في الشروق",
+                price: "12,000 ج / شهرياً",
+                city: "مدينة الشروق",
+                type: "محل تجاري",
+                status: "إيجار",
+                area: 45,
+                desc: "محل دور أرضي واجهة زجاجية كبيرة، يصلح لجميع الأنشطة التجارية أو كافيه أو مطعم، عداد كهرباء تجاري ومياه.",
+                image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+            }
+        ];
+
+        // تحميل العقارات المحفوظة أو الافتراضية
+        let properties = JSON.parse(localStorage.getItem('realEstateData')) || defaultProperties;
+
+        // تحديث رقم التليفون في الواجهة
+        function updatePhoneUI() {
+            document.getElementById('navPhoneText').innerText = consultantPhone;
+            document.getElementById('topPhoneBtn').href = `tel:${consultantPhone}`;
+            document.getElementById('consultantPhoneInput').value = consultantPhone;
+        }
+
+        function savePhone() {
+            const newPhone = document.getElementById('consultantPhoneInput').value.trim();
+            if(newPhone) {
+                consultantPhone = newPhone;
+                localStorage.setItem('consultantPhone', consultantPhone);
+                updatePhoneUI();
+                renderProperties();
+                alert('تم تحديث رقم الهاتف والواتساب بنجاح!');
+            }
+        }
+
+        // عرض العقارات في الصفحة
+        function renderProperties() {
+            const grid = document.getElementById('propertiesGrid');
+            const cityFilter = document.getElementById('filterCity').value;
+            const typeFilter = document.getElementById('filterType').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+
+            const filtered = properties.filter(p => {
+                return (cityFilter === 'all' || p.city === cityFilter) &&
+                       (typeFilter === 'all' || p.type === typeFilter) &&
+                       (statusFilter === 'all' || p.status === statusFilter);
+            });
+
+            document.getElementById('propertiesCount').innerText = `${filtered.length} عرض متاح`;
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm">
+                        <i class="fa-regular fa-folder-open text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500 font-semibold">لا توجد عروض مطابقة للبحث حالياً.</p>
+                    </div>`;
+                return;
+            }
+
+            filtered.forEach(prop => {
+                const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
+                const whatsappMsg = encodeURIComponent(`مرحباً مستشارك العقاري، أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
+                // تحويل الرقم للصيغة الدولية للواتساب المصري
+                const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
+
+                const deleteBtnHTML = isAdminLoggedIn ? `
+                    <button onclick="deleteProperty(${prop.id})" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow hover:bg-red-700 flex items-center justify-center" title="حذف الإعلان">
+                        <i class="fa-solid fa-trash text-sm"></i>
+                    </button>
+                ` : '';
+
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col">
+                        <div class="relative h-56 bg-gray-200">
+                            <img src="${prop.image}" alt="${prop.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow">
+                                ${prop.status} • ${prop.type}
+                            </span>
+                            <span class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-sm text-amber-400 text-xs font-bold px-3 py-1 rounded-lg">
+                                <i class="fa-solid fa-location-dot ml-1"></i>${prop.city}
+                            </span>
+                            ${deleteBtnHTML}
+                        </div>
+                        
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-bold text-lg text-slate-900 leading-snug">${prop.title}</h4>
+                                </div>
+                                <p class="text-amber-600 font-extrabold text-xl mb-3">${prop.price}</p>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">${prop.desc}</p>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center justify-between text-xs text-gray-500 border-t pt-3 mb-4">
+                                    <span><i class="fa-solid fa-ruler-combined text-amber-500 ml-1"></i>المساحة: <b>${prop.area} م²</b></span>
+                                    <span><i class="fa-solid fa-tag text-amber-500 ml-1"></i>${prop.type}</span>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <a href="https://wa.me/${waPhone}?text=${whatsappMsg}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition">
+                                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                                        <span>واتساب</span>
+                                    </a>
+                                    <a href="tel:${consultantPhone}" class="bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition">
+                                        <i class="fa-solid fa-phone"></i>
+                                        <span>اتصال</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('filterCity').value = 'all';
+            document.getElementById('filterType').value = 'all';
+            document.getElementById('filterStatus').value = 'all';
+            renderProperties();
+        }
+
+        // التحكم في نافذة الأدمن
+        function toggleAdminModal() {
+            const modal = document.getElementById('adminModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function loginAdmin() {
+            const pass = document.getElementById('adminPasswordInput').value;
+            // كلمة السر الافتراضية 1234 (تقدر تغيرها من الكود)
+            if (pass === '1234') {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLoginSection').classList.add('hidden');
+                document.getElementById('adminDashboardSection').classList.remove('hidden');
+                renderProperties(); // لإظهار زرار الحذف على الكروت
+            } else {
+                alert('كلمة المرور غير صحيحة!');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminLoginSection').classList.remove('hidden');
+            document.getElementById('adminDashboardSection').classList.add('hidden');
+            toggleAdminModal();
+            renderProperties();
+        }
+
+        // إضافة عقار جديد مع تحويل الصورة
+        function addProperty(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('propImageFile');
+            const file = fileInput.files[0];
+
+            const saveNewItem = (imgUrl) => {
+                const newProp = {
+                    id: Date.now(),
+                    title: document.getElementById('propTitle').value,
+                    price: document.getElementById('propPrice').value,
+                    city: document.getElementById('propCity').value,
+                    type: document.getElementById('propType').value,
+                    status: document.getElementById('propStatus').value,
+                    area: document.getElementById('propArea').value,
+                    desc: document.getElementById('propDesc').value,
+                    image: imgUrl || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80'
+                };
+
+                properties.unshift(newProp);
+                localStorage.setItem('realEstateData', JSON.stringify(properties));
+                document.getElementById('addPropertyForm').reset();
+                renderProperties();
+                toggleAdminModal();
+                alert('تم نشر العقار بنجاح!');
+            };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveNewItem(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveNewItem(null);
+            }
+        }
+
+        function deleteProperty(id) {
+            if(confirm('هل أنت متأكد من حذف هذا العقار؟')) {
+                properties = properties.filter(p => p.id !== id);
+                localStorage.setItem('realEstateData', JSON.stringify(properties));
+                renderProperties();
+            }
+        }
+
+        // تشغيل الموقع عند الفتح
+        updatePhoneUI();
+        renderProperties();
+    </script>
 </body>
 </html>
