@@ -41,9 +41,9 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <a id="topPhoneBtn" href="tel:01000000000" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
+                <a id="topPhoneBtn" href="tel:01012345678" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
                     <i class="fa-solid fa-phone"></i>
-                    <span id="navPhoneText">01000000000</span>
+                    <span id="navPhoneText">01012345678</span>
                 </a>
                 <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-md transition">
                     <i class="fa-solid fa-user-tie"></i>
@@ -123,7 +123,7 @@
 
         <!-- شبكة العقارات -->
         <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- العقارات هتظهر هنا بالجافاسكريبت -->
+            <!-- العقارات هتظهر هنا أوتوماتيك بالجافاسكريبت -->
         </div>
     </main>
 
@@ -156,15 +156,15 @@
             <div id="adminDashboardSection" class="hidden">
                 <div class="flex justify-between items-center border-b pb-3 mb-6">
                     <h3 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-plus-circle text-amber-600 ml-2"></i>إضافة عقار أو عرض جديد</h3>
-                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200">تسجيل خروج</button>
+                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200 font-bold">تسجيل خروج</button>
                 </div>
 
                 <!-- إعدادات رقم التليفون الأساسي -->
                 <div class="bg-slate-100 p-4 rounded-xl mb-6 border border-slate-200">
                     <label class="block text-sm font-bold mb-2 text-slate-700">رقم الهاتف / واتساب المستشار العقاري (يظهر للعملاء):</label>
                     <div class="flex gap-2">
-                        <input type="text" id="consultantPhoneInput" class="flex-1 border rounded-lg p-2 text-left" dir="ltr" placeholder="010xxxxxxxx">
-                        <button onclick="savePhone()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700">حفظ الرقم</button>
+                        <input type="text" id="consultantPhoneInput" class="flex-1 border rounded-lg p-2 text-left bg-white" dir="ltr" placeholder="010xxxxxxxx">
+                        <button type="button" onclick="savePhone()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700">حفظ الرقم</button>
                     </div>
                 </div>
 
@@ -216,8 +216,8 @@
                             <input type="number" id="propArea" required placeholder="مثال: 135" class="w-full border rounded-lg p-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-1">صورة العقار (رفع من جهازك)</label>
-                            <input type="file" id="propImageFile" accept="image/*" class="w-full border rounded-lg p-2 text-sm bg-gray-50">
+                            <label class="block text-sm font-bold mb-1">صور العقار (يمكنك تحديد أكثر من صورة) *</label>
+                            <input type="file" id="propImageFile" accept="image/*" multiple class="w-full border rounded-lg p-2 text-sm bg-gray-50">
                         </div>
                     </div>
 
@@ -243,15 +243,22 @@
         </div>
     </footer>
 
-    <!-- الأكواد البرمجية (JavaScript) -->
+    <!-- الأكواد البرمجية الكاملة (JavaScript) -->
     <script>
-        // الرقم الافتراضي للمستشار العقاري
-        let consultantPhone = localStorage.getItem('consultantPhone') || '01012345678';
-        let isAdminLoggedIn = false;
+        // =========================================================================
+        // 1. إعدادات الربط المجاني (حط المفاتيح هنا لما تعملها، أو سيبها وهتشتغل محلياً)
+        // =========================================================================
+        const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY"; // مفتاح موقع api.imgbb.com لرفع الصور
+        const FIREBASE_URL = "YOUR_FIREBASE_DB_URL"; // رابط Firebase Realtime Database بدون / في الآخر
+        const ADMIN_PASS = "1234"; // كلمة مرور لوحة الأدمن
 
-        // بيانات مبدئية عشان الموقع ميظهرش فاضي أول ما يفتح
+        // التحقق هل تم وضع روابط Firebase و ImgBB أم نعمل بالنظام المحلي التجريبي
+        const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
+
+        // بيانات افتراضية بصور متعددة عشان الموقع يظهر مليان وشغال أول ما تفتحه
         const defaultProperties = [
             {
+                firebaseKey: "prop_1",
                 id: 1,
                 title: "شقة مميزة للإيجار بمدينة بدر - الحي المتميز",
                 price: "4,500 ج / شهرياً",
@@ -260,9 +267,14 @@
                 status: "إيجار",
                 area: 140,
                 desc: "3 غرف نوم + ريسبشن كبير + 2 حمام. تشطيب سوبر لوكس، أول سكن، قريبة من الخدمات والجامعة الروسية.",
-                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
+                images: [
+                    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80"
+                ]
             },
             {
+                firebaseKey: "prop_2",
                 id: 2,
                 title: "شقة تمليك لقطة في الشروق - المنطقة الثامنة",
                 price: "2,100,000 جنيه",
@@ -271,9 +283,13 @@
                 status: "تمليك",
                 area: 165,
                 desc: "شقة واجهة بحري صريح، الدور الثاني، أسانسير شغال، حصة في الأرض والجراج، استلام فوري.",
-                image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
+                images: [
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
+                ]
             },
             {
+                firebaseKey: "prop_3",
                 id: 3,
                 title: "قطعة أرض فضاء للبيع بمدينة بدر - بيت الوطن",
                 price: "3,400,000 جنيه",
@@ -282,9 +298,12 @@
                 status: "تمليك",
                 area: 450,
                 desc: "أرض ناصية على شارع رئيسي، خالصة الأقساط، رخصة مباني بدروم وأرضي و 3 أدوار متكررة.",
-                image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"
+                images: [
+                    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"
+                ]
             },
             {
+                firebaseKey: "prop_4",
                 id: 4,
                 title: "محل تجاري للإيجار بمول حيوي في الشروق",
                 price: "12,000 ج / شهرياً",
@@ -293,32 +312,210 @@
                 status: "إيجار",
                 area: 45,
                 desc: "محل دور أرضي واجهة زجاجية كبيرة، يصلح لجميع الأنشطة التجارية أو كافيه أو مطعم، عداد كهرباء تجاري ومياه.",
-                image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                images: [
+                    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                ]
             }
         ];
 
-        // تحميل العقارات المحفوظة أو الافتراضية
-        let properties = JSON.parse(localStorage.getItem('realEstateData')) || defaultProperties;
+        let properties = [];
+        let consultantPhone = localStorage.getItem('consultantPhone') || "01012345678";
+        let isAdminLoggedIn = false;
+        let currentSlideIndex = {};
 
-        // تحديث رقم التليفون في الواجهة
+        // ==========================================
+        // 2. جلب البيانات (أونلاين أو محلياً)
+        // ==========================================
+        async function loadData() {
+            if (isOnlineConfigured) {
+                try {
+                    const phoneRes = await fetch(`${FIREBASE_URL}/settings/phone.json`);
+                    const savedPhone = await phoneRes.json();
+                    if (savedPhone) consultantPhone = savedPhone;
+                    updatePhoneUI();
+
+                    const propRes = await fetch(`${FIREBASE_URL}/properties.json`);
+                    const data = await propRes.json();
+                    
+                    if (data) {
+                        properties = Object.keys(data).map(key => ({
+                            firebaseKey: key,
+                            ...data[key]
+                        })).reverse();
+                    } else {
+                        properties = [];
+                    }
+                    renderProperties();
+                } catch (error) {
+                    console.error("خطأ في الاتصال بقاعدة البيانات:", error);
+                }
+            } else {
+                // التشغيل المحلي التلقائي لو لسه محطتش روابط Firebase
+                properties = JSON.parse(localStorage.getItem('realEstateData')) || defaultProperties;
+                updatePhoneUI();
+                renderProperties();
+            }
+        }
+
         function updatePhoneUI() {
             document.getElementById('navPhoneText').innerText = consultantPhone;
             document.getElementById('topPhoneBtn').href = `tel:${consultantPhone}`;
             document.getElementById('consultantPhoneInput').value = consultantPhone;
         }
 
-        function savePhone() {
+        async function savePhone() {
             const newPhone = document.getElementById('consultantPhoneInput').value.trim();
-            if(newPhone) {
-                consultantPhone = newPhone;
-                localStorage.setItem('consultantPhone', consultantPhone);
-                updatePhoneUI();
-                renderProperties();
-                alert('تم تحديث رقم الهاتف والواتساب بنجاح!');
+            if (!newPhone) return;
+
+            consultantPhone = newPhone;
+            localStorage.setItem('consultantPhone', consultantPhone);
+
+            if (isOnlineConfigured) {
+                await fetch(`${FIREBASE_URL}/settings/phone.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(newPhone)
+                });
+            }
+            updatePhoneUI();
+            renderProperties();
+            alert('تم تحديث رقم الهاتف والواتساب بنجاح!');
+        }
+
+        // تحويل الصورة لنص Base64 في حالة التشغيل المحلي قبل وضع مفتاح ImgBB
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ==========================================
+        // 3. رفع عدة صور وحفظ العقار الجديد
+        // ==========================================
+        async function addProperty(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const fileInput = document.getElementById('propImageFile');
+            const files = fileInput.files;
+
+            submitBtn.disabled = true;
+            let uploadedImages = [];
+
+            try {
+                if (files.length > 0) {
+                    for (let i = 0; i < files.length; i++) {
+                        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري معالجة ورفع الصورة (${i + 1} من ${files.length})...`;
+                        
+                        // لو حاطط مفتاح ImgBB يرفع أونلاين، غير كدة يحفظها محلياً عشان التجربة
+                        if (!IMGBB_API_KEY.includes("YOUR_IMGBB")) {
+                            const formData = new FormData();
+                            formData.append('image', files[i]);
+
+                            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                                method: 'POST',
+                                body: formData
+                            });
+                            const imgData = await imgRes.json();
+                            if (imgData.success) {
+                                uploadedImages.push(imgData.data.url);
+                            }
+                        } else {
+                            const base64Img = await fileToBase64(files[i]);
+                            uploadedImages.push(base64Img);
+                        }
+                    }
+                }
+
+                if (uploadedImages.length === 0) {
+                    uploadedImages.push('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80');
+                }
+
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري حفظ الإعلان...`;
+
+                const newProp = {
+                    firebaseKey: "local_" + Date.now(),
+                    id: Date.now(),
+                    title: document.getElementById('propTitle').value,
+                    price: document.getElementById('propPrice').value,
+                    city: document.getElementById('propCity').value,
+                    type: document.getElementById('propType').value,
+                    status: document.getElementById('propStatus').value,
+                    area: document.getElementById('propArea').value,
+                    desc: document.getElementById('propDesc').value,
+                    images: uploadedImages
+                };
+
+                if (isOnlineConfigured) {
+                    await fetch(`${FIREBASE_URL}/properties.json`, {
+                        method: 'POST',
+                        body: JSON.stringify(newProp)
+                    });
+                    await loadData();
+                } else {
+                    properties.unshift(newProp);
+                    localStorage.setItem('realEstateData', JSON.stringify(properties));
+                    renderProperties();
+                }
+
+                document.getElementById('addPropertyForm').reset();
+                toggleAdminModal();
+                alert('تم نشر العقار وجميع صوره بنجاح!');
+
+            } catch (err) {
+                console.error(err);
+                alert('حدث خطأ أثناء الرفع، تأكد من الاتصال بالإنترنت.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار على الموقع';
             }
         }
 
-        // عرض العقارات في الصفحة
+        // ==========================================
+        // 4. دالة التقليب بين صور العقار الواحد
+        // ==========================================
+        function changeSlide(propKey, direction) {
+            const prop = properties.find(p => p.firebaseKey === propKey);
+            if (!prop) return;
+
+            const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+            if (imgList.length <= 1) return;
+
+            if (currentSlideIndex[propKey] === undefined) {
+                currentSlideIndex[propKey] = 0;
+            }
+
+            currentSlideIndex[propKey] = (currentSlideIndex[propKey] + direction + imgList.length) % imgList.length;
+
+            const imgElement = document.getElementById(`img-${propKey}`);
+            const counterElement = document.getElementById(`counter-${propKey}`);
+            
+            if (imgElement) imgElement.src = imgList[currentSlideIndex[propKey]];
+            if (counterElement) counterElement.innerText = `${currentSlideIndex[propKey] + 1} / ${imgList.length}`;
+        }
+
+        // ==========================================
+        // 5. حذف عقار
+        // ==========================================
+        async function deleteProperty(firebaseKey) {
+            if (confirm('هل أنت متأكد من حذف هذا العقار نهائياً؟')) {
+                if (isOnlineConfigured) {
+                    await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, {
+                        method: 'DELETE'
+                    });
+                    await loadData();
+                } else {
+                    properties = properties.filter(p => p.firebaseKey !== firebaseKey);
+                    localStorage.setItem('realEstateData', JSON.stringify(properties));
+                    renderProperties();
+                }
+            }
+        }
+
+        // ==========================================
+        // 6. عرض العقارات والفلترة في الصفحة
+        // ==========================================
         function renderProperties() {
             const grid = document.getElementById('propertiesGrid');
             const cityFilter = document.getElementById('filterCity').value;
@@ -338,7 +535,7 @@
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm">
                         <i class="fa-regular fa-folder-open text-5xl text-gray-300 mb-3"></i>
-                        <p class="text-gray-500 font-semibold">لا توجد عروض مطابقة للبحث حالياً.</p>
+                        <p class="text-gray-500 font-semibold">لا توجد عروض مطابقة للبحث حالياً.. ادخل من لوحة الأدمن لإضافة عروض جديدة!</p>
                     </div>`;
                 return;
             }
@@ -346,23 +543,41 @@
             filtered.forEach(prop => {
                 const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
                 const whatsappMsg = encodeURIComponent(`مرحباً مستشارك العقاري، أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
-                // تحويل الرقم للصيغة الدولية للواتساب المصري
                 const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
 
+                const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+                currentSlideIndex[prop.firebaseKey] = 0;
+
+                // أزرار تقليب الصور لو العقار فيه أكتر من صورة
+                const sliderControlsHTML = imgList.length > 1 ? `
+                    <button onclick="changeSlide('${prop.firebaseKey}', -1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10" title="الصورة السابقة">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                    <button onclick="changeSlide('${prop.firebaseKey}', 1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10" title="الصورة التالية">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <span id="counter-${prop.firebaseKey}" class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2.5 py-0.5 rounded-full font-semibold z-10">
+                        1 / ${imgList.length}
+                    </span>
+                ` : '';
+
                 const deleteBtnHTML = isAdminLoggedIn ? `
-                    <button onclick="deleteProperty(${prop.id})" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow hover:bg-red-700 flex items-center justify-center" title="حذف الإعلان">
+                    <button onclick="deleteProperty('${prop.firebaseKey}')" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow hover:bg-red-700 flex items-center justify-center z-20" title="حذف الإعلان">
                         <i class="fa-solid fa-trash text-sm"></i>
                     </button>
                 ` : '';
 
                 grid.innerHTML += `
                     <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col">
-                        <div class="relative h-56 bg-gray-200">
-                            <img src="${prop.image}" alt="${prop.title}" class="w-full h-full object-cover">
-                            <span class="absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow">
+                        <div class="relative h-60 bg-gray-200 select-none">
+                            <img id="img-${prop.firebaseKey}" src="${imgList[0]}" alt="${prop.title}" class="w-full h-full object-cover transition duration-300">
+                            
+                            ${sliderControlsHTML}
+
+                            <span class="absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow z-10">
                                 ${prop.status} • ${prop.type}
                             </span>
-                            <span class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-sm text-amber-400 text-xs font-bold px-3 py-1 rounded-lg">
+                            <span class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-sm text-amber-400 text-xs font-bold px-3 py-1 rounded-lg z-10">
                                 <i class="fa-solid fa-location-dot ml-1"></i>${prop.city}
                             </span>
                             ${deleteBtnHTML}
@@ -370,9 +585,7 @@
                         
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
-                                <div class="flex justify-between items-start mb-2">
-                                    <h4 class="font-bold text-lg text-slate-900 leading-snug">${prop.title}</h4>
-                                </div>
+                                <h4 class="font-bold text-lg text-slate-900 leading-snug mb-2">${prop.title}</h4>
                                 <p class="text-amber-600 font-extrabold text-xl mb-3">${prop.price}</p>
                                 <p class="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">${prop.desc}</p>
                             </div>
@@ -380,7 +593,7 @@
                             <div>
                                 <div class="flex items-center justify-between text-xs text-gray-500 border-t pt-3 mb-4">
                                     <span><i class="fa-solid fa-ruler-combined text-amber-500 ml-1"></i>المساحة: <b>${prop.area} م²</b></span>
-                                    <span><i class="fa-solid fa-tag text-amber-500 ml-1"></i>${prop.type}</span>
+                                    <span><i class="fa-solid fa-images text-amber-500 ml-1"></i>${imgList.length} صور</span>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-2">
@@ -407,20 +620,20 @@
             renderProperties();
         }
 
-        // التحكم في نافذة الأدمن
+        // ==========================================
+        // 7. التحكم في نافذة الأدمن وتسجيل الدخول
+        // ==========================================
         function toggleAdminModal() {
-            const modal = document.getElementById('adminModal');
-            modal.classList.toggle('hidden');
+            document.getElementById('adminModal').classList.toggle('hidden');
         }
 
         function loginAdmin() {
             const pass = document.getElementById('adminPasswordInput').value;
-            // كلمة السر الافتراضية 1234 (تقدر تغيرها من الكود)
-            if (pass === '1234') {
+            if (pass === ADMIN_PASS) {
                 isAdminLoggedIn = true;
                 document.getElementById('adminLoginSection').classList.add('hidden');
                 document.getElementById('adminDashboardSection').classList.remove('hidden');
-                renderProperties(); // لإظهار زرار الحذف على الكروت
+                renderProperties();
             } else {
                 alert('كلمة المرور غير صحيحة!');
             }
@@ -435,55 +648,8 @@
             renderProperties();
         }
 
-        // إضافة عقار جديد مع تحويل الصورة
-        function addProperty(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('propImageFile');
-            const file = fileInput.files[0];
-
-            const saveNewItem = (imgUrl) => {
-                const newProp = {
-                    id: Date.now(),
-                    title: document.getElementById('propTitle').value,
-                    price: document.getElementById('propPrice').value,
-                    city: document.getElementById('propCity').value,
-                    type: document.getElementById('propType').value,
-                    status: document.getElementById('propStatus').value,
-                    area: document.getElementById('propArea').value,
-                    desc: document.getElementById('propDesc').value,
-                    image: imgUrl || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80'
-                };
-
-                properties.unshift(newProp);
-                localStorage.setItem('realEstateData', JSON.stringify(properties));
-                document.getElementById('addPropertyForm').reset();
-                renderProperties();
-                toggleAdminModal();
-                alert('تم نشر العقار بنجاح!');
-            };
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    saveNewItem(event.target.result);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                saveNewItem(null);
-            }
-        }
-
-        function deleteProperty(id) {
-            if(confirm('هل أنت متأكد من حذف هذا العقار؟')) {
-                properties = properties.filter(p => p.id !== id);
-                localStorage.setItem('realEstateData', JSON.stringify(properties));
-                renderProperties();
-            }
-        }
-
-        // تشغيل الموقع عند الفتح
-        updatePhoneUI();
-        renderProperties();
+        // تشغيل الموقع فور الفتح
+        loadData();
     </script>
 </body>
 </html>
