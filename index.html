@@ -28,7 +28,7 @@
         }
 
         /* ===================================================
-           أنيميشن الفيلم المعماري (20 ثانية - 7 مراحل كاملة)
+           أنيميشن الانترو المختصر (تشطيب وإضاءة ثم الشعار)
            =================================================== */
         #introScreen {
             position: fixed;
@@ -39,15 +39,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.9s ease, visibility 0.9s ease;
-        }
-
-        /* خلفية شبكة هندسية (Blueprint Grid) */
-        .blueprint-bg {
-            background-image: 
-                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-            background-size: 25px 25px;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
         }
 
         #sceneWrapper {
@@ -56,18 +48,15 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        /* عند انتهاء البناء يصغر البيت ليتحول إلى لوجو بجانب الاسم */
-        .logo-mode #houseSvgContainer {
-            transform: scale(0.42);
+            transition: all 1s ease;
         }
 
         #houseSvgContainer {
             width: 340px;
             height: 280px;
-            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 0;
+            transform: scale(0.85);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
             filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
         }
 
@@ -78,68 +67,35 @@
             }
         }
 
-        /* إخفاء الطبقات قبل مرحلتها */
-        .layer {
-            opacity: 0;
-            transition: all 0.8s ease-in-out;
-        }
-        .layer.active {
+        /* ظهور البيت المتشطب */
+        #houseSvgContainer.house-ready {
             opacity: 1;
+            transform: scale(1);
         }
 
-        /* تأثير طلوع الأساسات والأعمدة من الأرض */
-        #layer-foundation {
-            transform: translateY(30px);
-        }
-        #layer-foundation.active {
-            transform: translateY(0);
+        /* رجوع البيت للخلف وتصغيره لكتابة الاسم */
+        .logo-mode #houseSvgContainer {
+            transform: scale(0.55) translateY(-15px);
         }
 
-        /* تأثير بناء الطوب */
-        #layer-bricks {
-            transform: scaleY(0);
-            transform-origin: bottom;
-        }
-        #layer-bricks.active {
-            transform: scaleY(1);
-        }
-
-        /* تأثير سريان المياه والكهرباء (رسم الخطوط تدريجياً) */
-        .pipe-line {
-            stroke-dasharray: 600;
-            stroke-dashoffset: 600;
-            transition: stroke-dashoffset 2.2s ease-in-out;
-        }
-        .active .pipe-line {
-            stroke-dashoffset: 0;
-        }
-
-        .elec-glow {
-            animation: pulseGlow 1s infinite alternate;
-        }
-        @keyframes pulseGlow {
-            from { filter: drop-shadow(0 0 2px #facc15); }
-            to { filter: drop-shadow(0 0 10px #facc15); }
-        }
-
-        /* تأثير قفل الباب في النهاية */
+        /* حركة قفل الباب الرئيسي */
         #mainDoorPanel {
-            transform-origin: 205px 250px;
+            transform-origin: 204px 235px;
             transform: scaleX(0.15); /* الباب مفتوح في البداية */
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .door-closed #mainDoorPanel {
             transform: scaleX(1); /* الباب يتقفل بالكامل */
         }
 
-        /* إضاءة الشبابيك والفيلا بعد التشطيب */
+        /* إضاءة الشبابيك والفيلا */
         .window-glass {
             fill: #1e293b;
-            transition: fill 1s ease, filter 1s ease;
+            transition: fill 0.9s ease, filter 0.9s ease;
         }
         .lights-on .window-glass {
             fill: #fef08a;
-            filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.9));
+            filter: drop-shadow(0 0 14px rgba(254, 240, 138, 0.95));
         }
 
         /* مؤشر الكتابة حرف حرف */
@@ -157,24 +113,10 @@
 <body class="text-slate-800">
 
     <!-- ==========================================
-         شاشة الانترو السينمائي (20 ثانية)
+         شاشة الانترو (اكتمال البيت + إضاءة وقفل الباب + كتابة الاسم)
          ========================================== -->
-    <div id="introScreen" class="blueprint-bg px-4 select-none">
+    <div id="introScreen" class="px-4 select-none">
         
-        <!-- زر تخطي الانترو -->
-        <button onclick="finishIntroNow()" class="absolute top-6 left-6 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-xs font-bold px-4 py-2 rounded-full border border-white/20 backdrop-blur-sm transition z-50 flex items-center gap-2">
-            <span>تخطي العرض</span>
-            <i class="fa-solid fa-forward-step"></i>
-        </button>
-
-        <!-- عداد المراحل الهندسية أعلى الشاشة -->
-        <div id="constructionStatusBox" class="mb-4 text-center transition-opacity duration-500">
-            <span id="stageBadge" class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1 rounded-full text-xs md:text-sm font-bold tracking-wide">
-                <i class="fa-solid fa-helmet-safety ml-1"></i> جاري تجهيز الموقع وحفر الأساسات...
-            </span>
-        </div>
-
-        <!-- حاوية الرسم الهندسي للفيلا والشعار -->
         <div id="sceneWrapper" class="w-full max-w-4xl flex flex-col items-center justify-center">
             
             <div id="houseSvgContainer" class="relative flex items-center justify-center">
@@ -183,76 +125,11 @@
                     <!-- خط الأرض الثابت -->
                     <line x1="20" y1="290" x2="430" y2="290" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
 
-                    <!-- المرحلة 1: القواعد الخرسانية والأعمدة المسلحة -->
-                    <g id="layer-foundation" class="layer">
-                        <!-- قواعد خرسانية تحت الأرض -->
-                        <rect x="65" y="275" width="320" height="18" rx="3" fill="#64748b" stroke="#94a3b8" stroke-width="2"/>
-                        <rect x="80" y="265" width="290" height="12" fill="#475569"/>
-                        <!-- أعمدة خرسانية دور أرضي وأول -->
-                        <rect x="85" y="90" width="12" height="175" fill="#94a3b8"/>
-                        <rect x="175" y="90" width="12" height="175" fill="#94a3b8"/>
-                        <rect x="265" y="90" width="12" height="175" fill="#94a3b8"/>
-                        <rect x="353" y="90" width="12" height="175" fill="#94a3b8"/>
-                        <!-- بلاطة سقف الدور الأول -->
-                        <rect x="75" y="172" width="300" height="10" fill="#64748b"/>
-                        <!-- بلاطة سقف الدور الثاني -->
-                        <rect x="70" y="85" width="310" height="12" fill="#64748b"/>
-                    </g>
-
-                    <!-- المرحلة 2: بناء الطوب الأحمر والهيكل -->
-                    <g id="layer-bricks" class="layer">
-                        <!-- خلفية الطوب الأحمر للدور الأرضي -->
-                        <rect x="97" y="182" width="256" height="83" fill="#b45309" opacity="0.85"/>
-                        <!-- خلفية الطوب الأحمر للدور العلوي -->
-                        <rect x="97" y="97" width="256" height="75" fill="#b45309" opacity="0.85"/>
-                        <!-- خطوط فواصل الطوب الهندسية -->
-                        <g stroke="#78350f" stroke-width="1.5" opacity="0.6">
-                            <line x1="97" y1="115" x2="353" y2="115"/>
-                            <line x1="97" y1="135" x2="353" y2="135"/>
-                            <line x1="97" y1="155" x2="353" y2="155"/>
-                            <line x1="97" y1="200" x2="353" y2="200"/>
-                            <line x1="97" y1="220" x2="353" y2="220"/>
-                            <line x1="97" y1="240" x2="353" y2="240"/>
-                        </g>
-                        <!-- هيكل السقف المائل (الجمالون) -->
-                        <polygon points="60,85 225,25 390,85" fill="#92400e" stroke="#f59e0b" stroke-width="2"/>
-                    </g>
-
-                    <!-- المرحلة 3: شبكة السباكة والمياه والخزان -->
-                    <g id="layer-plumbing" class="layer">
-                        <!-- خزان المياه العلوي -->
-                        <rect x="290" y="42" width="45" height="43" rx="6" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
-                        <line x1="295" y1="55" x2="330" y2="55" stroke="#bae6fd" stroke-width="2"/>
-                        <!-- مواسير المياه الزرقاء الممتدة في الحوائط -->
-                        <path class="pipe-line" d="M 312 85 L 312 255 L 120 255 L 120 120 L 240 120 L 240 210" fill="none" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path class="pipe-line" d="M 312 150 L 160 150" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4"/>
-                        <!-- محابس ونقاط مياه -->
-                        <circle cx="312" cy="150" r="5" fill="#0284c7" stroke="#fff" stroke-width="1.5"/>
-                        <circle cx="120" cy="200" r="5" fill="#0284c7" stroke="#fff" stroke-width="1.5"/>
-                        <circle cx="240" cy="120" r="5" fill="#0284c7" stroke="#fff" stroke-width="1.5"/>
-                    </g>
-
-                    <!-- المرحلة 4: شبكة الكهرباء والإمدادات واللوحة -->
-                    <g id="layer-electricity" class="layer">
-                        <!-- لوحة توزيع الكهرباء الرئيسية -->
-                        <rect x="195" y="195" width="22" height="30" rx="2" fill="#eab308" stroke="#fef08a" stroke-width="2"/>
-                        <!-- مسارات خراطيم الكهرباء الصفراء -->
-                        <path class="pipe-line elec-glow" d="M 206 195 L 206 110 L 135 110 L 135 140" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
-                        <path class="pipe-line elec-glow" d="M 206 110 L 315 110 L 315 140" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
-                        <path class="pipe-line elec-glow" d="M 206 225 L 135 225 L 135 205" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
-                        <path class="pipe-line elec-glow" d="M 206 225 L 315 225 L 315 205" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
-                        <!-- بواطات ولمبات التأسيس -->
-                        <circle cx="135" cy="140" r="6" fill="#fef08a" class="elec-glow"/>
-                        <circle cx="315" cy="140" r="6" fill="#fef08a" class="elec-glow"/>
-                        <circle cx="135" cy="205" r="6" fill="#fef08a" class="elec-glow"/>
-                        <circle cx="315" cy="205" r="6" fill="#fef08a" class="elec-glow"/>
-                    </g>
-
-                    <!-- المرحلة 5: المحارة، تشطيب الواجهة الفاخرة، الشبابيك، والحديقة -->
-                    <g id="layer-finishing" class="layer">
-                        <!-- جسم الفيلا المتشطب (يغطي الطوب والمواسير) -->
+                    <!-- الفيلا المتشطبة بالكامل -->
+                    <g id="layer-finishing">
+                        <!-- جسم الفيلا المتشطب -->
                         <rect x="85" y="92" width="280" height="183" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
-                        <!-- ديكورات حجر هاشمي / تجليد خشبي في الواجهة -->
+                        <!-- ديكورات حجر الواجهة -->
                         <rect x="85" y="92" width="55" height="183" fill="#e2e8f0"/>
                         <rect x="190" y="92" width="70" height="183" fill="#f1f5f9"/>
                         <!-- فاصل الديكور الذهبي بين الدورين -->
@@ -277,10 +154,10 @@
                         <rect x="100" y="195" width="45" height="50" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
                         <rect x="295" y="195" width="50" height="50" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
 
-                        <!-- حلق الباب الرئيسي (مفتوح وجواه إضاءة ترحيبية) -->
+                        <!-- حلق الباب الرئيسي (داخله إضاءة ترحيبية) -->
                         <rect x="202" y="195" width="46" height="75" rx="3" fill="#fef08a" stroke="#78350f" stroke-width="4"/>
                         
-                        <!-- ضلفة الباب الخشبي المصفح (تتقفل في المرحلة 6) -->
+                        <!-- ضلفة الباب الخشبي المصفح (تتقفل في الأنيميشن) -->
                         <g id="mainDoorPanel">
                             <rect x="204" y="197" width="42" height="72" fill="#451a03" stroke="#d97706" stroke-width="1.5"/>
                             <!-- مقبض الباب الذهبي -->
@@ -289,7 +166,7 @@
                             <rect x="212" y="235" width="26" height="25" rx="2" fill="#78350f" stroke="#b45309" stroke-width="1"/>
                         </g>
 
-                        <!-- سلالم المدخل واللاندسكيب (أشجار صغيرة) -->
+                        <!-- سلالم المدخل واللاندسكيب -->
                         <rect x="192" y="270" width="66" height="8" rx="2" fill="#94a3b8"/>
                         <rect x="184" y="278" width="82" height="10" rx="2" fill="#64748b"/>
                         <!-- أشجار الزينة على الجانبين -->
@@ -302,22 +179,12 @@
                 </svg>
             </div>
 
-            <!-- نص اللوجو الذي يظهر حرفاً بحرف بعد اكتمال الفيلا -->
-            <div id="brandLogoArea" class="text-center mt-2 hidden">
-                <h1 id="typewriterTitle" class="text-4xl md:text-6xl font-black text-white tracking-wide typing-cursor mb-2"></h1>
-                <p id="typewriterSub" class="text-amber-400 font-bold text-sm md:text-lg opacity-0 transition-opacity duration-700">
-                    بدر • الشروق • المدن الجديدة
-                </p>
+            <!-- نص اللوجو الذي يظهر حرفاً بحرف بعد إضاءة الفيلا ورجوعها للخلف -->
+            <div id="brandLogoArea" class="text-center -mt-8 hidden">
+                <h1 id="typewriterTitle" class="text-4xl md:text-6xl font-black text-white tracking-wide typing-cursor"></h1>
             </div>
 
         </div>
-
-        <!-- شريط التقدم الزمني للـ 20 ثانية أسفل الانترو -->
-        <div id="progressContainer" class="w-64 md:w-96 bg-slate-800 h-2 rounded-full overflow-hidden mt-8 border border-slate-700">
-            <div id="introProgressBar" class="gold-gradient h-full w-0 transition-all duration-300"></div>
-        </div>
-        <p id="progressPercent" class="text-gray-400 text-xs mt-2 font-bold">0% مكتمل</p>
-
     </div>
 
     <!-- ==========================================
@@ -334,9 +201,9 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <a id="topPhoneBtn" href="tel:01012345678" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
+                <a id="topPhoneBtn" href="tel:01070031525" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
                     <i class="fa-solid fa-phone"></i>
-                    <span id="navPhoneText">01012345678</span>
+                    <span id="navPhoneText">01070031525</span>
                 </a>
                 <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-md transition">
                     <i class="fa-solid fa-user-tie"></i>
@@ -417,7 +284,7 @@
         <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <!-- نافذة تفاصيل العقار الكاملة (Modal) - تدعم زر الرجوع في الموبايل بدون الخروج من الموقع -->
+    <!-- نافذة تفاصيل العقار الكاملة (Modal) -->
     <div id="propertyDetailsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="closeDetailsModal()" class="absolute top-4 left-4 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 w-10 h-10 rounded-full flex items-center justify-center text-xl transition z-20">
@@ -452,7 +319,7 @@
                 <div class="max-w-sm mx-auto space-y-4">
                     <div>
                         <label class="block text-sm font-semibold mb-1">كلمة المرور</label>
-                        <input type="password" id="adminPasswordInput" placeholder="الافتراضية: 1234" class="w-full border rounded-lg p-3 focus:outline-amber-500">
+                        <input type="password" id="adminPasswordInput" placeholder=": " class="w-full border rounded-lg p-3 focus:outline-amber-500">
                     </div>
                     <button onclick="loginAdmin()" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow">دخول للوحة التحكم</button>
                 </div>
@@ -551,7 +418,7 @@
     <script>
         const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; 
         const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; 
-        const ADMIN_PASS = "1234";
+        const ADMIN_PASS = "31535";
 
         const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
 
@@ -588,24 +455,14 @@
         ];
 
         let properties = [];
-        let consultantPhone = localStorage.getItem('consultantPhone') || "01012345678";
+        let consultantPhone = localStorage.getItem('consultantPhone') || "01070031525";
         let isAdminLoggedIn = false;
         let currentSlideIndex = {};
         let modalSlideIndex = 0;
-        let introTimers = [];
 
         // ========================================================
-        // إدارة أنيميشن الـ 20 ثانية (7 مراحل بناء + كتابة حرف حرف)
+        // أنيميشن الانترو المختصر (آخر مرحلتين فقط + مستشارك العقاري)
         // ========================================================
-        function updateIntroStatus(text, percent) {
-            const badge = document.getElementById('stageBadge');
-            const bar = document.getElementById('introProgressBar');
-            const pct = document.getElementById('progressPercent');
-            if (badge) badge.innerHTML = text;
-            if (bar) bar.style.width = percent + '%';
-            if (pct) pct.innerText = percent + '% مكتمل';
-        }
-
         function typeWriterEffect(text, elementId, speed = 110) {
             const el = document.getElementById(elementId);
             if (!el) return;
@@ -615,93 +472,51 @@
                 if (i < text.length) {
                     el.innerHTML += text.charAt(i);
                     i++;
-                    introTimers.push(setTimeout(typeChar, speed));
+                    setTimeout(typeChar, speed);
                 } else {
                     el.classList.remove('typing-cursor');
-                    document.getElementById('typewriterSub').style.opacity = '1';
                 }
             }
             typeChar();
         }
 
-        function start20SecConstructionIntro() {
-            // المرحلة 1 (0s - 3s): صب القواعد والأساسات الخرسانية والأعمدة
-            introTimers.push(setTimeout(() => {
-                document.getElementById('layer-foundation').classList.add('active');
-                updateIntroStatus('<i class="fa-solid fa-trowel-bricks ml-1"></i> المرحلة 1/6: صب القواعد الخرسانية ورفع الأعمدة...', 15);
-            }, 300));
-
-            // المرحلة 2 (3s - 6s): بناء الطوب الأحمر والجمالون
-            introTimers.push(setTimeout(() => {
-                document.getElementById('layer-bricks').classList.add('active');
-                updateIntroStatus('<i class="fa-solid fa-cubes ml-1"></i> المرحلة 2/6: بناء الجدران والطوب الأحمر والأسقف...', 32);
-            }, 3200));
-
-            // المرحلة 3 (6s - 9s): تأسيس السباكة ومواسير المياه والخزان
-            introTimers.push(setTimeout(() => {
-                document.getElementById('layer-plumbing').classList.add('active');
-                updateIntroStatus('<i class="fa-solid fa-faucet-drip ml-1 text-sky-400"></i> المرحلة 3/6: مد شبكات المياه والسباكة والخزانات...', 50);
-            }, 6200));
-
-            // المرحلة 4 (9s - 12s): تأسيس الكهرباء والإمدادات الذكية
-            introTimers.push(setTimeout(() => {
-                document.getElementById('layer-electricity').classList.add('active');
-                updateIntroStatus('<i class="fa-solid fa-bolt ml-1 text-yellow-400"></i> المرحلة 4/6: تأسيس شبكات الكهرباء والإضاءة...', 68);
-            }, 9200));
-
-            // المرحلة 5 (12s - 15s): المحارة، الواجهات الفاخرة، الشبابيك واللاندسكيب
-            introTimers.push(setTimeout(() => {
-                document.getElementById('layer-finishing').classList.add('active');
-                updateIntroStatus('<i class="fa-solid fa-paint-roller ml-1 text-emerald-400"></i> المرحلة 5/6: التشطيبات النهائية للواجهة والزجاج...', 85);
-            }, 12200));
-
-            // المرحلة 6 (15s - 17.5s): إغلاق الباب الرئيسي وإنارة الفيلا بالكامل
-            introTimers.push(setTimeout(() => {
-                const svgContainer = document.getElementById('houseSvgContainer');
-                svgContainer.classList.add('door-closed', 'lights-on');
-                updateIntroStatus('<i class="fa-solid fa-key ml-1 text-amber-400"></i> المرحلة 6/6: إغلاق الباب الرئيسي وتسليم المفتاح!', 100);
-            }, 15200));
-
-            // المرحلة 7 (17.5s - 20.5s): تصغير الفيلا كشعار وكتابة "مستشارك العقاري" حرف حرف
-            introTimers.push(setTimeout(() => {
-                document.getElementById('constructionStatusBox').style.opacity = '0';
-                document.getElementById('progressContainer').style.opacity = '0';
-                document.getElementById('progressPercent').style.opacity = '0';
-                
-                const wrapper = document.getElementById('sceneWrapper');
-                wrapper.classList.add('logo-mode');
-                
-                const brandArea = document.getElementById('brandLogoArea');
-                brandArea.classList.remove('hidden');
-
-                // كتابة جملة "مستشارك العقاري" حرف حرف
-                typeWriterEffect("مستشارك العقاري", "typewriterTitle", 110);
-            }, 17500));
-
-            // إغلاق الانترو عند الثانية 21 والدخول السلس للموقع
-            introTimers.push(setTimeout(() => {
-                finishIntroNow();
-            }, 21200));
-        }
-
-        function finishIntroNow() {
-            introTimers.forEach(t => clearTimeout(t));
+        function startFinalTwoStagesIntro() {
+            const svgContainer = document.getElementById('houseSvgContainer');
+            const wrapper = document.getElementById('sceneWrapper');
+            const brandArea = document.getElementById('brandLogoArea');
             const screen = document.getElementById('introScreen');
-            if (screen) {
+
+            // 1. ظهور البيت مكتمل التشطيب فوراً
+            setTimeout(() => {
+                svgContainer.classList.add('house-ready');
+            }, 150);
+
+            // 2. قفل الباب الرئيسي وإضاءة شبابيك البيت
+            setTimeout(() => {
+                svgContainer.classList.add('door-closed', 'lights-on');
+            }, 1200);
+
+            // 3. البيت يرجع لورا ويصغر وتظهر كلمة "مستشارك العقاري" فقط حرف حرف
+            setTimeout(() => {
+                wrapper.classList.add('logo-mode');
+                brandArea.classList.remove('hidden');
+                typeWriterEffect("مستشارك العقاري", "typewriterTitle", 110);
+            }, 2600);
+
+            // 4. إخفاء شاشة الانترو وفتح الموقع
+            setTimeout(() => {
                 screen.style.opacity = '0';
-                setTimeout(() => screen.style.display = 'none', 850);
-            }
+                setTimeout(() => screen.style.display = 'none', 800);
+            }, 5200);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            start20SecConstructionIntro();
+            startFinalTwoStagesIntro();
             loadData();
         });
 
-        // ========================================================
-        // دعم زر الرجوع في الموبايل (Back Button) لعدم الخروج من الموقع
-        // ========================================================
-        window.addEventListener('popstate', (event) => {
+        // دعم زر الرجوع في الموبايل لعدم الخروج من الموقع عند فتح تفاصيل الشقة
+        window.addEventListener('popstate', () => {
             const detailsModal = document.getElementById('propertyDetailsModal');
             if (!detailsModal.classList.contains('hidden')) {
                 detailsModal.classList.add('hidden');
@@ -858,7 +673,6 @@
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
 
-            // إضافة حالة في تاريخ المتصفح عشان لو داس زر الرجوع في الموبايل يقفل المودال وميخرجش من الموقع
             history.pushState({ modalOpen: true }, "");
 
             modalSlideIndex = 0;
