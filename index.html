@@ -53,17 +53,17 @@
         </div>
     </nav>
 
-    <!-- الواجهة الرئيسية (Hero Section) -->
-    <header class="hero-bg text-white py-20 px-4 text-center">
+    <!-- الواجهة الرئيسية (Hero Section / انترو الموقع) -->
+    <header class="hero-bg text-white py-24 px-4 text-center">
         <div class="container mx-auto max-w-4xl">
-            <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1 rounded-full text-sm font-semibold mb-4 inline-block">
-                دليلك الأول للعقارات في المدن الجديدة
+            <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 inline-block">
+                🌟 دليلك الأول للعقارات في المدن الجديدة
             </span>
-            <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
                 ابحث عن عقارك المثالي في <span class="text-amber-500">بدر والشروق</span> والمدن الجديدة
             </h2>
-            <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-                شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري.
+            <p class="text-gray-300 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+                شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري بدون تشعبات.
             </p>
 
             <!-- صندوق البحث والفلترة -->
@@ -116,16 +116,29 @@
         <div class="flex justify-between items-center mb-8 border-b pb-4">
             <div>
                 <h3 class="text-2xl font-bold text-slate-900">أحدث العروض العقارية</h3>
-                <p class="text-gray-500 text-sm">عروض محدثة باستمرار للشقق والأراضي والمحلات</p>
+                <p class="text-gray-500 text-sm">اضغط على أي عقار لمشاهدة التفاصيل الكاملة والصور الكبيرة</p>
             </div>
             <span id="propertiesCount" class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-sm">0 عقار متاح</span>
         </div>
 
         <!-- شبكة العقارات -->
         <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- العقارات هتظهر هنا أوتوماتيك بالجافاسكريبت -->
+            <!-- العقارات تظهر هنا أوتوماتيك -->
         </div>
     </main>
+
+    <!-- نافذة تفاصيل العقار الكاملة (Modal) -->
+    <div id="propertyDetailsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeDetailsModal()" class="absolute top-4 left-4 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 w-10 h-10 rounded-full flex items-center justify-center text-xl transition z-20">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="modalDetailsContent">
+                <!-- محتوى تفاصيل العقار هيتحط هنا بالجافاسكريبت -->
+            </div>
+        </div>
+    </div>
 
     <!-- نافذة لوحة تحكم الأدمن (Modal) -->
     <div id="adminModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
@@ -152,7 +165,7 @@
                 </div>
             </div>
 
-            <!-- شاشة إضافة العقارات (تظهر بعد تسجيل الدخول) -->
+            <!-- شاشة إضافة العقارات -->
             <div id="adminDashboardSection" class="hidden">
                 <div class="flex justify-between items-center border-b pb-3 mb-6">
                     <h3 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-plus-circle text-amber-600 ml-2"></i>إضافة عقار أو عرض جديد</h3>
@@ -161,7 +174,7 @@
 
                 <!-- إعدادات رقم التليفون الأساسي -->
                 <div class="bg-slate-100 p-4 rounded-xl mb-6 border border-slate-200">
-                    <label class="block text-sm font-bold mb-2 text-slate-700">رقم الهاتف / واتساب المستشار العقاري (يظهر للعملاء):</label>
+                    <label class="block text-sm font-bold mb-2 text-slate-700">رقم الهاتف / واتساب المستشار العقاري:</label>
                     <div class="flex gap-2">
                         <input type="text" id="consultantPhoneInput" class="flex-1 border rounded-lg p-2 text-left bg-white" dir="ltr" placeholder="010xxxxxxxx">
                         <button type="button" onclick="savePhone()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700">حفظ الرقم</button>
@@ -175,7 +188,7 @@
                             <input type="text" id="propTitle" required placeholder="مثال: شقة لقطة للإيجار بمدينة بدر الحي الأول" class="w-full border rounded-lg p-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-1">السعر (جنيه) *</label>
+                            <label class="block text-sm font-bold mb-1">السعر *</label>
                             <input type="text" id="propPrice" required placeholder="مثال: 4,500 ج/شهرياً أو 1,200,000 كاش" class="w-full border rounded-lg p-2.5">
                         </div>
                     </div>
@@ -216,14 +229,14 @@
                             <input type="number" id="propArea" required placeholder="مثال: 135" class="w-full border rounded-lg p-2.5">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-1">صور العقار (يمكنك تحديد أكثر من صورة) *</label>
+                            <label class="block text-sm font-bold mb-1">صور العقار (يمكنك تحديد عدة صور) *</label>
                             <input type="file" id="propImageFile" accept="image/*" multiple class="w-full border rounded-lg p-2 text-sm bg-gray-50">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold mb-1">تفاصيل ومميزات العقار *</label>
-                        <textarea id="propDesc" rows="3" required placeholder="اكتب التفاصيل: الدور الكام، عدد الغرف، التشطيب، قريب من إيه..." class="w-full border rounded-lg p-2.5"></textarea>
+                        <textarea id="propDesc" rows="3" required placeholder="اكتب كل التفاصيل هنا..." class="w-full border rounded-lg p-2.5"></textarea>
                     </div>
 
                     <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow-lg hover:opacity-95 transition">
@@ -234,7 +247,7 @@
         </div>
     </div>
 
-    <!-- الفوتر (Footer) -->
+    <!-- الفوتر -->
     <footer class="bg-slate-900 text-gray-400 py-8 text-center border-t border-slate-800 mt-16">
         <div class="container mx-auto px-4">
             <h4 class="text-white font-bold text-lg mb-2">مستشارك العقاري</h4>
@@ -243,19 +256,14 @@
         </div>
     </footer>
 
-    <!-- الأكواد البرمجية الكاملة (JavaScript) -->
+    <!-- الأكواد البرمجية (JavaScript) -->
     <script>
-        // =========================================================================
-        // 1. إعدادات الربط المجاني (حط المفاتيح هنا لما تعملها، أو سيبها وهتشتغل محلياً)
-        // =========================================================================
-        const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; // مفتاح موقع api.imgbb.com لرفع الصور
-        const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; // رابط Firebase Realtime Database بدون / في الآخر
-        const ADMIN_PASS = "5555"; // كلمة مرور لوحة الأدمن
+        const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; 
+        const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; 
+        const ADMIN_PASS = "1234";
 
-        // التحقق هل تم وضع روابط Firebase و ImgBB أم نعمل بالنظام المحلي التجريبي
-        const isOnlineConfigured = !FIREBASE_URL.includes("https://mostasharak-akaraty-default-rtdb.firebaseio.com/") && FIREBASE_URL.startsWith("https://");
+        const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
 
-        // بيانات افتراضية بصور متعددة عشان الموقع يظهر مليان وشغال أول ما تفتحه
         const defaultProperties = [
             {
                 firebaseKey: "prop_1",
@@ -269,8 +277,7 @@
                 desc: "3 غرف نوم + ريسبشن كبير + 2 حمام. تشطيب سوبر لوكس، أول سكن، قريبة من الخدمات والجامعة الروسية.",
                 images: [
                     "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80"
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
                 ]
             },
             {
@@ -284,36 +291,7 @@
                 area: 165,
                 desc: "شقة واجهة بحري صريح، الدور الثاني، أسانسير شغال، حصة في الأرض والجراج، استلام فوري.",
                 images: [
-                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
-                ]
-            },
-            {
-                firebaseKey: "prop_3",
-                id: 3,
-                title: "قطعة أرض فضاء للبيع بمدينة بدر - بيت الوطن",
-                price: "3,400,000 جنيه",
-                city: "مدينة بدر",
-                type: "أرض فاضية",
-                status: "تمليك",
-                area: 450,
-                desc: "أرض ناصية على شارع رئيسي، خالصة الأقساط، رخصة مباني بدروم وأرضي و 3 أدوار متكررة.",
-                images: [
-                    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"
-                ]
-            },
-            {
-                firebaseKey: "prop_4",
-                id: 4,
-                title: "محل تجاري للإيجار بمول حيوي في الشروق",
-                price: "12,000 ج / شهرياً",
-                city: "مدينة الشروق",
-                type: "محل تجاري",
-                status: "إيجار",
-                area: 45,
-                desc: "محل دور أرضي واجهة زجاجية كبيرة، يصلح لجميع الأنشطة التجارية أو كافيه أو مطعم، عداد كهرباء تجاري ومياه.",
-                images: [
-                    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
                 ]
             }
         ];
@@ -322,10 +300,8 @@
         let consultantPhone = localStorage.getItem('consultantPhone') || "01012345678";
         let isAdminLoggedIn = false;
         let currentSlideIndex = {};
+        let modalSlideIndex = 0;
 
-        // ==========================================
-        // 2. جلب البيانات (أونلاين أو محلياً)
-        // ==========================================
         async function loadData() {
             if (isOnlineConfigured) {
                 try {
@@ -350,7 +326,6 @@
                     console.error("خطأ في الاتصال بقاعدة البيانات:", error);
                 }
             } else {
-                // التشغيل المحلي التلقائي لو لسه محطتش روابط Firebase
                 properties = JSON.parse(localStorage.getItem('realEstateData')) || defaultProperties;
                 updatePhoneUI();
                 renderProperties();
@@ -381,7 +356,6 @@
             alert('تم تحديث رقم الهاتف والواتساب بنجاح!');
         }
 
-        // تحويل الصورة لنص Base64 في حالة التشغيل المحلي قبل وضع مفتاح ImgBB
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -391,9 +365,6 @@
             });
         }
 
-        // ==========================================
-        // 3. رفع عدة صور وحفظ العقار الجديد
-        // ==========================================
         async function addProperty(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
@@ -406,9 +377,8 @@
             try {
                 if (files.length > 0) {
                     for (let i = 0; i < files.length; i++) {
-                        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري معالجة ورفع الصورة (${i + 1} من ${files.length})...`;
+                        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري رفع الصورة (${i + 1} من ${files.length})...`;
                         
-                        // لو حاطط مفتاح ImgBB يرفع أونلاين، غير كدة يحفظها محلياً عشان التجربة
                         if (!IMGBB_API_KEY.includes("YOUR_IMGBB")) {
                             const formData = new FormData();
                             formData.append('image', files[i]);
@@ -461,21 +431,19 @@
 
                 document.getElementById('addPropertyForm').reset();
                 toggleAdminModal();
-                alert('تم نشر العقار وجميع صوره بنجاح!');
+                alert('تم نشر العقار بنجاح!');
 
             } catch (err) {
                 console.error(err);
-                alert('حدث خطأ أثناء الرفع، تأكد من الاتصال بالإنترنت.');
+                alert('حدث خطأ أثناء الرفع.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار على الموقع';
             }
         }
 
-        // ==========================================
-        // 4. دالة التقليب بين صور العقار الواحد
-        // ==========================================
-        function changeSlide(propKey, direction) {
+        function changeSlide(propKey, direction, event) {
+            if(event) event.stopPropagation();
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
 
@@ -495,11 +463,104 @@
             if (counterElement) counterElement.innerText = `${currentSlideIndex[propKey] + 1} / ${imgList.length}`;
         }
 
-        // ==========================================
-        // 5. حذف عقار
-        // ==========================================
+        // عرض تفاصيل العقار الكاملة في النافذة المنبثقة (Modal)
+        function openPropertyDetails(propKey) {
+            const prop = properties.find(p => p.firebaseKey === propKey);
+            if (!prop) return;
+
+            modalSlideIndex = 0;
+            const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+            const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
+            const whatsappMsg = encodeURIComponent(`مرحباً مستشارك العقاري، أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
+            const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
+
+            const contentDiv = document.getElementById('modalDetailsContent');
+            contentDiv.innerHTML = `
+                <div class="relative h-72 md:h-96 bg-gray-900 rounded-xl overflow-hidden mb-6">
+                    <img id="modalMainImg" src="${imgList[0]}" class="w-full h-full object-cover">
+                    <span class="absolute top-4 right-4 ${badgeColor} text-white font-bold px-4 py-1.5 rounded-full shadow-lg">
+                        ${prop.status} • ${prop.type}
+                    </span>
+                    <span class="absolute bottom-4 right-4 bg-slate-900/80 backdrop-blur-sm text-amber-400 font-bold px-3.5 py-1.5 rounded-lg">
+                        <i class="fa-solid fa-location-dot ml-1"></i>${prop.city}
+                    </span>
+                    ${imgList.length > 1 ? `
+                        <button onclick="changeModalSlide(-1, '${propKey}')" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-lg">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <button onclick="changeModalSlide(1, '${propKey}')" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-lg">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <span id="modalCounter" class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full font-bold text-sm">
+                            1 / ${imgList.length}
+                        </span>
+                    ` : ''}
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 leading-snug">${prop.title}</h2>
+                        <span class="text-amber-600 font-extrabold text-2xl">${prop.price}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-ruler-combined"></i>
+                            </div>
+                            <div>
+                                <span class="block text-xs text-gray-500">المساحة</span>
+                                <span class="font-bold text-slate-800">${prop.area} متر مربع</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-city"></i>
+                            </div>
+                            <div>
+                                <span class="block text-xs text-gray-500">المدينة / الموقع</span>
+                                <span class="font-bold text-slate-800">${prop.city}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-lg mb-2">التفاصيل الكاملة والمميزات:</h4>
+                        <p class="text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-xl border">${prop.desc}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4 border-t">
+                        <a href="https://wa.me/${waPhone}?text=${whatsappMsg}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-3 shadow transition">
+                            <i class="fa-brands fa-whatsapp text-2xl"></i>
+                            <span>تواصل واتساب مع المستشار</span>
+                        </a>
+                        <a href="tel:${consultantPhone}" class="bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-3 shadow transition">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>اتصال هاتفي مباشر</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('propertyDetailsModal').classList.remove('hidden');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('propertyDetailsModal').classList.add('hidden');
+        }
+
+        function changeModalSlide(direction, propKey) {
+            const prop = properties.find(p => p.firebaseKey === propKey);
+            if (!prop) return;
+            const imgList = prop.images || [prop.image];
+
+            modalSlideIndex = (modalSlideIndex + direction + imgList.length) % imgList.length;
+            document.getElementById('modalMainImg').src = imgList[modalSlideIndex];
+            document.getElementById('modalCounter').innerText = `${modalSlideIndex + 1} / ${imgList.length}`;
+        }
+
         async function deleteProperty(firebaseKey) {
-            if (confirm('هل أنت متأكد من حذف هذا العقار نهائياً؟')) {
+            if (confirm('هل أنت متأكد من حذف هذا العقار؟')) {
                 if (isOnlineConfigured) {
                     await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, {
                         method: 'DELETE'
@@ -513,9 +574,6 @@
             }
         }
 
-        // ==========================================
-        // 6. عرض العقارات والفلترة في الصفحة
-        // ==========================================
         function renderProperties() {
             const grid = document.getElementById('propertiesGrid');
             const cityFilter = document.getElementById('filterCity').value;
@@ -535,25 +593,21 @@
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm">
                         <i class="fa-regular fa-folder-open text-5xl text-gray-300 mb-3"></i>
-                        <p class="text-gray-500 font-semibold">لا توجد عروض مطابقة للبحث حالياً.. ادخل من لوحة الأدمن لإضافة عروض جديدة!</p>
+                        <p class="text-gray-500 font-semibold">لا توجد عروض مطابقة حالياً.</p>
                     </div>`;
                 return;
             }
 
             filtered.forEach(prop => {
                 const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
-                const whatsappMsg = encodeURIComponent(`مرحباً مستشارك العقاري، أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
-                const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
-
                 const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
                 currentSlideIndex[prop.firebaseKey] = 0;
 
-                // أزرار تقليب الصور لو العقار فيه أكتر من صورة
                 const sliderControlsHTML = imgList.length > 1 ? `
-                    <button onclick="changeSlide('${prop.firebaseKey}', -1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10" title="الصورة السابقة">
+                    <button onclick="changeSlide('${prop.firebaseKey}', -1, event)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10">
                         <i class="fa-solid fa-chevron-right text-xs"></i>
                     </button>
-                    <button onclick="changeSlide('${prop.firebaseKey}', 1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10" title="الصورة التالية">
+                    <button onclick="changeSlide('${prop.firebaseKey}', 1, event)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow z-10">
                         <i class="fa-solid fa-chevron-left text-xs"></i>
                     </button>
                     <span id="counter-${prop.firebaseKey}" class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2.5 py-0.5 rounded-full font-semibold z-10">
@@ -562,15 +616,15 @@
                 ` : '';
 
                 const deleteBtnHTML = isAdminLoggedIn ? `
-                    <button onclick="deleteProperty('${prop.firebaseKey}')" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow hover:bg-red-700 flex items-center justify-center z-20" title="حذف الإعلان">
+                    <button onclick="event.stopPropagation(); deleteProperty('${prop.firebaseKey}')" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow hover:bg-red-700 flex items-center justify-center z-20" title="حذف الإعلان">
                         <i class="fa-solid fa-trash text-sm"></i>
                     </button>
                 ` : '';
 
                 grid.innerHTML += `
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col">
+                    <div onclick="openPropertyDetails('${prop.firebaseKey}')" class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col cursor-pointer group">
                         <div class="relative h-60 bg-gray-200 select-none">
-                            <img id="img-${prop.firebaseKey}" src="${imgList[0]}" alt="${prop.title}" class="w-full h-full object-cover transition duration-300">
+                            <img id="img-${prop.firebaseKey}" src="${imgList[0]}" alt="${prop.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             
                             ${sliderControlsHTML}
 
@@ -585,27 +639,14 @@
                         
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
-                                <h4 class="font-bold text-lg text-slate-900 leading-snug mb-2">${prop.title}</h4>
+                                <h4 class="font-bold text-lg text-slate-900 leading-snug mb-2 group-hover:text-amber-600 transition">${prop.title}</h4>
                                 <p class="text-amber-600 font-extrabold text-xl mb-3">${prop.price}</p>
-                                <p class="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">${prop.desc}</p>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">${prop.desc}</p>
                             </div>
 
-                            <div>
-                                <div class="flex items-center justify-between text-xs text-gray-500 border-t pt-3 mb-4">
-                                    <span><i class="fa-solid fa-ruler-combined text-amber-500 ml-1"></i>المساحة: <b>${prop.area} م²</b></span>
-                                    <span><i class="fa-solid fa-images text-amber-500 ml-1"></i>${imgList.length} صور</span>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-2">
-                                    <a href="https://wa.me/${waPhone}?text=${whatsappMsg}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition">
-                                        <i class="fa-brands fa-whatsapp text-lg"></i>
-                                        <span>واتساب</span>
-                                    </a>
-                                    <a href="tel:${consultantPhone}" class="bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition">
-                                        <i class="fa-solid fa-phone"></i>
-                                        <span>اتصال</span>
-                                    </a>
-                                </div>
+                            <div class="border-t pt-3 flex items-center justify-between">
+                                <span class="text-xs text-gray-500"><i class="fa-solid fa-ruler-combined text-amber-500 ml-1"></i><b>${prop.area} م²</b></span>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition">عرض التفاصيل الكاملة ←</span>
                             </div>
                         </div>
                     </div>
@@ -620,9 +661,6 @@
             renderProperties();
         }
 
-        // ==========================================
-        // 7. التحكم في نافذة الأدمن وتسجيل الدخول
-        // ==========================================
         function toggleAdminModal() {
             document.getElementById('adminModal').classList.toggle('hidden');
         }
@@ -648,7 +686,6 @@
             renderProperties();
         }
 
-        // تشغيل الموقع فور الفتح
         loadData();
     </script>
 </body>
