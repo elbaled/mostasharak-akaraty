@@ -109,6 +109,16 @@
         .review-animate {
             animation: slideInFromLeft 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
+
+        /* أنيميشن الإشعارات */
+        @keyframes bounceIn {
+            0% { transform: translateY(-30px); opacity: 0; }
+            60% { transform: translateY(10px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate {
+            animation: bounceIn 0.5s ease forwards;
+        }
     </style>
 </head>
 <body class="text-slate-800">
@@ -156,6 +166,26 @@
         </div>
     </div>
 
+    <!-- صندوق الإشعارات العائم للمستخدمين -->
+    <div id="toastNotificationContainer" class="fixed top-20 left-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- شريط تثبيت الموقع (يظهر للزائر لتثبيت التطبيق على جهازه) -->
+    <div id="installAppBanner" class="hidden fixed bottom-4 right-4 left-4 md:left-auto z-50 bg-slate-900 border-2 border-amber-500 text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-4 max-w-md mx-auto">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-amber-500 text-slate-900 rounded-xl flex items-center justify-center font-black text-xl shadow">
+                <i class="fa-solid fa-house-chimney"></i>
+            </div>
+            <div>
+                <h5 class="font-bold text-sm">تثبيت تطبيق مستشارك العقاري</h5>
+                <p class="text-xs text-gray-300">ثبت الموقع على شاشة هاتفك للوصول السريع للعقارات</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="installAppPrompt()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition shadow">تثبيت</button>
+            <button onclick="dismissInstallBanner()" class="text-gray-400 hover:text-white px-2 py-1 text-xs">إغلاق</button>
+        </div>
+    </div>
+
     <!-- شريط التنقل الرئيسي -->
     <nav class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -168,7 +198,12 @@
             </div>
             
             <div class="flex items-center gap-2 md:gap-3">
-                <a id="topFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-9 h-9 rounded-lg flex items-center justify-center transition shadow" title="صفحة فيسبوك">
+                <!-- زر عرض الإشعارات -->
+                <button onclick="toggleNotificationsModal()" class="relative bg-slate-800 hover:bg-slate-700 text-amber-400 w-10 h-10 rounded-lg flex items-center justify-center transition shadow" title="الإشعارات">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                </button>
+                <a id="topFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-lg flex items-center justify-center transition shadow" title="فيسبوك">
                     <i class="fa-brands fa-facebook-f"></i>
                 </a>
                 <a id="topPhoneBtn" href="tel:01070031535" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
@@ -183,7 +218,7 @@
         </div>
     </nav>
 
-    <!-- الواجهة الرئيسية وصندوق البحث بالكود -->
+    <!-- الواجهة الرئيسية -->
     <header class="hero-bg text-white py-20 px-4 text-center">
         <div class="container mx-auto max-w-4xl">
             <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 inline-block">
@@ -313,6 +348,22 @@
                 <button onclick="closeDetailsModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-6 py-2.5 rounded-xl transition">
                     <i class="fa-solid fa-arrow-right ml-2"></i> العودة لقائمة العقارات
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض سجل الإشعارات -->
+    <div id="notificationsModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[80vh] overflow-y-auto">
+            <button onclick="toggleNotificationsModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-black text-slate-900 mb-4 border-b pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-bell text-amber-500"></i>
+                <span>سجل إشعارات العقارات الجديدة</span>
+            </h3>
+            <div id="notificationsListContent" class="space-y-3">
+                <p class="text-center text-gray-400 py-6 text-sm">لا توجد إشعارات جديدة حالياً.</p>
             </div>
         </div>
     </div>
@@ -453,8 +504,8 @@
                                 <select id="propType" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
                                     <option value="شقة">شقة سكنية</option>
                                     <option value="محل تجاري">محل تجاري</option>
-                                    <option value="أرض فاضية">أرض فاضية</option>
-                                    <option value="فيلا / دوبلكس">فيلا / دوبلكس</option>
+                                    <option value="أرض فاضية">أراضي فضاء</option>
+                                    <option value="فيلا / دوبلكس">فيلات ودوبلكس</option>
                                 </select>
                             </div>
                             <div>
@@ -485,12 +536,12 @@
 
                         <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-95 transition text-base flex items-center justify-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>نشر العقار الآن على الموقع</span>
+                            <span>نشر العقار وإرسال إشعار للعملاء</span>
                         </button>
                     </form>
                 </div>
 
-                <!-- التبويب الثاني: إدارة، تعديل، وتم البيع والحذف -->
+                <!-- التبويب الثاني: إدارة وتعديل وتم البيع والحذف -->
                 <div id="adminTab-manageTab" class="hidden space-y-3">
                     <div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-3 rounded-xl">
                         <i class="fa-solid fa-circle-info ml-1 text-amber-600"></i>
@@ -589,8 +640,8 @@
                         <select id="editPropType" class="w-full border rounded-xl p-2.5 text-sm bg-white">
                             <option value="شقة">شقة سكنية</option>
                             <option value="محل تجاري">محل تجاري</option>
-                            <option value="أرض فاضية">أرض فاضية</option>
-                            <option value="فيلا / دوبلكس">فيلا / دوبلكس</option>
+                            <option value="أرض فاضية">أراضي فضاء</option>
+                            <option value="فيلا / دوبلكس">فيلات ودوبلكس</option>
                         </select>
                     </div>
                     <div>
@@ -666,12 +717,38 @@
 
         let properties = [];
         let reviews = [];
+        let notifications = [];
         let currentReviewIndex = 0;
         let reviewInterval = null;
         let consultantPhone = "01070031535";
         let isAdminLoggedIn = false;
         let currentSlideIndex = {};
         let modalSlideIndex = 0;
+        let deferredPrompt = null;
+
+        // ميزة التثبيت (PWA Install Prompt)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installAppBanner').classList.remove('hidden');
+        });
+
+        function installAppPrompt() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('المستخدم وافق على تثبيت التطبيق');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installAppBanner').classList.add('hidden');
+                });
+            }
+        }
+
+        function dismissInstallBanner() {
+            document.getElementById('installAppBanner').classList.add('hidden');
+        }
 
         function typeWriterEffect(text, elementId, speed = 110) {
             const el = document.getElementById(elementId);
@@ -713,6 +790,7 @@
             startFinalTwoStagesIntro();
             loadData();
             loadReviews();
+            loadNotifications();
         });
 
         window.addEventListener('popstate', () => {
@@ -873,6 +951,77 @@
             });
         }
 
+        // نظام الإشعارات الفورية عند إضافة عقار جديد
+        async function loadNotifications() {
+            if (isOnlineConfigured) {
+                try {
+                    const res = await fetch(`${FIREBASE_URL}/notifications.json`);
+                    const data = await res.json();
+                    if (data) {
+                        notifications = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })).reverse();
+                    } else {
+                        notifications = [];
+                    }
+                } catch (e) { notifications = []; }
+            } else {
+                notifications = JSON.parse(localStorage.getItem('siteNotifications')) || [];
+            }
+            updateNotifBadge();
+        }
+
+        async function sendNewPropertyNotification(propTitle, propCode, propCity) {
+            const notifText = `تم إضافة عقار جديد: ${propTitle} (كود: ${propCode}) في ${propCity}`;
+            const newNotif = {
+                text: notifText,
+                time: "الآن"
+            };
+
+            if (isOnlineConfigured) {
+                await fetch(`${FIREBASE_URL}/notifications.json`, { method: 'POST', body: JSON.stringify(newNotif) });
+            } else {
+                notifications.unshift(newNotif);
+                localStorage.setItem('siteNotifications', JSON.stringify(notifications));
+            }
+            showToast(notifText);
+        }
+
+        function showToast(text) {
+            const container = document.getElementById('toastNotificationContainer');
+            const toast = document.createElement('div');
+            toast.className = "toast-animate bg-slate-900 border-2 border-amber-500 text-white p-4 rounded-2xl shadow-2xl pointer-events-auto flex items-center gap-3";
+            toast.innerHTML = `
+                <div class="w-10 h-10 bg-amber-500 text-slate-950 rounded-xl flex items-center justify-center shrink-0 font-black"><i class="fa-solid fa-bell"></i></div>
+                <div class="flex-1 text-xs"><b class="block text-amber-400 mb-0.5 font-bold">عقار جديد متاح!</b>${text}</div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 6000);
+        }
+
+        function updateNotifBadge() {
+            const badge = document.getElementById('notifBadge');
+            const listContent = document.getElementById('notificationsListContent');
+            if (notifications.length > 0) {
+                badge.innerText = notifications.length;
+                badge.classList.remove('hidden');
+                listContent.innerHTML = notifications.map(n => `
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs flex items-start gap-2.5">
+                        <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i>
+                        <div><p class="font-bold text-slate-900">${n.text}</p><span class="text-[10px] text-gray-400">${n.time}</span></div>
+                    </div>
+                `).join('');
+            } else {
+                badge.classList.add('hidden');
+                listContent.innerHTML = `<p class="text-center text-gray-400 py-6 text-sm">لا توجد إشعارات جديدة حالياً.</p>`;
+            }
+        }
+
+        function toggleNotificationsModal() {
+            document.getElementById('notificationsModal').classList.toggle('hidden');
+        }
+
         async function addProperty(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
@@ -899,13 +1048,17 @@
                 if (uploadedImages.length === 0) uploadedImages.push('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80');
 
                 submitBtn.innerHTML = `جاري الحفظ...`;
+                const propTitleVal = document.getElementById('propTitle').value.trim();
+                const propCodeVal = document.getElementById('propCode').value.trim().toUpperCase();
+                const propCityVal = document.getElementById('propCity').value;
+
                 const newProp = {
                     firebaseKey: "local_" + Date.now(),
                     id: Date.now(),
-                    code: document.getElementById('propCode').value.trim().toUpperCase(),
-                    title: document.getElementById('propTitle').value.trim(),
+                    code: propCodeVal,
+                    title: propTitleVal,
                     price: document.getElementById('propPrice').value.trim(),
-                    city: document.getElementById('propCity').value,
+                    city: propCityVal,
                     type: document.getElementById('propType').value,
                     status: document.getElementById('propStatus').value,
                     area: document.getElementById('propArea').value,
@@ -923,10 +1076,14 @@
                     renderProperties();
                 }
 
+                // إرسال إشعار فوري لجميع المستخدمين
+                await sendNewPropertyNotification(propTitleVal, propCodeVal, propCityVal);
+                await loadNotifications();
+
                 document.getElementById('addPropertyForm').reset();
                 document.getElementById('propImagesPreviewBox').innerHTML = '';
                 toggleAdminModal();
-                alert('تم نشر العقار بنجاح!');
+                alert('تم نشر العقار بنجاح وإرسال إشعار للعملاء!');
             } catch (err) {
                 alert('حدث خطأ أثناء الرفع.');
             } finally {
@@ -935,7 +1092,6 @@
             }
         }
 
-        // فتح نافذة التعديل للأدمن
         function openEditModal(firebaseKey) {
             const prop = properties.find(p => p.firebaseKey === firebaseKey);
             if (!prop) return;
@@ -956,7 +1112,6 @@
             document.getElementById('editPropertyModal').classList.add('hidden');
         }
 
-        // حفظ التعديلات
         async function saveEditedProperty(e) {
             e.preventDefault();
             const key = document.getElementById('editPropKey').value;
@@ -971,15 +1126,10 @@
             };
 
             const prop = properties.find(p => p.firebaseKey === key);
-            if (prop) {
-                Object.assign(prop, updatedData);
-            }
+            if (prop) Object.assign(prop, updatedData);
 
             if (isOnlineConfigured && !key.startsWith('local_')) {
-                await fetch(`${FIREBASE_URL}/properties/${key}.json`, {
-                    method: 'PATCH',
-                    body: JSON.stringify(updatedData)
-                });
+                await fetch(`${FIREBASE_URL}/properties/${key}.json`, { method: 'PATCH', body: JSON.stringify(updatedData) });
                 await loadData();
             } else {
                 localStorage.setItem('realEstateData', JSON.stringify(properties));
@@ -1012,15 +1162,9 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-1.5 shrink-0">
-                            <button onclick="openEditModal('${p.firebaseKey}')" class="bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition" title="تعديل">
-                                <i class="fa-solid fa-pen"></i> تعديل
-                            </button>
-                            <button onclick="toggleSoldStatus('${p.firebaseKey}', event)" class="${p.sold ? 'bg-emerald-600' : 'bg-slate-800'} text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow transition">
-                                ${p.sold ? 'إلغاء ' + soldLabel : soldLabel}
-                            </button>
-                            <button onclick="deleteProperty('${p.firebaseKey}')" class="bg-red-100 hover:bg-red-600 text-red-600 hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition" title="حذف">
-                                <i class="fa-solid fa-trash text-xs"></i>
-                            </button>
+                            <button onclick="openEditModal('${p.firebaseKey}')" class="bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition" title="تعديل"><i class="fa-solid fa-pen"></i> تعديل</button>
+                            <button onclick="toggleSoldStatus('${p.firebaseKey}', event)" class="${p.sold ? 'bg-emerald-600' : 'bg-slate-800'} text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow transition">${p.sold ? 'إلغاء ' + soldLabel : soldLabel}</button>
+                            <button onclick="deleteProperty('${p.firebaseKey}')" class="bg-red-100 hover:bg-red-600 text-red-600 hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition" title="حذف"><i class="fa-solid fa-trash text-xs"></i></button>
                         </div>
                     </div>
                 `;
@@ -1036,10 +1180,7 @@
             prop.sold = newSoldState;
 
             if (isOnlineConfigured && !firebaseKey.startsWith('local_')) {
-                await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, {
-                    method: 'PATCH',
-                    body: JSON.stringify({ sold: newSoldState })
-                });
+                await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, { method: 'PATCH', body: JSON.stringify({ sold: newSoldState }) });
                 await loadData();
             } else {
                 localStorage.setItem('realEstateData', JSON.stringify(properties));
@@ -1085,15 +1226,9 @@
                             </span>
                         </div>
                     ` : ''}
-                    <span class="absolute top-4 right-4 ${badgeColor} text-white font-bold px-4 py-1.5 rounded-full shadow z-20">
-                        ${prop.status} • ${prop.type}
-                    </span>
-                    <span class="absolute top-4 left-4 bg-amber-500 text-slate-900 font-black px-3.5 py-1.5 rounded-lg shadow z-20 text-sm">
-                        كود: ${prop.code || '---'}
-                    </span>
-                    <span class="absolute bottom-4 right-4 bg-slate-900/80 text-amber-400 font-bold px-3.5 py-1.5 rounded-lg z-20">
-                        <i class="fa-solid fa-location-dot ml-1"></i>${prop.city}
-                    </span>
+                    <span class="absolute top-4 right-4 ${badgeColor} text-white font-bold px-4 py-1.5 rounded-full shadow z-20">${prop.status} • ${prop.type}</span>
+                    <span class="absolute top-4 left-4 bg-amber-500 text-slate-900 font-black px-3.5 py-1.5 rounded-lg shadow z-20 text-sm">كود: ${prop.code || '---'}</span>
+                    <span class="absolute bottom-4 right-4 bg-slate-900/80 text-amber-400 font-bold px-3.5 py-1.5 rounded-lg z-20"><i class="fa-solid fa-location-dot ml-1"></i>${prop.city}</span>
                     ${imgList.length > 1 ? `
                         <button onclick="changeModalSlide(-1, '${propKey}')" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow z-20"><i class="fa-solid fa-chevron-right"></i></button>
                         <button onclick="changeModalSlide(1, '${propKey}')" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow z-20"><i class="fa-solid fa-chevron-left"></i></button>
