@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مستشارك العقاري | بدر والشروق والمدن الجديدة</title>
+    <title>مستشارك العقاري - م / محمود عبدالله | بدر والشروق والمدن الجديدة</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -27,9 +27,7 @@
             background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
         }
 
-        /* ===================================================
-           أنيميشن الانترو المختصر (تشطيب وإضاءة ثم الشعار)
-           =================================================== */
+        /* شاشة الانترو */
         #introScreen {
             position: fixed;
             inset: 0;
@@ -67,28 +65,24 @@
             }
         }
 
-        /* ظهور البيت المتشطب */
         #houseSvgContainer.house-ready {
             opacity: 1;
             transform: scale(1);
         }
 
-        /* رجوع البيت للخلف وتصغيره لكتابة الاسم */
         .logo-mode #houseSvgContainer {
             transform: scale(0.55) translateY(-15px);
         }
 
-        /* حركة قفل الباب الرئيسي */
         #mainDoorPanel {
             transform-origin: 204px 235px;
-            transform: scaleX(0.15); /* الباب مفتوح في البداية */
+            transform: scaleX(0.15);
             transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .door-closed #mainDoorPanel {
-            transform: scaleX(1); /* الباب يتقفل بالكامل */
+            transform: scaleX(1);
         }
 
-        /* إضاءة الشبابيك والفيلا */
         .window-glass {
             fill: #1e293b;
             transition: fill 0.9s ease, filter 0.9s ease;
@@ -98,7 +92,6 @@
             filter: drop-shadow(0 0 14px rgba(254, 240, 138, 0.95));
         }
 
-        /* مؤشر الكتابة حرف حرف */
         .typing-cursor::after {
             content: '|';
             color: #f59e0b;
@@ -108,104 +101,81 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+
+        @keyframes slideInFromLeft {
+            0% { opacity: 0; transform: translateX(-60px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        .review-animate {
+            animation: slideInFromLeft 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
     </style>
 </head>
 <body class="text-slate-800">
 
-    <!-- ==========================================
-         شاشة الانترو (اكتمال البيت + إضاءة وقفل الباب + كتابة الاسم)
-         ========================================== -->
+    <!-- شاشة الانترو -->
     <div id="introScreen" class="px-4 select-none">
-        
         <div id="sceneWrapper" class="w-full max-w-4xl flex flex-col items-center justify-center">
-            
             <div id="houseSvgContainer" class="relative flex items-center justify-center">
                 <svg viewBox="0 0 450 320" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                    
-                    <!-- خط الأرض الثابت -->
                     <line x1="20" y1="290" x2="430" y2="290" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
-
-                    <!-- الفيلا المتشطبة بالكامل -->
                     <g id="layer-finishing">
-                        <!-- جسم الفيلا المتشطب -->
                         <rect x="85" y="92" width="280" height="183" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
-                        <!-- ديكورات حجر الواجهة -->
                         <rect x="85" y="92" width="55" height="183" fill="#e2e8f0"/>
                         <rect x="190" y="92" width="70" height="183" fill="#f1f5f9"/>
-                        <!-- فاصل الديكور الذهبي بين الدورين -->
                         <rect x="80" y="172" width="290" height="8" rx="2" fill="#d97706"/>
-                        
-                        <!-- السقف القرميد الحديث -->
                         <polygon points="55,92 225,20 395,92" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
                         <polygon points="165,92 225,45 285,92" fill="#334155" stroke="#d97706" stroke-width="2"/>
-
-                        <!-- الشبابيك الزجاجية (الدور العلوي) -->
                         <rect x="100" y="110" width="45" height="45" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
                         <line x1="122.5" y1="110" x2="122.5" y2="155" stroke="#0f172a" stroke-width="2"/>
-                        
                         <rect x="202" y="105" width="46" height="55" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
-                        <!-- بلكونة الدور العلوي -->
                         <rect x="192" y="152" width="66" height="12" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-
                         <rect x="295" y="110" width="50" height="45" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
                         <line x1="320" y1="110" x2="320" y2="155" stroke="#0f172a" stroke-width="2"/>
-
-                        <!-- شبابيك الدور الأرضي -->
                         <rect x="100" y="195" width="45" height="50" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
                         <rect x="295" y="195" width="50" height="50" rx="4" class="window-glass" stroke="#0f172a" stroke-width="3"/>
-
-                        <!-- حلق الباب الرئيسي (داخله إضاءة ترحيبية) -->
                         <rect x="202" y="195" width="46" height="75" rx="3" fill="#fef08a" stroke="#78350f" stroke-width="4"/>
-                        
-                        <!-- ضلفة الباب الخشبي المصفح (تتقفل في الأنيميشن) -->
                         <g id="mainDoorPanel">
                             <rect x="204" y="197" width="42" height="72" fill="#451a03" stroke="#d97706" stroke-width="1.5"/>
-                            <!-- مقبض الباب الذهبي -->
                             <circle cx="240" cy="235" r="3" fill="#fbbf24"/>
                             <rect x="212" y="205" width="26" height="22" rx="2" fill="#78350f" stroke="#b45309" stroke-width="1"/>
                             <rect x="212" y="235" width="26" height="25" rx="2" fill="#78350f" stroke="#b45309" stroke-width="1"/>
                         </g>
-
-                        <!-- سلالم المدخل واللاندسكيب -->
                         <rect x="192" y="270" width="66" height="8" rx="2" fill="#94a3b8"/>
                         <rect x="184" y="278" width="82" height="10" rx="2" fill="#64748b"/>
-                        <!-- أشجار الزينة على الجانبين -->
                         <circle cx="65" cy="255" r="18" fill="#15803d"/>
                         <rect x="62" y="270" width="6" height="18" fill="#78350f"/>
                         <circle cx="385" cy="255" r="18" fill="#15803d"/>
                         <rect x="382" y="270" width="6" height="18" fill="#78350f"/>
                     </g>
-
                 </svg>
             </div>
-
-            <!-- نص اللوجو الذي يظهر حرفاً بحرف بعد إضاءة الفيلا ورجوعها للخلف -->
             <div id="brandLogoArea" class="text-center -mt-8 hidden">
                 <h1 id="typewriterTitle" class="text-4xl md:text-6xl font-black text-white tracking-wide typing-cursor"></h1>
             </div>
-
         </div>
     </div>
 
-    <!-- ==========================================
-         شريط التنقل الرئيسي للموقع (Navbar)
-         ========================================== -->
+    <!-- شريط التنقل الرئيسي -->
     <nav class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
                 <i class="fa-solid fa-building-wheat text-amber-500 text-3xl"></i>
                 <div>
-                    <h1 class="text-2xl font-bold text-white tracking-wide">مستشارك العقاري</h1>
-                    <p class="text-xs text-amber-400">بدر • الشروق • المدن الجديدة</p>
+                    <h1 class="text-xl md:text-2xl font-bold text-white tracking-wide">مستشارك العقاري</h1>
+                    <p class="text-xs text-amber-400">م / محمود عبدالله • بدر والشروق</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-3">
-                <a id="topPhoneBtn" href="tel:01070031525" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
-                    <i class="fa-solid fa-phone"></i>
-                    <span id="navPhoneText">01070031525</span>
+            <div class="flex items-center gap-2 md:gap-3">
+                <a id="topFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-9 h-9 rounded-lg flex items-center justify-center transition shadow" title="صفحة فيسبوك">
+                    <i class="fa-brands fa-facebook-f"></i>
                 </a>
-                <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-md transition">
+                <a id="topPhoneBtn" href="tel:01070031535" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
+                    <i class="fa-solid fa-phone"></i>
+                    <span id="navPhoneText" dir="ltr">01070031535</span>
+                </a>
+                <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-3 md:px-4 py-2 rounded-lg font-semibold text-xs md:text-sm flex items-center gap-2 shadow-md transition">
                     <i class="fa-solid fa-user-tie"></i>
                     <span>لوحة الأدمن</span>
                 </button>
@@ -213,7 +183,7 @@
         </div>
     </nav>
 
-    <!-- الواجهة الرئيسية (Hero Section) -->
+    <!-- الواجهة الرئيسية -->
     <header class="hero-bg text-white py-20 px-4 text-center">
         <div class="container mx-auto max-w-4xl">
             <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 inline-block">
@@ -223,10 +193,9 @@
                 ابحث عن عقارك المثالي في <span class="text-amber-500">بدر والشروق</span> والمدن الجديدة
             </h2>
             <p class="text-gray-300 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-                شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري.
+                شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري م / محمود عبدالله.
             </p>
 
-            <!-- صندوق البحث والفلترة -->
             <div class="bg-white p-4 rounded-xl shadow-2xl max-w-3xl mx-auto text-slate-800 grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                     <label class="block text-xs text-gray-500 text-right mb-1 font-semibold">المدينة</label>
@@ -271,12 +240,59 @@
         </div>
     </header>
 
-    <!-- قسم عرض العقارات -->
-    <main class="container mx-auto px-4 py-12">
+    <!-- ==========================================
+         البطاقة التعريفية لصاحب الموقع (م / محمود عبدالله)
+         ========================================== -->
+    <section class="container mx-auto px-4 -mt-10 relative z-30 mb-8">
+        <div class="bg-white rounded-3xl shadow-2xl border-2 border-amber-500/30 p-6 md:p-8 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-8">
+            <!-- صورة المستشار العقاري -->
+            <div class="relative shrink-0 group">
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 gold-gradient shadow-xl overflow-hidden">
+                    <img id="ownerCardAvatar" 
+                         src="mahmoud.jpg" 
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80';" 
+                         alt="م / محمود عبدالله" 
+                         class="w-full h-full object-cover object-top rounded-full border-4 border-white bg-slate-100">
+                </div>
+                <span class="absolute bottom-3 right-3 bg-emerald-500 w-5 h-5 rounded-full border-2 border-white shadow" title="متاح للتواصل"></span>
+            </div>
+
+            <!-- بيانات المستشار -->
+            <div class="flex-1 text-center md:text-right">
+                <div class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3.5 py-1 rounded-full text-xs font-bold mb-2 border border-amber-200">
+                    <i class="fa-solid fa-award text-amber-500"></i>
+                    <span id="ownerCardTitle">مستشارك العقاري بالمدن الجديدة</span>
+                </div>
+                <h3 id="ownerCardName" class="text-2xl md:text-3xl font-black text-slate-900 mb-2">م / محمود عبدالله</h3>
+                <p id="ownerCardBio" class="text-gray-600 text-sm md:text-base leading-relaxed mb-5">
+                    خبرة واسعة في التسويق والاستثمار العقاري بمدينة بدر والشروق والمدن الجديدة. نساعدك في اختيار العقار الأنسب للسكن أو الاستثمار (شقق تمليك وإيجار، محلات تجارية، وأراضي) بأفضل الأسعار وبأعلى درجات الأمان والمصداقية.
+                </p>
+
+                <!-- أزرار التواصل السريع (واتساب + اتصال + فيسبوك) -->
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                    <a id="ownerCardWaBtn" href="https://wa.me/201070031535" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>تواصل واتساب</span>
+                    </a>
+                    <a id="ownerCardCallBtn" href="tel:01070031535" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
+                        <i class="fa-solid fa-phone"></i>
+                        <span id="ownerCardPhoneText" dir="ltr">01070031535</span>
+                    </a>
+                    <a id="ownerCardFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
+                        <i class="fa-brands fa-facebook text-lg"></i>
+                        <span>فيسبوك</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم العقارات -->
+    <main class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
             <div>
                 <h3 class="text-2xl font-bold text-slate-900">أحدث العروض العقارية</h3>
-                <p class="text-gray-500 text-sm">اضغط على أي عقار لمشاهدة التفاصيل الكاملة والصور الكبيرة</p>
+                <p class="text-gray-500 text-sm">اضغط على أي عقار لمشاهدة التفاصيل الكاملة وصور العقار</p>
             </div>
             <span id="propertiesCount" class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-sm">0 عقار متاح</span>
         </div>
@@ -284,7 +300,7 @@
         <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <!-- نافذة تفاصيل العقار الكاملة (Modal) -->
+    <!-- نافذة تفاصيل العقار (Modal) -->
     <div id="propertyDetailsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="closeDetailsModal()" class="absolute top-4 left-4 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 w-10 h-10 rounded-full flex items-center justify-center text-xl transition z-20">
@@ -301,126 +317,284 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الأدمن -->
-    <div id="adminModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
-            <button onclick="toggleAdminModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
+    <!-- قسم آراء العملاء -->
+    <section class="bg-slate-900 text-white py-16 px-4 mt-12 border-t-4 border-amber-500">
+        <div class="container mx-auto max-w-5xl">
+            <div class="text-center mb-10">
+                <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-4 py-1 rounded-full text-xs font-bold">ثقة عملائنا سر نجاحنا</span>
+                <h3 class="text-3xl font-extrabold mt-3">آراء وتقييمات العملاء</h3>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 bg-slate-800/90 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl relative min-h-[230px] flex flex-col justify-between overflow-hidden">
+                    <i class="fa-solid fa-quote-left text-6xl text-amber-500/10 absolute top-4 left-4"></i>
+                    <div id="reviewSliderBox" class="my-auto z-10"></div>
+                    <div class="flex items-center justify-between border-t border-slate-700/80 pt-4 mt-4 z-10">
+                        <div class="flex items-center gap-2">
+                            <button onclick="prevReview()" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-amber-500 text-white flex items-center justify-center transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                            <button onclick="nextReview()" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-amber-500 text-white flex items-center justify-center transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        </div>
+                        <span id="reviewCounterText" class="text-xs text-amber-400 font-bold"></span>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 bg-white text-slate-800 rounded-2xl p-6 shadow-xl">
+                    <h4 class="font-bold text-lg mb-4 text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-amber-500"></i>
+                        <span>شاركنا رأيك وتجربتك</span>
+                    </h4>
+                    <form id="addReviewForm" onsubmit="submitClientReview(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">الاسم الكريم *</label>
+                            <input type="text" id="reviewerName" required placeholder="اكتب اسمك هنا..." class="w-full border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-amber-500 bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">رأيك في خدماتنا *</label>
+                            <textarea id="reviewerComment" rows="3" required placeholder="اكتب تجربتك مع م / محمود عبدالله..." class="w-full border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-amber-500 bg-gray-50"></textarea>
+                        </div>
+                        <button type="submit" id="submitReviewBtn" class="w-full gold-gradient text-white font-bold py-2.5 rounded-xl shadow hover:opacity-95 transition text-sm">
+                            <i class="fa-solid fa-paper-plane ml-1"></i> إرسال الرأي
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         لوحة تحكم الأدمن الاحترافية والمنظمة (Modal)
+         ========================================== -->
+    <div id="adminModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-3 md:p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full p-5 md:p-7 shadow-2xl relative my-8 max-h-[92vh] overflow-y-auto">
+            <button onclick="toggleAdminModal()" class="absolute top-4 left-4 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 w-9 h-9 rounded-full flex items-center justify-center text-lg transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <div id="adminLoginSection">
+            <!-- شاشة تسجيل الدخول -->
+            <div id="adminLoginSection" class="py-6">
                 <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
-                        <i class="fa-solid fa-lock"></i>
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                        <i class="fa-solid fa-user-shield"></i>
                     </div>
-                    <h3 class="text-2xl font-bold">دخول إدارة الموقع</h3>
-                    <p class="text-gray-500 text-sm">خاص بالمستشار العقاري لإضافة وحذف العروض</p>
+                    <h3 class="text-2xl font-black text-slate-900">إدارة موقع مستشارك العقاري</h3>
+                    <p class="text-gray-500 text-sm mt-1">خاص بـ م / محمود عبدالله لإضافة العروض وإدارة الموقع</p>
                 </div>
                 <div class="max-w-sm mx-auto space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold mb-1">كلمة المرور</label>
-                        <input type="password" id="adminPasswordInput" placeholder=": " class="w-full border rounded-lg p-3 focus:outline-amber-500">
+                        <label class="block text-sm font-bold mb-1 text-slate-700">كلمة المرور</label>
+                        <input type="password" id="adminPasswordInput" onkeydown="if(event.key==='Enter') loginAdmin()" placeholder="أدخل كلمة المرور الخاصة بك" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:outline-none focus:border-amber-500 text-center text-lg tracking-widest">
                     </div>
-                    <button onclick="loginAdmin()" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow">دخول للوحة التحكم</button>
+                    <button onclick="loginAdmin()" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-95 transition">
+                        <i class="fa-solid fa-right-to-bracket ml-1"></i> دخول لوحة التحكم
+                    </button>
                 </div>
             </div>
 
-            <div id="adminDashboardSection" class="hidden">
-                <div class="flex justify-between items-center border-b pb-3 mb-6">
-                    <h3 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-plus-circle text-amber-600 ml-2"></i>إضافة عقار جديد</h3>
-                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold">تسجيل خروج</button>
-                </div>
-
-                <div class="bg-slate-100 p-4 rounded-xl mb-6 border border-slate-200">
-                    <label class="block text-sm font-bold mb-2 text-slate-700">رقم الهاتف / واتساب المستشار العقاري:</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="consultantPhoneInput" class="flex-1 border rounded-lg p-2 text-left bg-white" dir="ltr" placeholder="010xxxxxxxx">
-                        <button type="button" onclick="savePhone()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold">حفظ الرقم</button>
-                    </div>
-                </div>
-
-                <form id="addPropertyForm" onsubmit="addProperty(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold mb-1">عنوان الإعلان *</label>
-                            <input type="text" id="propTitle" required placeholder="مثال: شقة للإيجار بمدينة بدر" class="w-full border rounded-lg p-2.5">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">السعر *</label>
-                            <input type="text" id="propPrice" required placeholder="مثال: 4,500 ج/شهرياً" class="w-full border rounded-lg p-2.5">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold mb-1">المدينة *</label>
-                            <select id="propCity" class="w-full border rounded-lg p-2.5 bg-white">
-                                <option value="مدينة بدر">مدينة بدر</option>
-                                <option value="مدينة الشروق">مدينة الشروق</option>
-                                <option value="العبور">مدينة العبور</option>
-                                <option value="العاصمة الإدارية">العاصمة الإدارية</option>
-                                <option value="التجمع الخامس">التجمع الخامس</option>
-                                <option value="مدن أخرى">مدن جديدة أخرى</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">نوع العقار *</label>
-                            <select id="propType" class="w-full border rounded-lg p-2.5 bg-white">
-                                <option value="شقة">شقة سكنية</option>
-                                <option value="محل تجاري">محل تجاري</option>
-                                <option value="أرض فاضية">أرض فاضية</option>
-                                <option value="فيلا / دوبلكس">فيلا / دوبلكس</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">نوع العرض *</label>
-                            <select id="propStatus" class="w-full border rounded-lg p-2.5 bg-white">
-                                <option value="إيجار">إيجار</option>
-                                <option value="تمليك">بيع / تمليك</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold mb-1">المساحة (م²) *</label>
-                            <input type="number" id="propArea" required placeholder="135" class="w-full border rounded-lg p-2.5">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">صور العقار *</label>
-                            <input type="file" id="propImageFile" accept="image/*" multiple class="w-full border rounded-lg p-2 text-sm bg-gray-50">
-                        </div>
-                    </div>
-
+            <!-- لوحة التحكم المقسمة لتبويبات منظمة -->
+            <div id="adminDashboardSection" class="hidden space-y-6">
+                <div class="flex flex-wrap justify-between items-center border-b pb-4 gap-2 pl-10">
                     <div>
-                        <label class="block text-sm font-bold mb-1">تفاصيل ومميزات العقار *</label>
-                        <textarea id="propDesc" rows="3" required placeholder="اكتب تفاصيل العقار..." class="w-full border rounded-lg p-2.5"></textarea>
+                        <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-gauge-high text-amber-600"></i>
+                            <span>لوحة تحكم المستشار العقاري</span>
+                        </h3>
+                        <p class="text-xs text-gray-500">مرحباً بك م / محمود عبدالله، يمكنك إدارة موقعك بالكامل من هنا</p>
                     </div>
-
-                    <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3 rounded-lg shadow">
-                        <i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار
+                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3.5 py-1.5 rounded-lg font-bold transition">
+                        <i class="fa-solid fa-power-off ml-1"></i>تسجيل خروج
                     </button>
-                </form>
+                </div>
+
+                <!-- أزرار التبويبات (Tabs) لترتيب لوحة الأدمن -->
+                <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                    <button type="button" onclick="switchAdminTab('addTab')" id="tabBtn-addTab" class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm bg-slate-900 text-white shadow transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-plus-circle text-amber-400"></i>
+                        <span>إضافة عقار جديد</span>
+                    </button>
+                    <button type="button" onclick="switchAdminTab('manageTab')" id="tabBtn-manageTab" class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm text-slate-600 hover:bg-white/60 transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-list-check text-amber-600"></i>
+                        <span>إدارة العروض وتم البيع</span>
+                    </button>
+                    <button type="button" onclick="switchAdminTab('profileTab')" id="tabBtn-profileTab" class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm text-slate-600 hover:bg-white/60 transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-id-card text-amber-600"></i>
+                        <span>بيانات وصورة المستشار</span>
+                    </button>
+                </div>
+
+                <!-- التبويب الأول: إضافة عقار جديد بتصميم منظم وسريع -->
+                <div id="adminTab-addTab" class="space-y-4">
+                    <form id="addPropertyForm" onsubmit="addProperty(event)" class="bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">عنوان الإعلان العقاري *</label>
+                                <input type="text" id="propTitle" required placeholder="مثال: شقة 140م سوبر لوكس بمدينة بدر الحي المتميز" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">السعر أو الإيجار الشهري *</label>
+                                <input type="text" id="propPrice" required placeholder="مثال: 4,500 ج/شهرياً أو 1,850,000 كاش" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">المدينة *</label>
+                                <select id="propCity" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
+                                    <option value="مدينة بدر">مدينة بدر</option>
+                                    <option value="مدينة الشروق">مدينة الشروق</option>
+                                    <option value="العبور">مدينة العبور</option>
+                                    <option value="العاصمة الإدارية">العاصمة الإدارية</option>
+                                    <option value="التجمع الخامس">التجمع الخامس</option>
+                                    <option value="مدن أخرى">مدن جديدة أخرى</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">نوع العقار *</label>
+                                <select id="propType" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
+                                    <option value="شقة">شقة سكنية</option>
+                                    <option value="محل تجاري">محل تجاري</option>
+                                    <option value="أرض فاضية">أرض فاضية</option>
+                                    <option value="فيلا / دوبلكس">فيلا / دوبلكس</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">نوع العرض *</label>
+                                <select id="propStatus" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
+                                    <option value="إيجار">للإيجار</option>
+                                    <option value="تمليك">للبيع / تمليك</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">المساحة (م²) *</label>
+                                <input type="number" id="propArea" required placeholder="مثال: 140" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
+                            </div>
+                        </div>
+
+                        <!-- صندوق رفع الصور مع معاينة فورية -->
+                        <div class="bg-white p-4 rounded-xl border-2 border-dashed border-amber-400 text-center">
+                            <label for="propImageFile" class="cursor-pointer block">
+                                <i class="fa-solid fa-images text-3xl text-amber-500 mb-2"></i>
+                                <span class="block text-sm font-bold text-slate-800">اضغط هنا لاختيار صور العقار من جهازك (يمكنك تحديد عدة صور معاً)</span>
+                                <span class="block text-xs text-gray-400 mt-1">يتم رفع الصور مجاناً وبجودة عالية</span>
+                            </label>
+                            <input type="file" id="propImageFile" accept="image/*" multiple onchange="previewSelectedPropertyImages(event)" class="hidden">
+                            <!-- معاينة الصور المختارة قبل النشر -->
+                            <div id="propImagesPreviewBox" class="flex flex-wrap gap-2 justify-center mt-3 empty:hidden"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">التفاصيل الكاملة والمميزات *</label>
+                            <textarea id="propDesc" rows="3" required placeholder="اكتب كافة التفاصيل: رقم الدور، عدد الغرف والحمامات، نوع التشطيب، المرافق والعدادات، الموقع بالتفصيل..." class="w-full border border-gray-300 rounded-xl p-3 text-sm bg-white focus:outline-amber-500"></textarea>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-95 transition text-base flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>نشر العقار الآن على الموقع</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- التبويب الثاني: إدارة العقارات السريعة وتفعيل "تم البيع" -->
+                <div id="adminTab-manageTab" class="hidden space-y-3">
+                    <div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-3 rounded-xl">
+                        <i class="fa-solid fa-circle-info ml-1 text-amber-600"></i>
+                        من هنا يمكنك بضغطة واحدة تفعيل أو إلغاء ختم <b>(تم البيع / تم التأجير)</b> أو حذف أي عقار مباشرة.
+                    </div>
+                    <div id="adminPropertiesList" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                        <!-- قائمة العقارات المصغرة للأدمن -->
+                    </div>
+                </div>
+
+                <!-- التبويب الثالث: تعديل البطاقة التعريفية ورفع صورة م / محمود عبدالله -->
+                <div id="adminTab-profileTab" class="hidden">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                        <div class="bg-blue-50 border border-blue-200 text-blue-900 text-xs p-3 rounded-xl leading-relaxed">
+                            <i class="fa-solid fa-camera ml-1 text-blue-600"></i>
+                            <b>لتثبيت صورتك الشخصية أونلاين لكل الزوار:</b> اضغط على زر <b>(اختيار صورة المستشار)</b> بالأسفل واختر صورتك من الهاتف ثم اضغط حفظ، وسيتم رفعها وحفظها في قاعدة البيانات للأبد.
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-xl border">
+                            <img id="adminAvatarPreview" src="mahmoud.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80';" class="w-20 h-20 rounded-full object-cover object-top border-2 border-amber-500 shrink-0">
+                            <div class="flex-1 text-center sm:text-right">
+                                <label class="block text-xs font-bold text-slate-800 mb-1">الصورة الشخصية للمستشار العقاري</label>
+                                <input type="file" id="ownerAvatarFile" accept="image/*" onchange="previewOwnerAvatar(event)" class="w-full text-xs border rounded-lg p-1.5 bg-gray-50">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">اسم المستشار العقاري</label>
+                                <input type="text" id="ownerNameInput" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="م / محمود عبدالله">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">المسمى الوظيفي</label>
+                                <input type="text" id="ownerTitleInput" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="مستشارك العقاري بالمدن الجديدة">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">رقم الهاتف والواتساب</label>
+                                <input type="text" id="consultantPhoneInput" class="w-full border rounded-xl p-2.5 text-sm text-left bg-white" dir="ltr" placeholder="01070031535">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">رابط حساب فيسبوك</label>
+                                <input type="text" id="ownerFbInput" class="w-full border rounded-xl p-2.5 text-sm text-left bg-white" dir="ltr" placeholder="https://www.facebook.com/share/1JfpJ2n8FF/">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">النبذة التعريفية بالبطاقة</label>
+                            <textarea id="ownerBioInput" rows="3" class="w-full border rounded-xl p-2.5 text-sm bg-white"></textarea>
+                        </div>
+
+                        <button type="button" id="saveProfileBtn" onclick="saveOwnerProfile()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl text-sm font-bold transition shadow-lg">
+                            <i class="fa-solid fa-floppy-disk ml-1"></i> حفظ وتحديث البطاقة التعريفية والصورة
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <!-- الفوتر -->
-    <footer class="bg-slate-900 text-gray-400 py-8 text-center border-t border-slate-800 mt-16">
+    <footer class="bg-slate-950 text-gray-400 py-10 text-center border-t border-slate-800">
         <div class="container mx-auto px-4">
-            <h4 class="text-white font-bold text-lg mb-2">مستشارك العقاري</h4>
-            <p class="text-sm mb-4">متخصصون في التسويق والاستشارات العقارية بمدينة بدر والشروق والمدن الجديدة</p>
+            <h4 class="text-white font-bold text-xl mb-1">مستشارك العقاري - <span id="footerOwnerName" class="text-amber-400">م / محمود عبدالله</span></h4>
+            <p class="text-sm mb-5">متخصصون في التسويق والاستشارات العقارية بمدينة بدر والشروق والمدن الجديدة</p>
+            <div class="flex justify-center items-center gap-3 mb-6">
+                <a id="footerWaBtn" href="https://wa.me/201070031535" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                </a>
+                <a id="footerFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow">
+                    <i class="fa-brands fa-facebook-f text-lg"></i>
+                </a>
+                <a id="footerCallBtn" href="tel:01070031535" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition shadow">
+                    <i class="fa-solid fa-phone"></i>
+                    <span id="footerPhoneText" dir="ltr">01070031535</span>
+                </a>
+            </div>
             <p class="text-xs text-gray-500">جميع الحقوق محفوظة © 2026</p>
         </div>
     </footer>
 
-    <!-- الجافاسكريبت الكامل -->
+    <!-- الجافاسكريبت -->
     <script>
         const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; 
         const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; 
         const ADMIN_PASS = "31535";
 
         const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
+
+        // البيانات الأساسية المعتمدة لـ م / محمود عبدالله
+        let ownerProfile = {
+            name: "م / محمود عبدالله",
+            title: "مستشارك العقاري بالمدن الجديدة",
+            phone: "01070031535",
+            fb: "https://www.facebook.com/share/1JfpJ2n8FF/",
+            bio: "خبرة واسعة في التسويق والاستثمار العقاري بمدينة بدر والشروق والمدن الجديدة. نساعدك في اختيار العقار الأنسب للسكن أو الاستثمار (شقق تمليك وإيجار، محلات تجارية، وأراضي) بأفضل الأسعار وبأعلى درجات الأمان والمصداقية.",
+            avatar: "mahmoud.jpg"
+        };
 
         const defaultProperties = [
             {
@@ -432,37 +606,37 @@
                 type: "شقة",
                 status: "إيجار",
                 area: 140,
+                sold: false,
                 desc: "3 غرف نوم + ريسبشن كبير + 2 حمام. تشطيب سوبر لوكس، أول سكن، قريبة من الخدمات والجامعة الروسية.",
                 images: [
                     "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
                     "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
                 ]
+            }
+        ];
+
+        const defaultReviews = [
+            {
+                firebaseKey: "rev_1",
+                name: "أحمد محمود",
+                comment: "تعامل راقي جداً ومصداقية عالية مع الباشمهندس محمود عبدالله، استلمت شقتي في مدينة بدر في نفس الميعاد وبأفضل سعر."
             },
             {
-                firebaseKey: "prop_2",
-                id: 2,
-                title: "شقة تمليك لقطة في الشروق - المنطقة الثامنة",
-                price: "2,100,000 جنيه",
-                city: "مدينة الشروق",
-                type: "شقة",
-                status: "تمليك",
-                area: 165,
-                desc: "شقة واجهة بحري صريح، الدور الثاني، أسانسير شغال، حصة في الأرض والجراج، استلام فوري.",
-                images: [
-                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
-                ]
+                firebaseKey: "rev_2",
+                name: "محمد عبد الرحمن",
+                comment: "محترمين جداً وفاهمين السوق في الشروق وبدر كويس أوي، بنصح أي حد يتعامل مع م / محمود عبدالله."
             }
         ];
 
         let properties = [];
-        let consultantPhone = localStorage.getItem('consultantPhone') || "01070031525";
+        let reviews = [];
+        let currentReviewIndex = 0;
+        let reviewInterval = null;
+        let consultantPhone = "01070031535";
         let isAdminLoggedIn = false;
         let currentSlideIndex = {};
         let modalSlideIndex = 0;
 
-        // ========================================================
-        // أنيميشن الانترو المختصر (آخر مرحلتين فقط + مستشارك العقاري)
-        // ========================================================
         function typeWriterEffect(text, elementId, speed = 110) {
             const el = document.getElementById(elementId);
             if (!el) return;
@@ -486,24 +660,13 @@
             const brandArea = document.getElementById('brandLogoArea');
             const screen = document.getElementById('introScreen');
 
-            // 1. ظهور البيت مكتمل التشطيب فوراً
-            setTimeout(() => {
-                svgContainer.classList.add('house-ready');
-            }, 150);
-
-            // 2. قفل الباب الرئيسي وإضاءة شبابيك البيت
-            setTimeout(() => {
-                svgContainer.classList.add('door-closed', 'lights-on');
-            }, 1200);
-
-            // 3. البيت يرجع لورا ويصغر وتظهر كلمة "مستشارك العقاري" فقط حرف حرف
+            setTimeout(() => { svgContainer.classList.add('house-ready'); }, 150);
+            setTimeout(() => { svgContainer.classList.add('door-closed', 'lights-on'); }, 1200);
             setTimeout(() => {
                 wrapper.classList.add('logo-mode');
                 brandArea.classList.remove('hidden');
                 typeWriterEffect("مستشارك العقاري", "typewriterTitle", 110);
             }, 2600);
-
-            // 4. إخفاء شاشة الانترو وفتح الموقع
             setTimeout(() => {
                 screen.style.opacity = '0';
                 setTimeout(() => screen.style.display = 'none', 800);
@@ -513,9 +676,9 @@
         window.addEventListener('DOMContentLoaded', () => {
             startFinalTwoStagesIntro();
             loadData();
+            loadReviews();
         });
 
-        // دعم زر الرجوع في الموبايل لعدم الخروج من الموقع عند فتح تفاصيل الشقة
         window.addEventListener('popstate', () => {
             const detailsModal = document.getElementById('propertyDetailsModal');
             if (!detailsModal.classList.contains('hidden')) {
@@ -523,57 +686,164 @@
             }
         });
 
+        // التبديل بين تبويبات لوحة الأدمن
+        function switchAdminTab(tabName) {
+            ['addTab', 'manageTab', 'profileTab'].forEach(t => {
+                document.getElementById(`adminTab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tabBtn-${t}`);
+                btn.className = "py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm text-slate-600 hover:bg-white/60 transition flex items-center justify-center gap-1.5";
+            });
+            document.getElementById(`adminTab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tabBtn-${tabName}`).className = "py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm bg-slate-900 text-white shadow transition flex items-center justify-center gap-1.5";
+            if (tabName === 'manageTab') renderAdminManageList();
+        }
+
+        // معاينة صور العقار قبل الرفع
+        function previewSelectedPropertyImages(event) {
+            const box = document.getElementById('propImagesPreviewBox');
+            box.innerHTML = '';
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const url = URL.createObjectURL(files[i]);
+                box.innerHTML += `<img src="${url}" class="w-16 h-16 object-cover rounded-lg border-2 border-amber-500 shadow">`;
+            }
+        }
+
+        // معاينة الصورة الشخصية للمستشار داخل لوحة الأدمن
+        function previewOwnerAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('adminAvatarPreview').src = URL.createObjectURL(file);
+            }
+        }
+
         async function loadData() {
             if (isOnlineConfigured) {
                 try {
-                    const phoneRes = await fetch(`${FIREBASE_URL}/settings/phone.json`);
-                    const savedPhone = await phoneRes.json();
-                    if (savedPhone) consultantPhone = savedPhone;
-                    updatePhoneUI();
+                    const profileRes = await fetch(`${FIREBASE_URL}/settings/ownerProfile.json`);
+                    const savedProfile = await profileRes.json();
+                    if (savedProfile) {
+                        ownerProfile = { ...ownerProfile, ...savedProfile };
+                        if (!savedProfile.name || savedProfile.name === "مستشارك العقاري") {
+                            ownerProfile.name = "م / محمود عبدالله";
+                        }
+                        if (!savedProfile.fb) {
+                            ownerProfile.fb = "https://www.facebook.com/share/1JfpJ2n8FF/";
+                        }
+                    }
+                    updateOwnerProfileUI();
 
                     const propRes = await fetch(`${FIREBASE_URL}/properties.json`);
                     const data = await propRes.json();
                     
                     if (data) {
-                        properties = Object.keys(data).map(key => ({
-                            firebaseKey: key,
-                            ...data[key]
-                        })).reverse();
+                        properties = Object.keys(data)
+                            .map(key => ({ firebaseKey: key, ...data[key] }))
+                            .filter(item => item && item.title)
+                            .reverse();
                     } else {
                         properties = [];
                     }
                     renderProperties();
+                    if (isAdminLoggedIn) renderAdminManageList();
                 } catch (error) {
                     console.error("خطأ في الاتصال:", error);
                 }
             } else {
+                const localProf = JSON.parse(localStorage.getItem('ownerProfileData'));
+                if (localProf) ownerProfile = { ...ownerProfile, ...localProf };
+                updateOwnerProfileUI();
+
                 properties = JSON.parse(localStorage.getItem('realEstateData')) || defaultProperties;
-                updatePhoneUI();
                 renderProperties();
             }
         }
 
-        function updatePhoneUI() {
+        function updateOwnerProfileUI() {
+            consultantPhone = ownerProfile.phone || "01070031535";
+            const fbUrl = ownerProfile.fb || "https://www.facebook.com/share/1JfpJ2n8FF/";
+            const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
+
             document.getElementById('navPhoneText').innerText = consultantPhone;
+            document.getElementById('footerPhoneText').innerText = consultantPhone;
+            document.getElementById('footerOwnerName').innerText = ownerProfile.name;
             document.getElementById('topPhoneBtn').href = `tel:${consultantPhone}`;
+            document.getElementById('topFbBtn').href = fbUrl;
+            document.getElementById('footerFbBtn').href = fbUrl;
+            document.getElementById('footerWaBtn').href = `https://wa.me/${waPhone}`;
+            document.getElementById('footerCallBtn').href = `tel:${consultantPhone}`;
+
+            document.getElementById('ownerCardName').innerText = ownerProfile.name;
+            document.getElementById('ownerCardTitle').innerText = ownerProfile.title;
+            document.getElementById('ownerCardBio').innerText = ownerProfile.bio;
+            if (ownerProfile.avatar) {
+                document.getElementById('ownerCardAvatar').src = ownerProfile.avatar;
+                document.getElementById('adminAvatarPreview').src = ownerProfile.avatar;
+            }
+            document.getElementById('ownerCardPhoneText').innerText = consultantPhone;
+            document.getElementById('ownerCardCallBtn').href = `tel:${consultantPhone}`;
+            document.getElementById('ownerCardWaBtn').href = `https://wa.me/${waPhone}?text=${encodeURIComponent('مرحباً م / محمود عبدالله، أود الاستفسار عن العروض العقارية المتاحة')}`;
+            document.getElementById('ownerCardFbBtn').href = fbUrl;
+
+            document.getElementById('ownerNameInput').value = ownerProfile.name;
+            document.getElementById('ownerTitleInput').value = ownerProfile.title;
             document.getElementById('consultantPhoneInput').value = consultantPhone;
+            document.getElementById('ownerFbInput').value = fbUrl;
+            document.getElementById('ownerBioInput').value = ownerProfile.bio;
         }
 
-        async function savePhone() {
-            const newPhone = document.getElementById('consultantPhoneInput').value.trim();
-            if (!newPhone) return;
-            consultantPhone = newPhone;
-            localStorage.setItem('consultantPhone', consultantPhone);
+        async function saveOwnerProfile() {
+            const btn = document.getElementById('saveProfileBtn');
+            const avatarInput = document.getElementById('ownerAvatarFile');
+            const file = avatarInput.files[0];
 
-            if (isOnlineConfigured) {
-                await fetch(`${FIREBASE_URL}/settings/phone.json`, {
-                    method: 'PUT',
-                    body: JSON.stringify(newPhone)
-                });
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري رفع الصورة وحفظ البيانات...';
+
+            try {
+                let avatarUrl = ownerProfile.avatar;
+                if (file) {
+                    if (!IMGBB_API_KEY.includes("YOUR_IMGBB")) {
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const imgData = await imgRes.json();
+                        if (imgData.success) avatarUrl = imgData.data.url;
+                    } else {
+                        avatarUrl = await fileToBase64(file);
+                    }
+                }
+
+                ownerProfile = {
+                    name: document.getElementById('ownerNameInput').value.trim() || "م / محمود عبدالله",
+                    title: document.getElementById('ownerTitleInput').value.trim() || "مستشارك العقاري بالمدن الجديدة",
+                    phone: document.getElementById('consultantPhoneInput').value.trim() || "01070031535",
+                    fb: document.getElementById('ownerFbInput').value.trim() || "https://www.facebook.com/share/1JfpJ2n8FF/",
+                    bio: document.getElementById('ownerBioInput').value.trim(),
+                    avatar: avatarUrl
+                };
+
+                localStorage.setItem('ownerProfileData', JSON.stringify(ownerProfile));
+
+                if (isOnlineConfigured) {
+                    await fetch(`${FIREBASE_URL}/settings/ownerProfile.json`, {
+                        method: 'PUT',
+                        body: JSON.stringify(ownerProfile)
+                    });
+                }
+
+                updateOwnerProfileUI();
+                renderProperties();
+                alert('تم حفظ بيانات وصورة م / محمود عبدالله بنجاح!');
+            } catch (e) {
+                alert('حدث خطأ أثناء الحفظ.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk ml-1"></i> حفظ وتحديث البطاقة التعريفية والصورة';
             }
-            updatePhoneUI();
-            renderProperties();
-            alert('تم تحديث رقم الهاتف بنجاح!');
         }
 
         function fileToBase64(file) {
@@ -597,7 +867,7 @@
             try {
                 if (files.length > 0) {
                     for (let i = 0; i < files.length; i++) {
-                        submitBtn.innerHTML = `جاري رفع الصورة (${i + 1} من ${files.length})...`;
+                        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري رفع الصورة (${i + 1} من ${files.length})...`;
                         if (!IMGBB_API_KEY.includes("YOUR_IMGBB")) {
                             const formData = new FormData();
                             formData.append('image', files[i]);
@@ -618,17 +888,18 @@
                     uploadedImages.push('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80');
                 }
 
-                submitBtn.innerHTML = `جاري الحفظ...`;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i>جاري نشر العقار...`;
                 const newProp = {
                     firebaseKey: "local_" + Date.now(),
                     id: Date.now(),
-                    title: document.getElementById('propTitle').value,
-                    price: document.getElementById('propPrice').value,
+                    title: document.getElementById('propTitle').value.trim(),
+                    price: document.getElementById('propPrice').value.trim(),
                     city: document.getElementById('propCity').value,
                     type: document.getElementById('propType').value,
                     status: document.getElementById('propStatus').value,
                     area: document.getElementById('propArea').value,
-                    desc: document.getElementById('propDesc').value,
+                    desc: document.getElementById('propDesc').value.trim(),
+                    sold: false,
                     images: uploadedImages
                 };
 
@@ -645,13 +916,69 @@
                 }
 
                 document.getElementById('addPropertyForm').reset();
+                document.getElementById('propImagesPreviewBox').innerHTML = '';
                 toggleAdminModal();
-                alert('تم نشر العقار بنجاح!');
+                alert('تم نشر العقار بنجاح على الموقع!');
             } catch (err) {
                 alert('حدث خطأ أثناء الرفع.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'نشر العقار';
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار الآن على الموقع';
+            }
+        }
+
+        // عرض قائمة العقارات المصغرة داخل تبويب "إدارة العروض" في لوحة الأدمن
+        function renderAdminManageList() {
+            const list = document.getElementById('adminPropertiesList');
+            if (!list) return;
+            if (properties.length === 0) {
+                list.innerHTML = `<p class="text-center text-gray-400 py-6 text-sm">لا توجد عقارات مضافة حالياً.</p>`;
+                return;
+            }
+            list.innerHTML = '';
+            properties.forEach(p => {
+                const img = (p.images && p.images[0]) ? p.images[0] : p.image;
+                const soldLabel = p.status === 'إيجار' ? 'تم التأجير' : 'تم البيع';
+                list.innerHTML += `
+                    <div class="flex items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <img src="${img}" class="w-14 h-14 rounded-lg object-cover shrink-0 border">
+                            <div class="truncate">
+                                <h5 class="font-bold text-sm text-slate-900 truncate">${p.title}</h5>
+                                <p class="text-xs text-amber-600 font-bold">${p.price} • ${p.city}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="toggleSoldStatus('${p.firebaseKey}', event)" class="${p.sold ? 'bg-emerald-600' : 'bg-slate-800'} text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow transition">
+                                ${p.sold ? 'إلغاء ' + soldLabel : 'تفعيل ' + soldLabel}
+                            </button>
+                            <button onclick="deleteProperty('${p.firebaseKey}')" class="bg-red-100 hover:bg-red-600 text-red-600 hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition" title="حذف">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function toggleSoldStatus(firebaseKey, event) {
+            if (event) event.stopPropagation();
+            const prop = properties.find(p => p.firebaseKey === firebaseKey);
+            if (!prop) return;
+
+            const newSoldState = !prop.sold;
+            prop.sold = newSoldState;
+
+            if (isOnlineConfigured) {
+                await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ sold: newSoldState })
+                });
+                await loadData();
+            } else {
+                localStorage.setItem('realEstateData', JSON.stringify(properties));
+                renderProperties();
+                if (isAdminLoggedIn) renderAdminManageList();
             }
         }
 
@@ -678,26 +1005,34 @@
             modalSlideIndex = 0;
             const imgList = prop.images || [prop.image];
             const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
-            const whatsappMsg = encodeURIComponent(`أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
+            const soldLabelText = prop.status === 'إيجار' ? 'تم التأجير' : 'تم البيع';
+            const whatsappMsg = encodeURIComponent(`مرحباً م / محمود عبدالله، أستفسر عن إعلان: (${prop.title}) بسعر ${prop.price}`);
             const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
 
             document.getElementById('modalDetailsContent').innerHTML = `
                 <div class="relative h-72 md:h-96 bg-gray-900 rounded-xl overflow-hidden mb-6">
                     <img id="modalMainImg" src="${imgList[0]}" class="w-full h-full object-cover">
-                    <span class="absolute top-4 right-4 ${badgeColor} text-white font-bold px-4 py-1.5 rounded-full shadow">
+                    ${prop.sold ? `
+                        <div class="absolute inset-0 bg-black/55 z-10 flex items-center justify-center pointer-events-none">
+                            <span class="bg-red-600 text-white font-black text-2xl md:text-3xl px-8 py-3 rounded-2xl shadow-2xl border-4 border-white -rotate-12 tracking-wider">
+                                ${soldLabelText}
+                            </span>
+                        </div>
+                    ` : ''}
+                    <span class="absolute top-4 right-4 ${badgeColor} text-white font-bold px-4 py-1.5 rounded-full shadow z-20">
                         ${prop.status} • ${prop.type}
                     </span>
-                    <span class="absolute bottom-4 right-4 bg-slate-900/80 text-amber-400 font-bold px-3.5 py-1.5 rounded-lg">
+                    <span class="absolute bottom-4 right-4 bg-slate-900/80 text-amber-400 font-bold px-3.5 py-1.5 rounded-lg z-20">
                         <i class="fa-solid fa-location-dot ml-1"></i>${prop.city}
                     </span>
                     ${imgList.length > 1 ? `
-                        <button onclick="changeModalSlide(-1, '${propKey}')" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow">
+                        <button onclick="changeModalSlide(-1, '${propKey}')" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow z-20">
                             <i class="fa-solid fa-chevron-right"></i>
                         </button>
-                        <button onclick="changeModalSlide(1, '${propKey}')" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow">
+                        <button onclick="changeModalSlide(1, '${propKey}')" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center shadow z-20">
                             <i class="fa-solid fa-chevron-left"></i>
                         </button>
-                        <span id="modalCounter" class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full font-bold text-sm">1 / ${imgList.length}</span>
+                        <span id="modalCounter" class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full font-bold text-sm z-20">1 / ${imgList.length}</span>
                     ` : ''}
                 </div>
                 <div class="space-y-4">
@@ -743,7 +1078,7 @@
         }
 
         async function deleteProperty(firebaseKey) {
-            if (confirm('حذف هذا العقار؟')) {
+            if (confirm('حذف هذا العقار نهائياً؟')) {
                 if (isOnlineConfigured) {
                     await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, { method: 'DELETE' });
                     await loadData();
@@ -751,6 +1086,7 @@
                     properties = properties.filter(p => p.firebaseKey !== firebaseKey);
                     localStorage.setItem('realEstateData', JSON.stringify(properties));
                     renderProperties();
+                    if (isAdminLoggedIn) renderAdminManageList();
                 }
             }
         }
@@ -777,6 +1113,7 @@
 
             filtered.forEach(prop => {
                 const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
+                const soldText = prop.status === 'إيجار' ? 'تم التأجير' : 'تم البيع';
                 const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
                 currentSlideIndex[prop.firebaseKey] = 0;
 
@@ -786,18 +1123,35 @@
                     <span id="counter-${prop.firebaseKey}" class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2.5 py-0.5 rounded-full z-10">1 / ${imgList.length}</span>
                 ` : '';
 
-                const deleteBtnHTML = isAdminLoggedIn ? `
-                    <button onclick="event.stopPropagation(); deleteProperty('${prop.firebaseKey}')" class="absolute top-3 left-3 bg-red-600 text-white w-8 h-8 rounded-full shadow flex items-center justify-center z-20"><i class="fa-solid fa-trash text-sm"></i></button>
+                const soldOverlayHTML = prop.sold ? `
+                    <div class="absolute inset-0 bg-black/45 z-10 flex items-center justify-center pointer-events-none">
+                        <span class="bg-red-600 text-white font-black text-xl px-6 py-2 rounded-xl shadow-2xl border-2 border-white -rotate-12 tracking-wider">
+                            ${soldText}
+                        </span>
+                    </div>
+                ` : '';
+
+                const adminButtonsHTML = isAdminLoggedIn ? `
+                    <div class="absolute top-3 left-3 flex items-center gap-2 z-20">
+                        <button onclick="event.stopPropagation(); deleteProperty('${prop.firebaseKey}')" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full shadow flex items-center justify-center" title="حذف">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                        <button onclick="toggleSoldStatus('${prop.firebaseKey}', event)" class="${prop.sold ? 'bg-emerald-600' : 'bg-slate-900'} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow flex items-center gap-1 border border-white/30">
+                            <i class="fa-solid ${prop.sold ? 'fa-rotate-left' : 'fa-check'}"></i>
+                            <span>${prop.sold ? 'إلغاء' : soldText}</span>
+                        </button>
+                    </div>
                 ` : '';
 
                 grid.innerHTML += `
                     <div onclick="openPropertyDetails('${prop.firebaseKey}')" class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition border border-gray-100 flex flex-col cursor-pointer group">
                         <div class="relative h-60 bg-gray-200 select-none">
                             <img id="img-${prop.firebaseKey}" src="${imgList[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            ${soldOverlayHTML}
                             ${sliderControlsHTML}
                             <span class="absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-3 py-1.5 rounded-full z-10">${prop.status} • ${prop.type}</span>
                             <span class="absolute bottom-3 right-3 bg-slate-900/80 text-amber-400 text-xs font-bold px-3 py-1 rounded-lg z-10"><i class="fa-solid fa-location-dot ml-1"></i>${prop.city}</span>
-                            ${deleteBtnHTML}
+                            ${adminButtonsHTML}
                         </div>
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
@@ -822,15 +1176,156 @@
             renderProperties();
         }
 
+        async function loadReviews() {
+            if (isOnlineConfigured) {
+                try {
+                    const res = await fetch(`${FIREBASE_URL}/reviews.json`);
+                    const data = await res.json();
+                    if (data) {
+                        reviews = Object.keys(data).map(key => ({
+                            firebaseKey: key,
+                            ...data[key]
+                        })).reverse();
+                    } else {
+                        reviews = defaultReviews;
+                    }
+                } catch (e) {
+                    reviews = defaultReviews;
+                }
+            } else {
+                reviews = JSON.parse(localStorage.getItem('clientReviews')) || defaultReviews;
+            }
+            currentReviewIndex = 0;
+            renderCurrentReview();
+            startReviewAutoSlider();
+        }
+
+        function renderCurrentReview() {
+            const box = document.getElementById('reviewSliderBox');
+            const counter = document.getElementById('reviewCounterText');
+            if (!box) return;
+
+            if (reviews.length === 0) {
+                box.innerHTML = `<p class="text-gray-400 text-center">كن أول من يشاركنا رأيه!</p>`;
+                counter.innerText = "";
+                return;
+            }
+
+            if (currentReviewIndex >= reviews.length) currentReviewIndex = 0;
+            if (currentReviewIndex < 0) currentReviewIndex = reviews.length - 1;
+
+            const rev = reviews[currentReviewIndex];
+            const deleteReviewBtn = isAdminLoggedIn ? `
+                <button onclick="deleteReview('${rev.firebaseKey}')" class="text-xs bg-red-600 text-white px-2.5 py-1 rounded-lg mr-auto">حذف</button>
+            ` : '';
+
+            box.innerHTML = `
+                <div class="review-animate space-y-4">
+                    <div class="flex items-center gap-1 text-amber-400 text-sm">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        ${deleteReviewBtn}
+                    </div>
+                    <p class="text-gray-200 text-base md:text-lg leading-relaxed font-semibold">"${rev.comment}"</p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-10 h-10 rounded-full bg-amber-500 text-slate-900 font-black flex items-center justify-center text-lg">
+                            ${rev.name ? rev.name.charAt(0) : 'ع'}
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-white text-sm">${rev.name}</h5>
+                            <span class="text-xs text-gray-400">عميل مستشارك العقاري</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            counter.innerText = `رأي ${currentReviewIndex + 1} من ${reviews.length}`;
+        }
+
+        function startReviewAutoSlider() {
+            if (reviewInterval) clearInterval(reviewInterval);
+            reviewInterval = setInterval(() => {
+                currentReviewIndex = (currentReviewIndex + 1) % reviews.length;
+                renderCurrentReview();
+            }, 5000);
+        }
+
+        function nextReview() {
+            currentReviewIndex = (currentReviewIndex + 1) % reviews.length;
+            renderCurrentReview();
+            startReviewAutoSlider();
+        }
+
+        function prevReview() {
+            currentReviewIndex = (currentReviewIndex - 1 + reviews.length) % reviews.length;
+            renderCurrentReview();
+            startReviewAutoSlider();
+        }
+
+        async function submitClientReview(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitReviewBtn');
+            const nameInput = document.getElementById('reviewerName');
+            const commentInput = document.getElementById('reviewerComment');
+
+            const newRev = {
+                firebaseKey: "rev_" + Date.now(),
+                name: nameInput.value.trim(),
+                comment: commentInput.value.trim()
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = 'جاري الإرسال...';
+
+            try {
+                if (isOnlineConfigured) {
+                    await fetch(`${FIREBASE_URL}/reviews.json`, {
+                        method: 'POST',
+                        body: JSON.stringify(newRev)
+                    });
+                    await loadReviews();
+                } else {
+                    reviews.unshift(newRev);
+                    localStorage.setItem('clientReviews', JSON.stringify(reviews));
+                    currentReviewIndex = 0;
+                    renderCurrentReview();
+                    startReviewAutoSlider();
+                }
+                document.getElementById('addReviewForm').reset();
+                alert('شكراً لك! تم إضافة رأيك بنجاح.');
+            } catch (err) {
+                alert('حدث خطأ أثناء إرسال الرأي.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane ml-1"></i> إرسال الرأي';
+            }
+        }
+
+        async function deleteReview(firebaseKey) {
+            if (!confirm('حذف هذا الرأي؟')) return;
+            if (isOnlineConfigured && !firebaseKey.startsWith('rev_')) {
+                await fetch(`${FIREBASE_URL}/reviews/${firebaseKey}.json`, { method: 'DELETE' });
+                await loadReviews();
+            } else {
+                reviews = reviews.filter(r => r.firebaseKey !== firebaseKey);
+                localStorage.setItem('clientReviews', JSON.stringify(reviews));
+                renderCurrentReview();
+            }
+        }
+
         function toggleAdminModal() { document.getElementById('adminModal').classList.toggle('hidden'); }
+        
         function loginAdmin() {
             if (document.getElementById('adminPasswordInput').value === ADMIN_PASS) {
                 isAdminLoggedIn = true;
                 document.getElementById('adminLoginSection').classList.add('hidden');
                 document.getElementById('adminDashboardSection').classList.remove('hidden');
                 renderProperties();
-            } else alert('كلمة المرور غير صحيحة!');
+                renderCurrentReview();
+                renderAdminManageList();
+            } else {
+                alert('كلمة المرور غير صحيحة!');
+            }
         }
+
         function logoutAdmin() {
             isAdminLoggedIn = false;
             document.getElementById('adminPasswordInput').value = '';
@@ -838,6 +1333,7 @@
             document.getElementById('adminDashboardSection').classList.add('hidden');
             toggleAdminModal();
             renderProperties();
+            renderCurrentReview();
         }
     </script>
 </body>
