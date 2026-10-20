@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="مستشارك العقاري">
+    <link rel="manifest" id="my-manifest-placeholder">
     <title>مستشارك العقاري - م / محمود عبدالله | بدر والشروق والمدن الجديدة</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +23,7 @@
             overflow-x: hidden;
         }
         .hero-bg {
-            background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.88)), 
+            background: linear-gradient(rgba(15, 23, 42, 0.84), rgba(15, 23, 42, 0.90)), 
                         url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
@@ -110,7 +115,6 @@
             animation: slideInFromLeft 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        /* أنيميشن الإشعارات */
         @keyframes bounceIn {
             0% { transform: translateY(-30px); opacity: 0; }
             60% { transform: translateY(10px); opacity: 1; }
@@ -166,68 +170,84 @@
         </div>
     </div>
 
-    <!-- صندوق الإشعارات العائم للمستخدمين -->
+    <!-- صندوق الإشعارات العائم -->
     <div id="toastNotificationContainer" class="fixed top-20 left-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
-    <!-- شريط تثبيت الموقع (يظهر للزائر لتثبيت التطبيق على جهازه) -->
+    <!-- شريط تثبيت الموقع العائم (PWA) -->
     <div id="installAppBanner" class="hidden fixed bottom-4 right-4 left-4 md:left-auto z-50 bg-slate-900 border-2 border-amber-500 text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-4 max-w-md mx-auto">
         <div class="flex items-center gap-3">
             <div class="w-12 h-12 bg-amber-500 text-slate-900 rounded-xl flex items-center justify-center font-black text-xl shadow">
-                <i class="fa-solid fa-house-chimney"></i>
+                <i class="fa-solid fa-download"></i>
             </div>
             <div>
                 <h5 class="font-bold text-sm">تثبيت تطبيق مستشارك العقاري</h5>
-                <p class="text-xs text-gray-300">ثبت الموقع على شاشة هاتفك للوصول السريع للعقارات</p>
+                <p class="text-xs text-gray-300">ثبت الموقع من كروم على شاشة هاتفك بضغطة واحدة</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="installAppPrompt()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition shadow">تثبيت</button>
+            <button onclick="triggerChromeInstall()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition shadow">تثبيت الآن</button>
             <button onclick="dismissInstallBanner()" class="text-gray-400 hover:text-white px-2 py-1 text-xs">إغلاق</button>
         </div>
     </div>
 
     <!-- شريط التنقل الرئيسي -->
     <nav class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <i class="fa-solid fa-building-wheat text-amber-500 text-3xl"></i>
+        <div class="container mx-auto px-3 md:px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-2.5 space-x-reverse">
+                <i class="fa-solid fa-building-wheat text-amber-500 text-2xl md:text-3xl"></i>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-white tracking-wide">مستشارك العقاري</h1>
-                    <p class="text-xs text-amber-400">م / محمود عبدالله • بدر والشروق</p>
+                    <h1 class="text-lg md:text-2xl font-bold text-white tracking-wide">مستشارك العقاري</h1>
+                    <p class="text-[11px] text-amber-400">م / محمود عبدالله • بدر والشروق</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-2 md:gap-3">
-                <!-- زر عرض الإشعارات -->
-                <button onclick="toggleNotificationsModal()" class="relative bg-slate-800 hover:bg-slate-700 text-amber-400 w-10 h-10 rounded-lg flex items-center justify-center transition shadow" title="الإشعارات">
-                    <i class="fa-solid fa-bell"></i>
-                    <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+            <div class="flex items-center gap-1.5 md:gap-2.5">
+                <!-- زر تثبيت الموقع من كروم -->
+                <button onclick="triggerChromeInstall()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow" title="تثبيت الموقع كتطبيق">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <span class="hidden sm:inline">تثبيت التطبيق</span>
                 </button>
-                <a id="topFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-lg flex items-center justify-center transition shadow" title="فيسبوك">
-                    <i class="fa-brands fa-facebook-f"></i>
-                </a>
-                <a id="topPhoneBtn" href="tel:01070031535" class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-lg border border-amber-500/30 transition">
-                    <i class="fa-solid fa-phone"></i>
-                    <span id="navPhoneText" dir="ltr">01070031535</span>
-                </a>
-                <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-3 md:px-4 py-2 rounded-lg font-semibold text-xs md:text-sm flex items-center gap-2 shadow-md transition">
+
+                <!-- زر حساب العميل والمفضلة -->
+                <button onclick="toggleClientAuthModal()" id="clientNavBtn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow">
+                    <i class="fa-solid fa-user-circle"></i>
+                    <span id="clientNavName">حسابي</span>
+                </button>
+
+                <!-- زر الجرس للإشعارات -->
+                <button onclick="toggleNotificationsModal()" class="relative bg-slate-800 hover:bg-slate-700 text-amber-400 w-9 h-9 rounded-lg flex items-center justify-center transition shadow" title="الإشعارات">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                </button>
+
+                <!-- زر لوحة الأدمن -->
+                <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-md transition">
                     <i class="fa-solid fa-user-tie"></i>
-                    <span>لوحة الأدمن</span>
+                    <span>الأدمن</span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- الواجهة الرئيسية -->
-    <header class="hero-bg text-white py-20 px-4 text-center">
+    <!-- الواجهة الرئيسية + عداد زوار الموقع -->
+    <header class="hero-bg text-white py-16 md:py-20 px-4 text-center">
         <div class="container mx-auto max-w-4xl">
-            <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 inline-block">
-                🌟 دليلك الأول للعقارات في المدن الجديدة
-            </span>
-            <h2 class="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
+                <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold">
+                    🌟 دليلك الأول للعقارات في المدن الجديدة
+                </span>
+                <!-- عداد زوار الموقع المباشر -->
+                <span class="bg-slate-900/80 text-emerald-400 border border-emerald-500/40 px-4 py-1.5 rounded-full text-xs md:text-sm font-bold flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-users"></i>
+                    <span>زوار الموقع:</span>
+                    <b id="heroVisitorsCount" class="text-white">1</b>
+                </span>
+            </div>
+
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-5 leading-tight">
                 ابحث عن عقارك المثالي في <span class="text-amber-500">بدر والشروق</span> والمدن الجديدة
             </h2>
-            <p class="text-gray-300 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-gray-300 text-sm md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
                 شقق للإيجار والتمليك، محلات تجارية، وأراضي بمواقع متميزة وأسعار تنافسية مباشرة مع مستشارك العقاري م / محمود عبدالله.
             </p>
 
@@ -327,7 +347,7 @@
         <div class="flex justify-between items-center mb-8 border-b pb-4">
             <div>
                 <h3 class="text-2xl font-bold text-slate-900">أحدث العروض العقارية</h3>
-                <p class="text-gray-500 text-sm">اضغط على أي عقار لمشاهدة التفاصيل الكاملة</p>
+                <p class="text-gray-500 text-sm">اضغط على أي عقار لمشاهدة التفاصيل وتسجيل اهتمامك بالعقار</p>
             </div>
             <span id="propertiesCount" class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-sm">0 عقار متاح</span>
         </div>
@@ -335,7 +355,90 @@
         <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <!-- نافذة تفاصيل العقار (Modal) -->
+    <!-- نافذة إرشادات تثبيت الموقع من كروم -->
+    <div id="chromeInstallModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center space-y-4">
+            <button onclick="document.getElementById('chromeInstallModal').classList.add('hidden')" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-brands fa-chrome"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-900">تثبيت الموقع على هاتفك من كروم</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                لتثبيت موقع <b>مستشارك العقاري</b> كتطبيق على شاشة هاتفك الرئيسية من متصفح Google Chrome:
+            </p>
+            <div class="bg-slate-50 p-4 rounded-2xl border text-right text-xs space-y-2.5 font-semibold text-slate-700">
+                <p>1. اضغط على قائمة متصفح كروم <b class="text-amber-600">(الثلاث نقاط ⋮)</b> أعلى يسار الشاشة.</p>
+                <p>2. اختر <b class="text-emerald-600">"تثبيت التطبيق" (Install App)</b> أو <b class="text-emerald-600">"الإضافة إلى الشاشة الرئيسية"</b>.</p>
+                <p>3. اضغط <b>تثبيت</b>، وسيظهر التطبيق فوراً بين تطبيقات هاتفك!</p>
+            </div>
+            <button onclick="document.getElementById('chromeInstallModal').classList.add('hidden')" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl text-sm">حسناً، فهمت</button>
+        </div>
+    </div>
+
+    <!-- نافذة حساب العميل والمفضلة -->
+    <div id="clientAuthModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="toggleClientAuthModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="clientLoggedOutView">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                        <i class="fa-solid fa-user-circle"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900">حساب العميل والمفضلة</h3>
+                    <p class="text-gray-500 text-sm mt-1">سجل اسمك ورقمك لحفظ العقارات وتسجيل اهتمامك بضغطة واحدة</p>
+                </div>
+                <form onsubmit="clientLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">اسمك الكريم *</label>
+                        <input type="text" id="clientLoginName" required placeholder="مثال: محمد أحمد" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-amber-500 bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف *</label>
+                        <input type="tel" id="clientLoginPhone" required placeholder="010xxxxxxxx" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-amber-500 bg-gray-50" dir="ltr">
+                    </div>
+                    <button type="submit" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow transition">
+                        <i class="fa-solid fa-right-to-bracket ml-1"></i> دخول لحسابي
+                    </button>
+                </form>
+            </div>
+
+            <div id="clientLoggedInView" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b pb-4">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900">مرحباً، <span id="clientProfileName" class="text-amber-600"></span></h3>
+                        <p class="text-xs text-gray-500">إدارة عقاراتك المفضلة وطلباتك الخاصة</p>
+                    </div>
+                    <button onclick="clientLogout()" class="text-xs bg-red-100 text-red-600 px-3 py-1.5 rounded-lg font-bold">تسجيل خروج</button>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 text-base mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-heart text-red-500"></i>
+                        <span>عقاراتي المفضلة (<span id="wishlistCount">0</span>)</span>
+                    </h4>
+                    <div id="wishlistContainer" class="space-y-2.5 max-h-60 overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-house-medical text-amber-600"></i>
+                        <span>اطلب عقار بمواصفات خاصة</span>
+                    </h4>
+                    <form onsubmit="submitPropertyRequest(event)" class="space-y-3">
+                        <textarea id="propertyRequestDesc" rows="2" required placeholder="اكتب ما تبحث عنه (مثلاً: شقة إيجار في بدر 3 غرف)..." class="w-full border rounded-xl p-2.5 text-xs bg-white focus:outline-amber-500"></textarea>
+                        <button type="submit" class="w-full bg-slate-900 text-white font-bold py-2 rounded-xl text-xs transition shadow">إرسال الطلب للمستشار</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تفاصيل العقار الكاملة (Modal) + زر مهتم + عداد المشاهدات -->
     <div id="propertyDetailsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="closeDetailsModal()" class="absolute top-4 left-4 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 w-10 h-10 rounded-full flex items-center justify-center text-xl transition z-20">
@@ -352,7 +455,7 @@
         </div>
     </div>
 
-    <!-- نافذة عرض سجل الإشعارات -->
+    <!-- نافذة عرض سجل الإشعارات والمهتمين -->
     <div id="notificationsModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[80vh] overflow-y-auto">
             <button onclick="toggleNotificationsModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
@@ -360,7 +463,7 @@
             </button>
             <h3 class="text-xl font-black text-slate-900 mb-4 border-b pb-2 flex items-center gap-2">
                 <i class="fa-solid fa-bell text-amber-500"></i>
-                <span>سجل إشعارات العقارات الجديدة</span>
+                <span>سجل الإشعارات والمهتمين بالعقارات</span>
             </h3>
             <div id="notificationsListContent" class="space-y-3">
                 <p class="text-center text-gray-400 py-6 text-sm">لا توجد إشعارات جديدة حالياً.</p>
@@ -419,7 +522,6 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <!-- شاشة تسجيل الدخول -->
             <div id="adminLoginSection" class="py-6">
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
@@ -439,7 +541,6 @@
                 </div>
             </div>
 
-            <!-- لوحة التحكم المقسمة لتبويبات -->
             <div id="adminDashboardSection" class="hidden space-y-6">
                 <div class="flex flex-wrap justify-between items-center border-b pb-4 gap-2 pl-10">
                     <div>
@@ -447,7 +548,7 @@
                             <i class="fa-solid fa-gauge-high text-amber-600"></i>
                             <span>لوحة تحكم المستشار العقاري</span>
                         </h3>
-                        <p class="text-xs text-gray-500">إدارة العقارات والتعديل عليها بكل سهولة</p>
+                        <p class="text-xs text-gray-500">إدارة العقارات ومتابعة المشاهدات والمهتمين</p>
                     </div>
                     <button onclick="logoutAdmin()" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3.5 py-1.5 rounded-lg font-bold transition">
                         <i class="fa-solid fa-power-off ml-1"></i>تسجيل خروج
@@ -469,7 +570,6 @@
                     </button>
                 </div>
 
-                <!-- التبويب الأول: إضافة عقار -->
                 <div id="adminTab-addTab" class="space-y-4">
                     <form id="addPropertyForm" onsubmit="addProperty(event)" class="bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200 space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -536,21 +636,19 @@
 
                         <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-95 transition text-base flex items-center justify-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>نشر العقار وإرسال إشعار للعملاء</span>
+                            <span>نشر العقار الآن على الموقع</span>
                         </button>
                     </form>
                 </div>
 
-                <!-- التبويب الثاني: إدارة وتعديل وتم البيع والحذف -->
                 <div id="adminTab-manageTab" class="hidden space-y-3">
                     <div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-3 rounded-xl">
                         <i class="fa-solid fa-circle-info ml-1 text-amber-600"></i>
-                        يمكنك من هنا <b>تعديل بيانات أي عقار</b>، تفعيل أو إلغاء <b>(تم البيع / تم التأجير)</b>، أو الحذف.
+                        يمكنك من هنا متابعة <b>عدد المشاهدات والمهتمين</b>، وتعديل أو تفعيل <b>(تم البيع / التأجير)</b> أو الحذف الفوري.
                     </div>
                     <div id="adminPropertiesList" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- التبويب الثالث: بيانات وصورة المستشار -->
                 <div id="adminTab-profileTab" class="hidden">
                     <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
                         <div class="flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-xl border">
@@ -598,7 +696,7 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل العقار (Modal للتعديل) -->
+    <!-- نافذة تعديل العقار -->
     <div id="editPropertyModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="closeEditModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
@@ -667,6 +765,10 @@
         <div class="container mx-auto px-4">
             <h4 class="text-white font-bold text-xl mb-1">مستشارك العقاري - <span id="footerOwnerName" class="text-amber-400">م / محمود عبدالله</span></h4>
             <p class="text-sm mb-3">متخصصون في التسويق والاستشارات العقارية بمدينة بدر والشروق والمدن الجديدة</p>
+            <div class="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-full text-xs text-gray-300 mb-5">
+                <i class="fa-solid fa-chart-line text-amber-500"></i>
+                <span>إجمالي زيارات الموقع: <b id="footerVisitorsCount" class="text-white">1</b> زائر</span>
+            </div>
             <div class="flex justify-center items-center gap-3 mb-6">
                 <a id="footerWaBtn" href="https://wa.me/201070031535" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow"><i class="fa-brands fa-whatsapp text-lg"></i></a>
                 <a id="footerFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow"><i class="fa-brands fa-facebook-f text-lg"></i></a>
@@ -683,6 +785,28 @@
         const ADMIN_PASS = "31535";
 
         const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
+
+        // توليد ملف Web App Manifest تلقائياً لتفعيل التثبيت من متصفح كروم
+        const manifestData = {
+            name: "مستشارك العقاري - م / محمود عبدالله",
+            short_name: "مستشارك العقاري",
+            description: "شقق وعقارات وأراضي ومحلات في مدينة بدر والشروق والمدن الجديدة",
+            start_url: window.location.href,
+            display: "standalone",
+            background_color: "#0f172a",
+            theme_color: "#d97706",
+            icons: [
+                {
+                    src: "https://cdn-icons-png.flaticon.com/512/602/602175.png",
+                    sizes: "512x512",
+                    type: "image/png"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifestData);
+        const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blobManifest);
+        document.querySelector('#my-manifest-placeholder').setAttribute('href', manifestURL);
 
         let ownerProfile = {
             name: "م / محمود عبدالله",
@@ -705,6 +829,8 @@
                 status: "إيجار",
                 area: 140,
                 sold: false,
+                views: 14,
+                interestedCount: 3,
                 desc: "3 غرف نوم + ريسبشن كبير + 2 حمام. تشطيب سوبر لوكس، أول سكن، قريبة من الخدمات والجامعة الروسية.",
                 images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"]
             }
@@ -718,6 +844,10 @@
         let properties = [];
         let reviews = [];
         let notifications = [];
+        let clientUser = JSON.parse(localStorage.getItem('clientUserData')) || null;
+        let wishlist = JSON.parse(localStorage.getItem('clientWishlist')) || [];
+        let interestedList = JSON.parse(localStorage.getItem('clientInterestedList')) || [];
+
         let currentReviewIndex = 0;
         let reviewInterval = null;
         let consultantPhone = "01070031535";
@@ -726,28 +856,158 @@
         let modalSlideIndex = 0;
         let deferredPrompt = null;
 
-        // ميزة التثبيت (PWA Install Prompt)
+        // التقاط حدث التثبيت من متصفح كروم
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             document.getElementById('installAppBanner').classList.remove('hidden');
         });
 
-        function installAppPrompt() {
+        function triggerChromeInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('المستخدم وافق على تثبيت التطبيق');
-                    }
+                deferredPrompt.userChoice.then(() => {
                     deferredPrompt = null;
                     document.getElementById('installAppBanner').classList.add('hidden');
                 });
+            } else {
+                // إظهار نافذة شرح التثبيت السريع من متصفح كروم
+                document.getElementById('chromeInstallModal').classList.remove('hidden');
             }
         }
 
         function dismissInstallBanner() {
             document.getElementById('installAppBanner').classList.add('hidden');
+        }
+
+        // ==========================================
+        // 1. عداد زوار الموقع المباشر
+        // ==========================================
+        async function incrementAndLoadSiteVisitors() {
+            let visits = parseInt(localStorage.getItem('localSiteVisits') || '120');
+            if (isOnlineConfigured) {
+                try {
+                    const res = await fetch(`${FIREBASE_URL}/settings/siteVisits.json`);
+                    const currentOnlineVisits = await res.json();
+                    visits = (typeof currentOnlineVisits === 'number' ? currentOnlineVisits : 120) + 1;
+                    await fetch(`${FIREBASE_URL}/settings/siteVisits.json`, {
+                        method: 'PUT',
+                        body: JSON.stringify(visits)
+                    });
+                } catch (e) {
+                    visits++;
+                }
+            } else {
+                visits++;
+            }
+            localStorage.setItem('localSiteVisits', visits);
+            document.getElementById('heroVisitorsCount').innerText = visits.toLocaleString('ar-EG');
+            document.getElementById('footerVisitorsCount').innerText = visits.toLocaleString('ar-EG');
+        }
+
+        // نظام حسابات العملاء
+        function toggleClientAuthModal() {
+            document.getElementById('clientAuthModal').classList.toggle('hidden');
+            updateClientAuthUI();
+        }
+
+        function clientLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('clientLoginName').value.trim();
+            const phone = document.getElementById('clientLoginPhone').value.trim();
+            clientUser = { name, phone };
+            localStorage.setItem('clientUserData', JSON.stringify(clientUser));
+            updateClientAuthUI();
+            showToast(`مرحباً بك يا ${name}! تم تسجيل دخولك بنجاح.`);
+        }
+
+        function clientLogout() {
+            clientUser = null;
+            localStorage.removeItem('clientUserData');
+            updateClientAuthUI();
+        }
+
+        function updateClientAuthUI() {
+            const loggedOutView = document.getElementById('clientLoggedOutView');
+            const loggedInView = document.getElementById('clientLoggedInView');
+            const clientNavName = document.getElementById('clientNavName');
+
+            if (clientUser) {
+                loggedOutView.classList.add('hidden');
+                loggedInView.classList.remove('hidden');
+                clientNavName.innerText = clientUser.name;
+                document.getElementById('clientProfileName').innerText = clientUser.name;
+                renderWishlist();
+            } else {
+                loggedOutView.classList.remove('hidden');
+                loggedInView.classList.add('hidden');
+                clientNavName.innerText = "حسابي";
+            }
+        }
+
+        function toggleWishlist(propKey, event) {
+            if (event) event.stopPropagation();
+            if (!clientUser) {
+                showToast('سجل اسمك ورقمك أولاً لحفظ العقارات في مفضلتك');
+                toggleClientAuthModal();
+                return;
+            }
+
+            const index = wishlist.indexOf(propKey);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                showToast('تم إزالة العقار من المفضلة');
+            } else {
+                wishlist.push(propKey);
+                showToast('تم حفظ العقار في قائمة مفضلاتك!');
+            }
+            localStorage.setItem('clientWishlist', JSON.stringify(wishlist));
+            renderProperties();
+            if (clientUser) renderWishlist();
+        }
+
+        function renderWishlist() {
+            const container = document.getElementById('wishlistContainer');
+            const count = document.getElementById('wishlistCount');
+            count.innerText = wishlist.length;
+
+            if (wishlist.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">لم تقم بإضافة أي عقارات للمفضلة بعد.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            wishlist.forEach(key => {
+                const prop = properties.find(p => p.firebaseKey === key);
+                if (prop) {
+                    const img = (prop.images && prop.images[0]) ? prop.images[0] : prop.image;
+                    container.innerHTML += `
+                        <div onclick="openPropertyDetails('${prop.firebaseKey}'); toggleClientAuthModal();" class="flex items-center justify-between gap-2 bg-slate-50 p-2.5 rounded-xl border cursor-pointer hover:bg-amber-50/50 transition">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <img src="${img}" class="w-12 h-12 rounded-lg object-cover shrink-0">
+                                <div class="truncate">
+                                    <h6 class="font-bold text-xs text-slate-900 truncate">${prop.title}</h6>
+                                    <span class="text-[10px] text-amber-600 font-bold">${prop.price}</span>
+                                </div>
+                            </div>
+                            <button onclick="toggleWishlist('${prop.firebaseKey}', event)" class="text-red-500 hover:text-red-700 p-1" title="إزالة"><i class="fa-solid fa-heart-crack text-xs"></i></button>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        async function submitPropertyRequest(e) {
+            e.preventDefault();
+            const desc = document.getElementById('propertyRequestDesc').value.trim();
+            const reqText = `طلب عقار خاص من العميل (${clientUser.name} - ${clientUser.phone}): ${desc}`;
+            
+            if (isOnlineConfigured) {
+                await fetch(`${FIREBASE_URL}/notifications.json`, { method: 'POST', body: JSON.stringify({ text: reqText, time: "طلب عميل" }) });
+                await loadNotifications();
+            }
+            showToast('تم إرسال طلبك بنجاح إلى م / محمود عبدالله!');
+            document.getElementById('propertyRequestDesc').value = '';
         }
 
         function typeWriterEffect(text, elementId, speed = 110) {
@@ -788,9 +1048,11 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             startFinalTwoStagesIntro();
+            incrementAndLoadSiteVisitors();
             loadData();
             loadReviews();
             loadNotifications();
+            updateClientAuthUI();
         });
 
         window.addEventListener('popstate', () => {
@@ -816,8 +1078,7 @@
             box.innerHTML = '';
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
-                const url = URL.createObjectURL(files[i]);
-                box.innerHTML += `<img src="${url}" class="w-16 h-16 object-cover rounded-lg border-2 border-amber-500 shadow">`;
+                box.innerHTML += `<img src="${URL.createObjectURL(files[i])}" class="w-16 h-16 object-cover rounded-lg border-2 border-amber-500 shadow">`;
             }
         }
 
@@ -869,10 +1130,8 @@
             const fbUrl = ownerProfile.fb || "https://www.facebook.com/share/1JfpJ2n8FF/";
             const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
 
-            document.getElementById('navPhoneText').innerText = consultantPhone;
             document.getElementById('footerPhoneText').innerText = consultantPhone;
             document.getElementById('footerOwnerName').innerText = ownerProfile.name;
-            document.getElementById('topPhoneBtn').href = `tel:${consultantPhone}`;
             document.getElementById('topFbBtn').href = fbUrl;
             document.getElementById('footerFbBtn').href = fbUrl;
             document.getElementById('footerWaBtn').href = `https://wa.me/${waPhone}`;
@@ -933,9 +1192,9 @@
 
                 updateOwnerProfileUI();
                 renderProperties();
-                alert('تم حفظ البيانات بنجاح!');
+                showToast('تم حفظ بيانات وصورة المستشار بنجاح!');
             } catch (e) {
-                alert('حدث خطأ أثناء الحفظ.');
+                showToast('حدث خطأ أثناء الحفظ.');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-floppy-disk ml-1"></i> حفظ وتحديث البطاقة التعريفية والصورة';
@@ -951,17 +1210,13 @@
             });
         }
 
-        // نظام الإشعارات الفورية عند إضافة عقار جديد
         async function loadNotifications() {
             if (isOnlineConfigured) {
                 try {
                     const res = await fetch(`${FIREBASE_URL}/notifications.json`);
                     const data = await res.json();
-                    if (data) {
-                        notifications = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })).reverse();
-                    } else {
-                        notifications = [];
-                    }
+                    if (data) notifications = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })).reverse();
+                    else notifications = [];
                 } catch (e) { notifications = []; }
             } else {
                 notifications = JSON.parse(localStorage.getItem('siteNotifications')) || [];
@@ -971,10 +1226,7 @@
 
         async function sendNewPropertyNotification(propTitle, propCode, propCity) {
             const notifText = `تم إضافة عقار جديد: ${propTitle} (كود: ${propCode}) في ${propCity}`;
-            const newNotif = {
-                text: notifText,
-                time: "الآن"
-            };
+            const newNotif = { text: notifText, time: "الآن" };
 
             if (isOnlineConfigured) {
                 await fetch(`${FIREBASE_URL}/notifications.json`, { method: 'POST', body: JSON.stringify(newNotif) });
@@ -991,13 +1243,10 @@
             toast.className = "toast-animate bg-slate-900 border-2 border-amber-500 text-white p-4 rounded-2xl shadow-2xl pointer-events-auto flex items-center gap-3";
             toast.innerHTML = `
                 <div class="w-10 h-10 bg-amber-500 text-slate-950 rounded-xl flex items-center justify-center shrink-0 font-black"><i class="fa-solid fa-bell"></i></div>
-                <div class="flex-1 text-xs"><b class="block text-amber-400 mb-0.5 font-bold">عقار جديد متاح!</b>${text}</div>
+                <div class="flex-1 text-xs"><b class="block text-amber-400 mb-0.5 font-bold">إشعار مستشارك العقاري</b>${text}</div>
             `;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 500);
-            }, 6000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 5000);
         }
 
         function updateNotifBadge() {
@@ -1018,9 +1267,7 @@
             }
         }
 
-        function toggleNotificationsModal() {
-            document.getElementById('notificationsModal').classList.toggle('hidden');
-        }
+        function toggleNotificationsModal() { document.getElementById('notificationsModal').classList.toggle('hidden'); }
 
         async function addProperty(e) {
             e.preventDefault();
@@ -1064,6 +1311,8 @@
                     area: document.getElementById('propArea').value,
                     desc: document.getElementById('propDesc').value.trim(),
                     sold: false,
+                    views: 1,
+                    interestedCount: 0,
                     images: uploadedImages
                 };
 
@@ -1076,16 +1325,14 @@
                     renderProperties();
                 }
 
-                // إرسال إشعار فوري لجميع المستخدمين
                 await sendNewPropertyNotification(propTitleVal, propCodeVal, propCityVal);
                 await loadNotifications();
 
                 document.getElementById('addPropertyForm').reset();
                 document.getElementById('propImagesPreviewBox').innerHTML = '';
                 toggleAdminModal();
-                alert('تم نشر العقار بنجاح وإرسال إشعار للعملاء!');
             } catch (err) {
-                alert('حدث خطأ أثناء الرفع.');
+                showToast('حدث خطأ أثناء الرفع.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار الآن على الموقع';
@@ -1108,9 +1355,7 @@
             document.getElementById('editPropertyModal').classList.remove('hidden');
         }
 
-        function closeEditModal() {
-            document.getElementById('editPropertyModal').classList.add('hidden');
-        }
+        function closeEditModal() { document.getElementById('editPropertyModal').classList.add('hidden'); }
 
         async function saveEditedProperty(e) {
             e.preventDefault();
@@ -1138,7 +1383,7 @@
             }
 
             closeEditModal();
-            alert('تم تعديل تفاصيل العقار بنجاح!');
+            showToast('تم تعديل تفاصيل العقار بنجاح!');
         }
 
         function renderAdminManageList() {
@@ -1153,18 +1398,22 @@
                 const img = (p.images && p.images[0]) ? p.images[0] : p.image;
                 const soldLabel = p.status === 'إيجار' ? 'تم التأجير' : 'تم البيع';
                 list.innerHTML += `
-                    <div class="flex items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <div class="flex items-center gap-3 min-w-0">
                             <img src="${img}" class="w-14 h-14 rounded-lg object-cover shrink-0 border">
                             <div class="truncate">
                                 <h5 class="font-bold text-sm text-slate-900 truncate"><span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-xs ml-1 font-bold">${p.code || 'بدون'}</span> ${p.title}</h5>
                                 <p class="text-xs text-amber-600 font-bold">${p.price} • ${p.city}</p>
+                                <div class="flex items-center gap-3 text-[11px] text-gray-500 mt-1">
+                                    <span><i class="fa-solid fa-eye text-blue-500 ml-1"></i>فتح التفاصيل: <b>${p.views || 0}</b></span>
+                                    <span><i class="fa-solid fa-hand-holding-heart text-rose-500 ml-1"></i>مهتمون: <b>${p.interestedCount || 0}</b></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <button onclick="openEditModal('${p.firebaseKey}')" class="bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition" title="تعديل"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <div class="flex items-center gap-1.5 shrink-0 justify-end">
+                            <button onclick="openEditModal('${p.firebaseKey}')" class="bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-pen"></i> تعديل</button>
                             <button onclick="toggleSoldStatus('${p.firebaseKey}', event)" class="${p.sold ? 'bg-emerald-600' : 'bg-slate-800'} text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow transition">${p.sold ? 'إلغاء ' + soldLabel : soldLabel}</button>
-                            <button onclick="deleteProperty('${p.firebaseKey}')" class="bg-red-100 hover:bg-red-600 text-red-600 hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition" title="حذف"><i class="fa-solid fa-trash text-xs"></i></button>
+                            <button onclick="deleteProperty('${p.firebaseKey}', event)" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-trash"></i> حذف</button>
                         </div>
                     </div>
                 `;
@@ -1187,6 +1436,7 @@
                 renderProperties();
                 if (isAdminLoggedIn) renderAdminManageList();
             }
+            showToast(newSoldState ? 'تم تفعيل ختم (تم البيع / التأجير) على العقار' : 'تم إلغاء ختم البيع وعاد العقار متاحاً');
         }
 
         function changeSlide(propKey, direction, event) {
@@ -1203,21 +1453,37 @@
             document.getElementById(`counter-${propKey}`).innerText = `${currentSlideIndex[propKey] + 1} / ${imgList.length}`;
         }
 
-        function openPropertyDetails(propKey) {
+        // ========================================================
+        // 2 & 4. فتح تفاصيل العقار + زيادة عداد المشاهدات + زر "مهتم"
+        // ========================================================
+        async function openPropertyDetails(propKey) {
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
 
             history.pushState({ modalOpen: true }, "");
 
+            // زيادة عدد الذين فتحوا تفاصيل هذا العقار
+            prop.views = (parseInt(prop.views) || 0) + 1;
+            if (isOnlineConfigured && !propKey.startsWith('local_')) {
+                fetch(`${FIREBASE_URL}/properties/${propKey}.json`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ views: prop.views })
+                });
+            } else {
+                localStorage.setItem('realEstateData', JSON.stringify(properties));
+            }
+            renderProperties();
+
             modalSlideIndex = 0;
             const imgList = prop.images || [prop.image];
             const badgeColor = prop.status === 'إيجار' ? 'bg-blue-600' : 'bg-emerald-600';
             const soldLabelText = prop.status === 'إيجار' ? 'تم التأجير' : 'تم البيع';
-            const whatsappMsg = encodeURIComponent(`مرحباً م / محمود عبدالله، أستفسر عن العقار كود (${prop.code || 'بدون'}) إعلان: (${prop.title}) بسعر ${prop.price}`);
+            const whatsappMsg = encodeURIComponent(`مرحباً م / محمود عبدالله، أنا مهتم بالعقار كود (${prop.code || 'بدون'}) إعلان: (${prop.title}) بسعر ${prop.price}`);
             const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
+            const isAlreadyInterested = interestedList.includes(propKey);
 
             document.getElementById('modalDetailsContent').innerHTML = `
-                <div class="relative h-72 md:h-96 bg-gray-900 rounded-xl overflow-hidden mb-6">
+                <div class="relative h-72 md:h-96 bg-gray-900 rounded-xl overflow-hidden mb-5">
                     <img id="modalMainImg" src="${imgList[0]}" class="w-full h-full object-cover">
                     ${prop.sold ? `
                         <div class="absolute inset-0 bg-black/55 z-10 flex items-center justify-center pointer-events-none">
@@ -1235,6 +1501,19 @@
                         <span id="modalCounter" class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full font-bold text-sm z-20">1 / ${imgList.length}</span>
                     ` : ''}
                 </div>
+
+                <!-- شريط إحصائيات المشاهدة والاهتمام بالعقار -->
+                <div class="flex flex-wrap items-center justify-between gap-2 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl mb-4 text-xs font-bold text-slate-700">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-eye text-blue-600 text-sm"></i>
+                        <span>فتح تفاصيل هذا العقار: <b class="text-slate-900">${prop.views || 1}</b> زائر</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-fire text-rose-600 text-sm"></i>
+                        <span>المهتمون بهذا العقار: <b id="modalInterestedCount" class="text-rose-600">${prop.interestedCount || 0}</b> عميل</span>
+                    </div>
+                </div>
+
                 <div class="space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b pb-4">
                         <h2 class="text-2xl font-extrabold text-slate-900">${prop.title}</h2>
@@ -1246,13 +1525,71 @@
                         <div><span class="text-xs text-gray-500 block">المدينة</span><span class="font-bold">${prop.city}</span></div>
                     </div>
                     <div><h4 class="font-bold mb-2">التفاصيل الكاملة:</h4><p class="text-gray-700 bg-gray-50 p-4 rounded-xl border whitespace-pre-line leading-relaxed">${prop.desc}</p></div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4 border-t">
-                        <a href="https://wa.me/${waPhone}?text=${whatsappMsg}" target="_blank" class="bg-emerald-600 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow"><i class="fa-brands fa-whatsapp text-xl"></i> تواصل واتساب</a>
-                        <a href="tel:${consultantPhone}" class="bg-slate-900 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-phone"></i> اتصال مباشر</a>
+                    
+                    <!-- زر "مهتم بهذا العقار" التفاعلي -->
+                    <div class="pt-2">
+                        <button id="interestedBtnModal" onclick="registerInterestInProperty('${propKey}')" class="w-full ${isAlreadyInterested ? 'bg-rose-700' : 'bg-rose-600 hover:bg-rose-700'} text-white py-3.5 rounded-xl font-black text-base flex items-center justify-center gap-2 shadow-lg transition">
+                            <i class="fa-solid fa-hand-holding-heart text-xl"></i>
+                            <span id="interestedBtnText">${isAlreadyInterested ? 'تم تسجيل اهتمامك بهذا العقار بنجاح ✓' : 'أنا مهتم بهذا العقار (اضغط لتسجيل اهتمامك)'}</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t">
+                        <a href="https://wa.me/${waPhone}?text=${whatsappMsg}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow"><i class="fa-brands fa-whatsapp text-xl"></i> تواصل واتساب</a>
+                        <a href="tel:${consultantPhone}" class="bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-phone"></i> اتصال مباشر</a>
                     </div>
                 </div>
             `;
             document.getElementById('propertyDetailsModal').classList.remove('hidden');
+        }
+
+        // دالة الضغط على زر "مهتم" داخل تفاصيل العقار
+        async function registerInterestInProperty(propKey) {
+            const prop = properties.find(p => p.firebaseKey === propKey);
+            if (!prop) return;
+
+            if (!interestedList.includes(propKey)) {
+                interestedList.push(propKey);
+                localStorage.setItem('clientInterestedList', JSON.stringify(interestedList));
+                prop.interestedCount = (parseInt(prop.interestedCount) || 0) + 1;
+
+                if (isOnlineConfigured && !propKey.startsWith('local_')) {
+                    await fetch(`${FIREBASE_URL}/properties/${propKey}.json`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ interestedCount: prop.interestedCount })
+                    });
+                } else {
+                    localStorage.setItem('realEstateData', JSON.stringify(properties));
+                }
+
+                // إرسال إشعار للأدمن باهتمام العميل
+                const clientInfo = clientUser ? `العميل (${clientUser.name} - ${clientUser.phone})` : 'أحد الزوار';
+                const interestNotif = {
+                    text: `🔥 اهتمام جديد: ${clientInfo} ضغط "مهتم" بالعقار (${prop.title} - كود: ${prop.code || 'بدون'})`,
+                    time: "مهتم بالعقار"
+                };
+
+                if (isOnlineConfigured) {
+                    await fetch(`${FIREBASE_URL}/notifications.json`, { method: 'POST', body: JSON.stringify(interestNotif) });
+                    await loadNotifications();
+                } else {
+                    notifications.unshift(interestNotif);
+                    localStorage.setItem('siteNotifications', JSON.stringify(notifications));
+                    updateNotifBadge();
+                }
+
+                const countEl = document.getElementById('modalInterestedCount');
+                const btnText = document.getElementById('interestedBtnText');
+                const btnEl = document.getElementById('interestedBtnModal');
+                if (countEl) countEl.innerText = prop.interestedCount;
+                if (btnText) btnText.innerText = 'تم تسجيل اهتمامك بهذا العقار بنجاح ✓';
+                if (btnEl) btnEl.className = "w-full bg-emerald-700 text-white py-3.5 rounded-xl font-black text-base flex items-center justify-center gap-2 shadow-lg transition";
+
+                renderProperties();
+                showToast('تم تسجيل اهتمامك بالعقار وإبلاغ م / محمود عبدالله!');
+            } else {
+                showToast('لقد قمت بتسجيل اهتمامك بهذا العقار بالفعل!');
+            }
         }
 
         function closeDetailsModal() {
@@ -1272,18 +1609,19 @@
             document.getElementById('modalCounter').innerText = `${modalSlideIndex + 1} / ${imgList.length}`;
         }
 
-        async function deleteProperty(firebaseKey) {
-            if (confirm('هل أنت متأكد من حذف هذا العقار نهائياً؟')) {
-                if (isOnlineConfigured && !firebaseKey.startsWith('local_')) {
-                    await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, { method: 'DELETE' });
-                    await loadData();
-                } else {
-                    properties = properties.filter(p => p.firebaseKey !== firebaseKey);
-                    localStorage.setItem('realEstateData', JSON.stringify(properties));
-                    renderProperties();
-                    if (isAdminLoggedIn) renderAdminManageList();
-                }
+        // حذف العقار مباشرة بدون تعليق في المتصفحات المدمجة
+        async function deleteProperty(firebaseKey, event) {
+            if (event) event.stopPropagation();
+            properties = properties.filter(p => p.firebaseKey !== firebaseKey);
+            localStorage.setItem('realEstateData', JSON.stringify(properties));
+            renderProperties();
+            if (isAdminLoggedIn) renderAdminManageList();
+
+            if (isOnlineConfigured && !firebaseKey.startsWith('local_')) {
+                await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, { method: 'DELETE' });
+                await loadData();
             }
+            showToast('تم حذف العقار بنجاح');
         }
 
         function renderProperties() {
@@ -1315,6 +1653,9 @@
                 const imgList = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
                 currentSlideIndex[prop.firebaseKey] = 0;
 
+                const isWishlisted = wishlist.includes(prop.firebaseKey);
+                const heartIconClass = isWishlisted ? "fa-solid text-red-500" : "fa-regular text-slate-700";
+
                 const sliderControlsHTML = imgList.length > 1 ? `
                     <button onclick="changeSlide('${prop.firebaseKey}', -1, event)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center z-10"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     <button onclick="changeSlide('${prop.firebaseKey}', 1, event)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center z-10"><i class="fa-solid fa-chevron-left text-xs"></i></button>
@@ -1330,8 +1671,8 @@
                 ` : '';
 
                 const adminButtonsHTML = isAdminLoggedIn ? `
-                    <div class="absolute top-3 left-3 flex items-center gap-2 z-20">
-                        <button onclick="event.stopPropagation(); deleteProperty('${prop.firebaseKey}')" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full shadow flex items-center justify-center" title="حذف"><i class="fa-solid fa-trash text-xs"></i></button>
+                    <div class="absolute top-3 left-3 flex items-center gap-1.5 z-20">
+                        <button onclick="deleteProperty('${prop.firebaseKey}', event)" class="bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full shadow flex items-center justify-center" title="حذف"><i class="fa-solid fa-trash text-xs"></i></button>
                         <button onclick="toggleSoldStatus('${prop.firebaseKey}', event)" class="${prop.sold ? 'bg-emerald-600' : 'bg-slate-900'} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow flex items-center gap-1 border border-white/30">
                             <i class="fa-solid ${prop.sold ? 'fa-rotate-left' : 'fa-check'}"></i>
                             <span>${prop.sold ? 'إلغاء' : soldText}</span>
@@ -1346,8 +1687,13 @@
                             ${soldOverlayHTML}
                             ${sliderControlsHTML}
                             <span class="absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-3 py-1.5 rounded-full z-10">${prop.status} • ${prop.type}</span>
-                            <span class="absolute top-3 right-24 bg-amber-500 text-slate-950 text-xs font-black px-2.5 py-1.5 rounded-full shadow z-10">كود: ${prop.code || '---'}</span>
+                            <span class="absolute top-3 right-28 bg-amber-500 text-slate-950 text-xs font-black px-2.5 py-1.5 rounded-full shadow z-10">كود: ${prop.code || '---'}</span>
                             <span class="absolute bottom-3 right-3 bg-slate-900/80 text-amber-400 text-xs font-bold px-3 py-1 rounded-lg z-10"><i class="fa-solid fa-location-dot ml-1"></i>${prop.city}</span>
+                            
+                            <button onclick="toggleWishlist('${prop.firebaseKey}', event)" class="absolute bottom-3 left-16 bg-white/90 hover:bg-white text-slate-800 w-8 h-8 rounded-full shadow flex items-center justify-center z-20 transition" title="إضافة للمفضلة">
+                                <i class="fa-heart ${heartIconClass} text-sm"></i>
+                            </button>
+
                             ${adminButtonsHTML}
                         </div>
                         <div class="p-5 flex-1 flex flex-col justify-between">
@@ -1357,8 +1703,12 @@
                                 <p class="text-gray-600 text-sm mb-4 line-clamp-2">${prop.desc}</p>
                             </div>
                             <div class="border-t pt-3 flex items-center justify-between">
-                                <span class="text-xs text-gray-500">مساحة: <b>${prop.area} م²</b></span>
-                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition">عرض التفاصيل ←</span>
+                                <div class="flex items-center gap-3 text-xs text-gray-500">
+                                    <span><b>${prop.area} م²</b></span>
+                                    <span title="عدد الذين فتحوا تفاصيل العقار"><i class="fa-solid fa-eye text-amber-500 ml-1"></i><b>${prop.views || 0}</b></span>
+                                    <span title="عدد المهتمين بالعقار"><i class="fa-solid fa-hand-holding-heart text-rose-500 ml-1"></i><b>${prop.interestedCount || 0}</b></span>
+                                </div>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition">التفاصيل ←</span>
                             </div>
                         </div>
                     </div>
@@ -1459,21 +1809,20 @@
                     startReviewAutoSlider();
                 }
                 document.getElementById('addReviewForm').reset();
-                alert('شكراً لك! تم إضافة رأيك بنجاح.');
-            } catch (err) { alert('حدث خطأ أثناء إرسال الرأي.'); }
+                showToast('شكراً لك! تم إضافة رأيك بنجاح.');
+            } catch (err) { showToast('حدث خطأ أثناء إرسال الرأي.'); }
             finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane ml-1"></i> إرسال الرأي'; }
         }
 
         async function deleteReview(firebaseKey) {
-            if (!confirm('حذف هذا الرأي؟')) return;
+            reviews = reviews.filter(r => r.firebaseKey !== firebaseKey);
+            localStorage.setItem('clientReviews', JSON.stringify(reviews));
+            renderCurrentReview();
             if (isOnlineConfigured && !firebaseKey.startsWith('rev_')) {
                 await fetch(`${FIREBASE_URL}/reviews/${firebaseKey}.json`, { method: 'DELETE' });
                 await loadReviews();
-            } else {
-                reviews = reviews.filter(r => r.firebaseKey !== firebaseKey);
-                localStorage.setItem('clientReviews', JSON.stringify(reviews));
-                renderCurrentReview();
             }
+            showToast('تم حذف الرأي');
         }
 
         function toggleAdminModal() { document.getElementById('adminModal').classList.toggle('hidden'); }
@@ -1486,7 +1835,8 @@
                 renderProperties();
                 renderCurrentReview();
                 renderAdminManageList();
-            } else { alert('كلمة المرور غير صحيحة!'); }
+                showToast('مرحباً بك م / محمود في لوحة التحكم');
+            } else { showToast('كلمة المرور غير صحيحة!'); }
         }
 
         function logoutAdmin() {
