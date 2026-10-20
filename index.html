@@ -315,13 +315,13 @@
                 </p>
 
                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                    <a id="ownerCardWaBtn" href="https://wa.me/201070031535" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
+                    <a id="ownerCardWaBtn" href="https://wa.me/01004578114" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
                         <i class="fa-brands fa-whatsapp text-lg"></i>
                         <span>تواصل واتساب</span>
                     </a>
-                    <a id="ownerCardCallBtn" href="tel:01070031535" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
+                    <a id="ownerCardCallBtn" href="tel:01004578114" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
                         <i class="fa-solid fa-phone"></i>
-                        <span id="ownerCardPhoneText" dir="ltr">01070031535</span>
+                        <span id="ownerCardPhoneText" dir="ltr">01004578114</span>
                     </a>
                     <a id="ownerCardFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition">
                         <i class="fa-brands fa-facebook text-lg"></i>
@@ -670,7 +670,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-gray-600 mb-1">رقم الهاتف والواتساب</label>
-                                <input type="text" id="consultantPhoneInput" class="w-full border rounded-xl p-2.5 text-sm text-left bg-white" dir="ltr" placeholder="01070031535">
+                                <input type="text" id="consultantPhoneInput" class="w-full border rounded-xl p-2.5 text-sm text-left bg-white" dir="ltr" placeholder="01004578114">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-600 mb-1">رابط حساب فيسبوك</label>
@@ -767,9 +767,9 @@
                 <span>إجمالي زيارات الموقع: <b id="footerVisitorsCount" class="text-white">125</b> زائر</span>
             </div>
             <div class="flex justify-center items-center gap-3 mb-6">
-                <a id="footerWaBtn" href="https://wa.me/201070031535" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+                <a id="footerWaBtn" href="https://wa.me/01004578114" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow"><i class="fa-brands fa-whatsapp text-lg"></i></a>
                 <a id="footerFbBtn" href="https://www.facebook.com/share/1JfpJ2n8FF/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow"><i class="fa-brands fa-facebook-f text-lg"></i></a>
-                <a id="footerCallBtn" href="tel:01070031535" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition shadow"><i class="fa-solid fa-phone"></i><span id="footerPhoneText" dir="ltr">01070031535</span></a>
+                <a id="footerCallBtn" href="tel:01004578114" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition shadow"><i class="fa-solid fa-phone"></i><span id="footerPhoneText" dir="ltr">01004578114</span></a>
             </div>
             <p class="text-xs text-gray-500">جميع الحقوق محفوظة © 2026</p>
         </div>
@@ -807,7 +807,7 @@
         let ownerProfile = {
             name: "م / محمود عبدالله",
             title: "مستشارك العقاري بالمدن الجديدة",
-            phone: "01070031535",
+            phone: "01004578114",
             fb: "https://www.facebook.com/share/1JfpJ2n8FF/",
             bio: "خبرة واسعة في التسويق والاستثمار العقاري بمدينة بدر والشروق والمدن الجديدة. نساعدك في اختيار العقار الأنسب للسكن أو الاستثمار بأفضل الأسعار وبأعلى درجات الأمان والمصداقية.",
             avatar: DEFAULT_AVATAR
@@ -846,7 +846,7 @@
 
         let currentReviewIndex = 0;
         let reviewInterval = null;
-        let consultantPhone = "01070031535";
+        let consultantPhone = "01004578114";
         let isAdminLoggedIn = false;
         let currentSlideIndex = {};
         let modalSlideIndex = 0;
@@ -1203,7 +1203,7 @@
         }
 
         function updateOwnerProfileUI() {
-            consultantPhone = ownerProfile.phone || "01070031535";
+            consultantPhone = ownerProfile.phone || "01004578114";
             const fbUrl = ownerProfile.fb || "https://www.facebook.com/share/1JfpJ2n8FF/";
             const waPhone = consultantPhone.startsWith('0') ? '2' + consultantPhone : consultantPhone;
             const validAvatar = (!ownerProfile.avatar || ownerProfile.avatar === "mahmoud.jpg") ? DEFAULT_AVATAR : ownerProfile.avatar;
@@ -1242,7 +1242,7 @@
                     ...ownerProfile,
                     name: document.getElementById('ownerNameInput').value.trim() || "م / محمود عبدالله",
                     title: document.getElementById('ownerTitleInput').value.trim() || "مستشارك العقاري بالمدن الجديدة",
-                    phone: document.getElementById('consultantPhoneInput').value.trim() || "01070031535",
+                    phone: document.getElementById('consultantPhoneInput').value.trim() || "01004578114",
                     fb: document.getElementById('ownerFbInput').value.trim() || "https://www.facebook.com/share/1JfpJ2n8FF/",
                     bio: document.getElementById('ownerBioInput').value.trim()
                 };
