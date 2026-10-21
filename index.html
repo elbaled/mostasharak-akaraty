@@ -9,41 +9,16 @@
     <meta name="apple-mobile-web-app-title" content="مستشارك العقاري">
     <link rel="manifest" id="my-manifest-placeholder">
     <title>مستشارك العقاري - م / محمود عبدالله | بدر والشروق والمدن الجديدة</title>
+    
+    <!-- Firebase FCM SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-messaging-compat.js"></script>
 
-    <!-- OneSignal Web SDK v16 Integration -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-                appId: "b285d41e-1ab7-42c0-af36-c532394aac3b",
-                allowLocalhostAsSecureOrigin: true,
-                notifyButton: {
-                    enable: true,
-                    position: 'bottom-left',
-                    size: 'medium',
-                    showCredit: false,
-                    text: {
-                        'tip.state.unsubscribed': 'اشترك في إشعارات العقارات الجديدة',
-                        'tip.state.subscribed': 'أنت مشترك في إشعارات الموقع',
-                        'tip.state.blocked': 'لقد قمت بحظر الإشعارات',
-                        'message.prenotify': 'اضغط للاشتراك في إشعارات مستشارك العقاري',
-                        'message.action.subscribed': "شكراً لاشتراكك في الإشعارات!",
-                        'message.action.resubscribed': "تم تفعيل الإشعارات بنجاح!",
-                        'message.action.unsubscribed': "لن تصلك إشعارات مرة أخرى",
-                        'dialog.main.title': 'إدارة إشعارات مستشارك العقاري',
-                        'dialog.main.button.subscribe': 'تفعيل الإشعارات',
-                        'dialog.main.button.unsubscribe': 'إلغاء الاشتراك',
-                        'dialog.blocked.title': 'إلغاء حظر الإشعارات',
-                        'dialog.blocked.message': 'اتبع التعليمات لتفعيل الإشعارات من إعدادات المتصفح:'
-                    }
-                }
-            });
-        });
-    </script>
-
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- خط Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
@@ -62,7 +37,6 @@
             background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
         }
 
-        /* شاشة الانترو */
         #introScreen {
             position: fixed;
             inset: 0;
@@ -217,7 +191,7 @@
     <!-- صندوق الإشعارات العائم -->
     <div id="toastNotificationContainer" class="fixed top-20 left-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
-    <!-- شريط تثبيت الموقع العائم -->
+    <!-- شريط تثبيت الموقع العائم (PWA) -->
     <div id="installAppBanner" class="hidden fixed bottom-4 right-4 left-4 md:left-auto z-50 bg-slate-900 border-2 border-amber-500 text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-4 max-w-md mx-auto">
         <div class="flex items-center gap-3">
             <div class="w-12 h-12 bg-amber-500 text-slate-900 rounded-xl flex items-center justify-center font-black text-xl shadow">
@@ -246,7 +220,7 @@
             </div>
             
             <div class="flex items-center gap-1.5 md:gap-2">
-                <!-- زر تفعيل إشعارات الهاتف الخارجية (OneSignal Push) -->
+                <!-- زر تفعيل إشعارات الهاتف الخارجية (Firebase) -->
                 <button onclick="enablePushNotifications()" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow" title="تفعيل إشعارات الهاتف">
                     <i class="fa-solid fa-bell-concierge"></i>
                     <span class="hidden sm:inline">تفعيل الإشعارات</span>
@@ -408,7 +382,6 @@
          لوحة تحكم الأدمن الاحترافية الكاملة بالوضع الليلي
          ========================================================================= -->
     
-    <!-- 1. نافذة إدخال باسورد الأدمن -->
     <div id="adminLoginModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="admin-card-bg text-white rounded-3xl max-w-md w-full p-7 shadow-2xl relative">
             <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
@@ -427,9 +400,8 @@
         </div>
     </div>
 
-    <!-- 2. شاشة لوحة التحكم الكاملة (Full-Screen Dark Dashboard) -->
+    <!-- شاشة لوحة التحكم الكاملة -->
     <div id="adminFullDashboard" class="fixed inset-0 admin-dark-bg z-50 hidden flex flex-col md:flex-row overflow-hidden">
-        
         <aside class="w-full md:w-64 bg-[#111827] border-b md:border-b-0 md:border-l border-gray-800 flex flex-col justify-between shrink-0">
             <div>
                 <div class="p-4 flex items-center justify-between border-b border-gray-800">
@@ -498,7 +470,6 @@
 
             <div class="p-4 md:p-8 flex-1">
 
-                <!-- الصفحة 1: إدارة المستخدمين المسجلين -->
                 <div id="adminPage-usersPage" class="space-y-6">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
                         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -507,7 +478,7 @@
                                     <i class="fa-solid fa-users text-indigo-400"></i>
                                     <span>إدارة المستخدمين</span>
                                 </h3>
-                                <p class="text-xs text-gray-400">جميع العملاء المسجلين في موقع مستشارك العقاري (اضغط على أي مستخدم لعرض ملفه الشخصي)</p>
+                                <p class="text-xs text-gray-400">جميع العملاء المسجلين في موقع مستشارك العقاري</p>
                             </div>
                             <button onclick="loadRegisteredUsers()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition shadow">
                                 <i class="fa-solid fa-rotate"></i>
@@ -536,7 +507,6 @@
                     </div>
                 </div>
 
-                <!-- الصفحة 2: إشعارات المهتمين بالإعلانات -->
                 <div id="adminPage-leadsPage" class="hidden space-y-6">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
                         <div class="flex items-center justify-between mb-6">
@@ -552,7 +522,6 @@
                     </div>
                 </div>
 
-                <!-- الصفحة 3: إضافة عقار جديد -->
                 <div id="adminPage-addPropPage" class="hidden">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl max-w-3xl mx-auto">
                         <h3 class="text-lg font-extrabold text-white mb-4 border-b border-gray-800 pb-3 flex items-center gap-2">
@@ -630,7 +599,6 @@
                     </div>
                 </div>
 
-                <!-- الصفحة 4: إدارة العقارات وتفعيل تم البيع -->
                 <div id="adminPage-managePropPage" class="hidden space-y-4">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
                         <h3 class="text-lg font-extrabold text-white mb-4">إدارة جميع العقارات المعروضة</h3>
@@ -638,7 +606,6 @@
                     </div>
                 </div>
 
-                <!-- الصفحة 5: الإحصائيات وبيانات وصورة المستشار -->
                 <div id="adminPage-statsPage" class="hidden space-y-6">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="admin-card-bg p-4 rounded-2xl">
@@ -712,7 +679,7 @@
         </div>
     </div>
 
-    <!-- 3. نافذة "الملف الشخصي للمستخدم" المنبثقة -->
+    <!-- نافذة "الملف الشخصي للمستخدم" المنبثقة -->
     <div id="userProfileDetailModal" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 text-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-5">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
@@ -1053,14 +1020,66 @@
         </div>
     </footer>
 
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-messaging-compat.js"></script>
+
     <!-- الجافاسكريبت -->
     <script>
         const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; 
         const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; 
-        const ONESIGNAL_APP_ID = "b285d41e-1ab7-42c0-af36-c532394aac3b";
         const ADMIN_PASS = "31535";
-
         const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
+
+        // إعداد الفايربيس (إشعارات الهاتف)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
+            authDomain: "mostasharak-akaraty.firebaseapp.com",
+            databaseURL: "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
+            projectId: "mostasharak-akaraty",
+            storageBucket: "mostasharak-akaraty.firebasestorage.app",
+            messagingSenderId: "287363939919",
+            appId: "1:287363939919:web:e53f13b518c6273043f43a",
+            measurementId: "G-QK6EW9G8CB"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+
+        let swRegistration = null;
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('firebase-messaging-sw.js').then(reg => {
+                swRegistration = reg;
+            }).catch(err => console.error(err));
+        }
+
+        async function enablePushNotifications() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    if (!swRegistration) swRegistration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+                    const token = await messaging.getToken({
+                        vapidKey: "BCv8jnhB4F5w_1zBza1ULauK25zEw8n1_pYKKC2AZoYIucjqbJLFooQ-gsnC6LwGKVcaaRBAw98BVzqRfIvZCQk",
+                        serviceWorkerRegistration: swRegistration
+                    });
+                    if (token && isOnlineConfigured) {
+                        await fetch(`${FIREBASE_URL}/fcmTokens/${token}.json`, {
+                            method: 'PUT',
+                            body: JSON.stringify({ token: token, timestamp: Date.now() })
+                        });
+                        showToast("تم تفعيل إشعارات الهاتف بنجاح! ستصلك أحدث العروض.");
+                    }
+                } else {
+                    showToast("تم رفض الإشعارات من المتصفح.");
+                }
+            } catch (e) {
+                showToast("عذراً، حدث خطأ أثناء تفعيل الإشعارات.");
+            }
+        }
+
+        messaging.onMessage((payload) => {
+            showToast(payload.notification?.body || "إشعار جديد من مستشارك العقاري!");
+            triggerSystemPushNotification(payload.notification?.title || "مستشارك العقاري", payload.notification?.body || "إشعار جديد!");
+        });
 
         const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80";
 
@@ -1076,32 +1095,6 @@
         };
         document.querySelector('#my-manifest-placeholder').setAttribute('href', URL.createObjectURL(new Blob([JSON.stringify(manifestData)], {type: 'application/json'})));
 
-        // تفعيل إشعارات الهاتف الخارجية عبر OneSignal و Notification API
-        async function enablePushNotifications() {
-            try {
-                if (window.OneSignalDeferred) {
-                    window.OneSignalDeferred.push(async function(OneSignal) {
-                        await OneSignal.Slidedown.promptPush();
-                    });
-                }
-                if ("Notification" in window) {
-                    const perm = await Notification.requestPermission();
-                    if (perm === "granted") {
-                        showToast("تم تفعيل إشعارات الهاتف بنجاح! ستصلك أحدث العقارات.");
-                        new Notification("مستشارك العقاري - م / محمود عبدالله", {
-                            body: "تم تفعيل إشعارات الهاتف بنجاح! ستصلك أحدث العروض العقارية فور نزولها.",
-                            icon: "https://cdn-icons-png.flaticon.com/512/602/602175.png"
-                        });
-                    } else {
-                        showToast("يرجى السماح بالإشعارات من إعدادات المتصفح لتصلك العروض على هاتفك.");
-                    }
-                }
-            } catch (e) {
-                showToast("تم إرسال طلب تفعيل إشعارات الهاتف.");
-            }
-        }
-
-        // إرسال إشعار لستارة الهاتف الخارجية
         function triggerSystemPushNotification(title, bodyText) {
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
@@ -1915,7 +1908,7 @@
                 showToast('حدث خطأ أثناء الرفع.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i><span>نشر العقار وإرسال إشعار للمشتركين</span>';
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i><span>نشر العقار الآن على الموقع</span>';
             }
         }
 
@@ -2186,9 +2179,13 @@
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
             const imgList = prop.images || [prop.image];
-            modalSlideIndex = (modalSlideIndex + direction + imgList.length) % imgList.length;
-            document.getElementById('modalMainImg').src = imgList[modalSlideIndex];
-            document.getElementById('modalCounter').innerText = `${modalSlideIndex + 1} / ${imgList.length}`;
+            if (imgList.length <= 1) return;
+
+            if (currentSlideIndex[propKey] === undefined) currentSlideIndex[propKey] = 0;
+            currentSlideIndex[propKey] = (currentSlideIndex[propKey] + direction + imgList.length) % imgList.length;
+
+            document.getElementById(`img-${propKey}`).src = imgList[currentSlideIndex[propKey]];
+            document.getElementById(`counter-${propKey}`).innerText = `${currentSlideIndex[propKey] + 1} / ${imgList.length}`;
         }
 
         async function deleteProperty(firebaseKey, event) {
@@ -2439,18 +2436,17 @@
                 renderAdminManageList();
                 updateNotifBadge();
                 showToast('مرحباً بك م / محمود في لوحة التحكم المركزية');
-            } else {
-                showToast('كلمة المرور غير صحيحة!');
-            }
+            } else { showToast('كلمة المرور غير صحيحة!'); }
         }
 
         function logoutAdmin() {
             isAdminLoggedIn = false;
             document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('adminFullDashboard').classList.add('hidden');
+            document.getElementById('adminLoginSection').classList.remove('hidden');
+            document.getElementById('adminDashboardSection').classList.add('hidden');
+            toggleAdminModal();
             renderProperties();
             renderCurrentReview();
-            showToast('تم تسجيل خروج الأدمن');
         }
     </script>
 </body>
