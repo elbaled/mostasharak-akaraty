@@ -9,11 +9,41 @@
     <meta name="apple-mobile-web-app-title" content="مستشارك العقاري">
     <link rel="manifest" id="my-manifest-placeholder">
     <title>مستشارك العقاري - م / محمود عبدالله | بدر والشروق والمدن الجديدة</title>
-    <!-- Tailwind CSS -->
+
+    <!-- OneSignal Web SDK v16 Integration -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+                appId: "b285d41e-1ab7-42c0-af36-c532394aac3b",
+                allowLocalhostAsSecureOrigin: true,
+                notifyButton: {
+                    enable: true,
+                    position: 'bottom-left',
+                    size: 'medium',
+                    showCredit: false,
+                    text: {
+                        'tip.state.unsubscribed': 'اشترك في إشعارات العقارات الجديدة',
+                        'tip.state.subscribed': 'أنت مشترك في إشعارات الموقع',
+                        'tip.state.blocked': 'لقد قمت بحظر الإشعارات',
+                        'message.prenotify': 'اضغط للاشتراك في إشعارات مستشارك العقاري',
+                        'message.action.subscribed': "شكراً لاشتراكك في الإشعارات!",
+                        'message.action.resubscribed': "تم تفعيل الإشعارات بنجاح!",
+                        'message.action.unsubscribed': "لن تصلك إشعارات مرة أخرى",
+                        'dialog.main.title': 'إدارة إشعارات مستشارك العقاري',
+                        'dialog.main.button.subscribe': 'تفعيل الإشعارات',
+                        'dialog.main.button.unsubscribe': 'إلغاء الاشتراك',
+                        'dialog.blocked.title': 'إلغاء حظر الإشعارات',
+                        'dialog.blocked.message': 'اتبع التعليمات لتفعيل الإشعارات من إعدادات المتصفح:'
+                    }
+                }
+            });
+        });
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- خط Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
@@ -32,6 +62,7 @@
             background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
         }
 
+        /* شاشة الانترو */
         #introScreen {
             position: fixed;
             inset: 0;
@@ -122,6 +153,20 @@
         .toast-animate {
             animation: bounceIn 0.5s ease forwards;
         }
+
+        .admin-dark-bg {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+        }
+        .admin-card-bg {
+            background-color: #111827;
+            border: 1px solid #1f2937;
+        }
+        .admin-sidebar-btn.active {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-right: 3px solid #3b82f6;
+        }
     </style>
 </head>
 <body class="text-slate-800">
@@ -170,7 +215,7 @@
     </div>
 
     <!-- صندوق الإشعارات العائم -->
-    <div id="toastNotificationContainer" class="fixed top-20 left-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+    <div id="toastNotificationContainer" class="fixed top-20 left-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
     <!-- شريط تثبيت الموقع العائم -->
     <div id="installAppBanner" class="hidden fixed bottom-4 right-4 left-4 md:left-auto z-50 bg-slate-900 border-2 border-amber-500 text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-4 max-w-md mx-auto">
@@ -200,29 +245,34 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-1.5 md:gap-2.5">
+            <div class="flex items-center gap-1.5 md:gap-2">
+                <!-- زر تفعيل إشعارات الهاتف الخارجية (OneSignal Push) -->
+                <button onclick="enablePushNotifications()" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow" title="تفعيل إشعارات الهاتف">
+                    <i class="fa-solid fa-bell-concierge"></i>
+                    <span class="hidden sm:inline">تفعيل الإشعارات</span>
+                </button>
+
                 <button onclick="triggerChromeInstall()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow" title="تثبيت الموقع كتطبيق">
                     <i class="fa-solid fa-mobile-screen-button"></i>
                     <span class="hidden sm:inline">تثبيت التطبيق</span>
                 </button>
 
-                <!-- زرار فتح حاسبة الأقساط الجديدة -->
                 <button onclick="toggleCalculatorModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow" title="حاسبة الأقساط العقارية">
                     <i class="fa-solid fa-calculator"></i>
-                    <span class="hidden sm:inline">حاسبة الأقساط</span>
+                    <span class="hidden md:inline">حاسبة الأقساط</span>
                 </button>
 
                 <button onclick="toggleClientAuthModal()" id="clientNavBtn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow">
                     <i class="fa-solid fa-user-circle"></i>
-                    <span id="clientNavName">حسابي</span>
+                    <span id="clientNavName">تسجيل دخول</span>
                 </button>
 
-                <button onclick="toggleNotificationsModal()" class="relative bg-slate-800 hover:bg-slate-700 text-amber-400 w-9 h-9 rounded-lg flex items-center justify-center transition shadow" title="الإشعارات">
+                <button onclick="toggleNotificationsModal()" class="relative bg-slate-800 hover:bg-slate-700 text-amber-400 w-9 h-9 rounded-lg flex items-center justify-center transition shadow" title="سجل الإشعارات">
                     <i class="fa-solid fa-bell"></i>
                     <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
                 </button>
 
-                <button onclick="toggleAdminModal()" class="gold-gradient hover:opacity-90 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-md transition">
+                <button onclick="openAdminSystem()" class="gold-gradient hover:opacity-90 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-md transition">
                     <i class="fa-solid fa-user-tie"></i>
                     <span>الأدمن</span>
                 </button>
@@ -303,11 +353,10 @@
     <!-- البطاقة التعريفية لصاحب الموقع (م / محمود عبدالله) -->
     <section class="container mx-auto px-4 -mt-10 relative z-30 mb-8">
         <div class="bg-white rounded-3xl shadow-2xl border-2 border-amber-500/30 p-6 md:p-8 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-8">
-            <div class="relative shrink-0 group cursor-pointer" onclick="toggleAdminModal()" title="اضغط لتغيير الصورة من لوحة الأدمن">
+            <div class="relative shrink-0 group cursor-pointer" onclick="openAdminSystem()" title="اضغط لتغيير الصورة من لوحة الأدمن">
                 <div class="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 gold-gradient shadow-xl overflow-hidden">
                     <img id="ownerCardAvatar" 
-                         src="https://i.ibb.co/vxZ0Y5k/mahmoud.jpg" 
-                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80';" 
+                         src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80" 
                          alt="م / محمود عبدالله" 
                          class="w-full h-full object-cover object-top rounded-full border-4 border-white bg-slate-100">
                 </div>
@@ -355,12 +404,399 @@
         <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
+    <!-- =========================================================================
+         لوحة تحكم الأدمن الاحترافية الكاملة بالوضع الليلي
+         ========================================================================= -->
+    
+    <!-- 1. نافذة إدخال باسورد الأدمن -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="admin-card-bg text-white rounded-3xl max-w-md w-full p-7 shadow-2xl relative">
+            <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner"><i class="fa-solid fa-user-shield"></i></div>
+                <h3 class="text-2xl font-black">لوحة الإدارة المركزية</h3>
+                <p class="text-gray-400 text-xs mt-1">خاص بـ م / محمود عبدالله لإدارة المستخدمين والعقارات</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold mb-1 text-gray-300">كلمة المرور</label>
+                    <input type="password" id="adminPasswordInput" onkeydown="if(event.key==='Enter') loginAdmin()" placeholder="أدخل كلمة المرور" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 focus:outline-none focus:border-blue-500 text-center text-lg text-white tracking-widest">
+                </div>
+                <button onclick="loginAdmin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition"><i class="fa-solid fa-right-to-bracket ml-1"></i> دخول لوحة التحكم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. شاشة لوحة التحكم الكاملة (Full-Screen Dark Dashboard) -->
+    <div id="adminFullDashboard" class="fixed inset-0 admin-dark-bg z-50 hidden flex flex-col md:flex-row overflow-hidden">
+        
+        <aside class="w-full md:w-64 bg-[#111827] border-b md:border-b-0 md:border-l border-gray-800 flex flex-col justify-between shrink-0">
+            <div>
+                <div class="p-4 flex items-center justify-between border-b border-gray-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center text-lg shadow">M</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">مستشارك العقاري</h4>
+                            <span class="text-[11px] text-gray-400 block">لوحة التحكم</span>
+                        </div>
+                    </div>
+                    <button onclick="closeAdminDashboard()" class="md:hidden text-gray-400 hover:text-white text-sm bg-gray-800 px-3 py-1.5 rounded-lg">العودة للموقع</button>
+                </div>
+
+                <nav class="p-3 flex md:flex-col gap-1 overflow-x-auto">
+                    <button onclick="switchAdminPage('usersPage')" id="sideBtn-usersPage" class="admin-sidebar-btn active py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
+                        <i class="fa-solid fa-users text-indigo-400 w-5"></i>
+                        <span>المستخدمين المسجلين</span>
+                    </button>
+                    <button onclick="switchAdminPage('leadsPage')" id="sideBtn-leadsPage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
+                        <i class="fa-solid fa-fire text-rose-400 w-5"></i>
+                        <span>المهتمين بالإعلانات</span>
+                        <span id="sidebarLeadsBadge" class="mr-auto bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-full">0</span>
+                    </button>
+                    <button onclick="switchAdminPage('addPropPage')" id="sideBtn-addPropPage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
+                        <i class="fa-solid fa-plus-circle text-emerald-400 w-5"></i>
+                        <span>إضافة عقار جديد</span>
+                    </button>
+                    <button onclick="switchAdminPage('managePropPage')" id="sideBtn-managePropPage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
+                        <i class="fa-solid fa-building text-amber-400 w-5"></i>
+                        <span>إدارة المحتوى والعقارات</span>
+                    </button>
+                    <button onclick="switchAdminPage('statsPage')" id="sideBtn-statsPage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
+                        <i class="fa-solid fa-chart-pie text-sky-400 w-5"></i>
+                        <span>الإحصائيات وبياناتي</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="hidden md:block p-4 border-t border-gray-800 space-y-2">
+                <button onclick="closeAdminDashboard()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-200 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>العودة لواجهة الموقع</span>
+                </button>
+                <button onclick="logoutAdmin()" class="w-full bg-red-950/60 hover:bg-red-900/80 text-red-400 border border-red-800/40 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>تسجيل خروج الأدمن</span>
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            <header class="bg-[#111827]/90 border-b border-gray-800 px-6 py-4 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
+                <div>
+                    <h2 id="adminPageHeaderTitle" class="text-xl md:text-2xl font-black text-white">المستخدمين</h2>
+                    <p id="adminPageHeaderSub" class="text-xs text-gray-400">إدارة المستخدمين المسجلين في الموقع</p>
+                </div>
+
+                <div class="flex items-center gap-3 bg-[#1e293b] border border-gray-700 px-3.5 py-1.5 rounded-2xl">
+                    <div class="text-left">
+                        <p class="text-xs font-bold text-white leading-tight">م / محمود عبدالله</p>
+                        <span class="text-[10px] text-amber-400 block">Admin • مستشارك العقاري</span>
+                    </div>
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center text-sm">م</div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-8 flex-1">
+
+                <!-- الصفحة 1: إدارة المستخدمين المسجلين -->
+                <div id="adminPage-usersPage" class="space-y-6">
+                    <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <div>
+                                <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-users text-indigo-400"></i>
+                                    <span>إدارة المستخدمين</span>
+                                </h3>
+                                <p class="text-xs text-gray-400">جميع العملاء المسجلين في موقع مستشارك العقاري (اضغط على أي مستخدم لعرض ملفه الشخصي)</p>
+                            </div>
+                            <button onclick="loadRegisteredUsers()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition shadow">
+                                <i class="fa-solid fa-rotate"></i>
+                                <span>تحديث</span>
+                            </button>
+                        </div>
+
+                        <div class="relative mb-6">
+                            <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input type="text" id="adminUserSearchInput" oninput="renderUsersTable()" placeholder="بحث بالاسم أو البريد الإلكتروني أو الهاتف أو UID..." class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl pr-10 pl-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right border-collapse">
+                                <thead>
+                                    <tr class="border-b border-gray-800 text-gray-400 text-xs">
+                                        <th class="pb-3 px-3">المستخدم</th>
+                                        <th class="pb-3 px-3">البريد الإلكتروني / الهاتف</th>
+                                        <th class="pb-3 px-3">الدور</th>
+                                        <th class="pb-3 px-3">UID</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminUsersTableBody" class="divide-y divide-gray-800/80 text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الصفحة 2: إشعارات المهتمين بالإعلانات -->
+                <div id="adminPage-leadsPage" class="hidden space-y-6">
+                    <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-fire text-rose-500"></i>
+                                    <span>سجل العملاء المهتمين بالإعلانات وطلبات العقارات</span>
+                                </h3>
+                                <p class="text-xs text-gray-400">كل عميل يضغط على زر "أنا مهتم" في أي عقار يظهر إشعاره وبياناته هنا فوراً</p>
+                            </div>
+                        </div>
+                        <div id="adminLeadsListContainer" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- الصفحة 3: إضافة عقار جديد -->
+                <div id="adminPage-addPropPage" class="hidden">
+                    <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl max-w-3xl mx-auto">
+                        <h3 class="text-lg font-extrabold text-white mb-4 border-b border-gray-800 pb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-emerald-400"></i>
+                            <span>نشر إعلان عقاري جديد</span>
+                        </h3>
+                        <form id="addPropertyForm" onsubmit="addProperty(event)" class="space-y-4 text-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">كود العقار (مثال: B1) *</label>
+                                    <input type="text" id="propCode" required placeholder="B1" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm uppercase font-bold text-amber-400">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">عنوان الإعلان العقاري *</label>
+                                    <input type="text" id="propTitle" required placeholder="مثال: شقة 140م سوبر لوكس بمدينة بدر" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">السعر *</label>
+                                    <input type="text" id="propPrice" required placeholder="4,500 ج/شهر" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">المدينة *</label>
+                                    <select id="propCity" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                                        <option value="مدينة بدر">مدينة بدر</option>
+                                        <option value="مدينة الشروق">مدينة الشروق</option>
+                                        <option value="العبور">مدينة العبور</option>
+                                        <option value="العاصمة الإدارية">العاصمة الإدارية</option>
+                                        <option value="التجمع الخامس">التجمع الخامس</option>
+                                        <option value="مدن أخرى">مدن جديدة أخرى</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">نوع العقار *</label>
+                                    <select id="propType" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                                        <option value="شقة">شقة سكنية</option>
+                                        <option value="محل تجاري">محل تجاري</option>
+                                        <option value="أرض فاضية">أراضي فضاء</option>
+                                        <option value="فيلا / دوبلكس">فيلات ودوبلكس</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">نوع العرض *</label>
+                                    <select id="propStatus" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                                        <option value="إيجار">للإيجار</option>
+                                        <option value="تمليك">للبيع / تمليك</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">المساحة (م²) *</label>
+                                    <input type="number" id="propArea" required placeholder="140" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1">صور العقار *</label>
+                                    <input type="file" id="propImageFile" accept="image/*" multiple onchange="previewSelectedPropertyImages(event)" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2 text-xs text-gray-300">
+                                </div>
+                            </div>
+                            <div id="propImagesPreviewBox" class="flex flex-wrap gap-2 justify-center empty:hidden"></div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1">التفاصيل الكاملة *</label>
+                                <textarea id="propDesc" rows="3" required placeholder="اكتب التفاصيل..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-3 text-sm text-white"></textarea>
+                            </div>
+
+                            <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-95 transition text-base flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>نشر العقار وإرسال إشعار للمشتركين</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- الصفحة 4: إدارة العقارات وتفعيل تم البيع -->
+                <div id="adminPage-managePropPage" class="hidden space-y-4">
+                    <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
+                        <h3 class="text-lg font-extrabold text-white mb-4">إدارة جميع العقارات المعروضة</h3>
+                        <div id="adminPropertiesList" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- الصفحة 5: الإحصائيات وبيانات وصورة المستشار -->
+                <div id="adminPage-statsPage" class="hidden space-y-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="admin-card-bg p-4 rounded-2xl">
+                            <span class="text-xs text-gray-400 block">إجمالي الزوار</span>
+                            <b id="statTotalVisitors" class="text-2xl font-black text-emerald-400 mt-1 block">125</b>
+                        </div>
+                        <div class="admin-card-bg p-4 rounded-2xl">
+                            <span class="text-xs text-gray-400 block">المستخدمين المسجلين</span>
+                            <b id="statTotalUsers" class="text-2xl font-black text-indigo-400 mt-1 block">0</b>
+                        </div>
+                        <div class="admin-card-bg p-4 rounded-2xl">
+                            <span class="text-xs text-gray-400 block">العقارات المعروضة</span>
+                            <b id="statTotalProps" class="text-2xl font-black text-amber-400 mt-1 block">0</b>
+                        </div>
+                        <div class="admin-card-bg p-4 rounded-2xl">
+                            <span class="text-xs text-gray-400 block">إشعارات المهتمين</span>
+                            <b id="statTotalLeads" class="text-2xl font-black text-rose-400 mt-1 block">0</b>
+                        </div>
+                    </div>
+
+                    <div class="admin-card-bg rounded-2xl p-5 md:p-6 space-y-4">
+                        <h3 class="text-lg font-bold text-white border-b border-gray-800 pb-3">بيانات وصورة م / محمود عبدالله</h3>
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#0b0f19] p-4 rounded-xl border border-gray-800">
+                            <div class="flex items-center gap-3">
+                                <img id="quickAdminAvatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80" class="w-16 h-16 rounded-full object-cover object-top border-2 border-amber-500">
+                                <div>
+                                    <h5 class="font-bold text-white text-sm">الصورة الشخصية للمستشار</h5>
+                                    <p class="text-xs text-gray-400">اختر صورتك من الهاتف ليتم حفظها وإظهارها لكل الزوار</p>
+                                </div>
+                            </div>
+                            <label class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer shadow shrink-0 transition">
+                                <i class="fa-solid fa-camera ml-1"></i> تغيير الصورة الآن
+                                <input type="file" accept="image/*" onchange="quickUploadOwnerPhoto(event)" class="hidden">
+                            </label>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1">اسم المستشار العقاري</label>
+                                <input type="text" id="ownerNameInput" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1">المسمى الوظيفي</label>
+                                <input type="text" id="ownerTitleInput" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1">رقم الهاتف والواتساب</label>
+                                <input type="text" id="consultantPhoneInput" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-left text-white" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1">رابط فيسبوك</label>
+                                <input type="text" id="ownerFbInput" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-left text-white" dir="ltr">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">النبذة التعريفية</label>
+                            <textarea id="ownerBioInput" rows="3" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl p-2.5 text-sm text-white"></textarea>
+                        </div>
+
+                        <button type="button" id="saveProfileBtn" onclick="saveOwnerProfile()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-sm font-bold transition shadow-lg">
+                            <i class="fa-solid fa-floppy-disk ml-1"></i> حفظ التعديلات
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. نافذة "الملف الشخصي للمستخدم" المنبثقة -->
+    <div id="userProfileDetailModal" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 text-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-5">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <button onclick="closeUserProfileModal()" class="w-8 h-8 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="text-left">
+                    <span class="text-[11px] text-blue-400 font-bold block"><i class="fa-regular fa-user ml-1"></i>ملف المستخدم</span>
+                    <h3 class="text-lg font-black text-white">الملف الشخصي</h3>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-4 bg-[#0b0f19] p-4 rounded-2xl border border-gray-800/80">
+                <div class="text-left">
+                    <h4 id="profModalName" class="font-black text-base text-white">Name</h4>
+                    <p id="profModalEmail" class="text-xs text-gray-400 mb-2">user@gmail.com</p>
+                    <div class="flex items-center justify-end gap-2">
+                        <span class="bg-emerald-950 text-emerald-400 border border-emerald-700/50 text-[10px] font-bold px-2.5 py-0.5 rounded-full">نشط</span>
+                        <span id="profModalRoleBadge" class="bg-indigo-950 text-indigo-300 border border-indigo-700/50 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                            <i class="fa-solid fa-user text-[9px]"></i> User
+                        </span>
+                    </div>
+                </div>
+                <div id="profModalInitial" class="w-14 h-14 rounded-2xl bg-indigo-600 text-white font-black text-2xl flex items-center justify-center shadow-lg shrink-0">
+                    U
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-right">
+                <div class="bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] text-gray-400 block mb-1">الاسم</span>
+                    <b id="profBoxName" class="text-xs text-white truncate block">---</b>
+                </div>
+                <div class="bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] text-gray-400 block mb-1">البريد الإلكتروني</span>
+                    <b id="profBoxEmail" class="text-xs text-white truncate block" dir="ltr">---</b>
+                </div>
+                <div class="bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] text-gray-400 block mb-1">رقم الهاتف</span>
+                    <b id="profBoxPhone" class="text-xs text-amber-400 truncate block" dir="ltr">---</b>
+                </div>
+                <div class="bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] text-gray-400 block mb-1">الحالة</span>
+                    <b class="text-xs text-emerald-400 block">نشط</b>
+                </div>
+                <div class="col-span-2 bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] text-gray-400 block mb-1">UID</span>
+                    <b id="profBoxUid" class="text-[11px] text-blue-400 font-mono break-all block" dir="ltr">---</b>
+                </div>
+                <div class="bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] text-gray-400 block mb-1">تاريخ إنشاء الحساب</span>
+                    <b id="profBoxDate" class="text-[11px] text-white block">---</b>
+                </div>
+                <div class="bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] text-gray-400 block mb-1">عدد العقارات المهتم بها</span>
+                    <b id="profBoxInterestsCount" class="text-sm text-rose-400 font-black block">0</b>
+                </div>
+            </div>
+
+            <div class="bg-[#0b0f19] border border-gray-800 p-3 rounded-xl">
+                <span class="text-[11px] text-gray-400 font-bold block mb-2"><i class="fa-solid fa-heart text-rose-500 ml-1"></i>الإعلانات المهتم بها هذا العميل:</span>
+                <div id="profBoxInterestsList" class="text-xs text-gray-300 space-y-1 max-h-24 overflow-y-auto">
+                    لا توجد إعلانات مسجلة بعد
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-2 border-t border-gray-800">
+                <button onclick="closeUserProfileModal()" class="bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition">إغلاق</button>
+                <div class="flex items-center gap-2">
+                    <a id="profModalWaBtn" href="#" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+                        <i class="fa-brands fa-whatsapp"></i> واتساب العميل
+                    </a>
+                    <a id="profModalCallBtn" href="#" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-phone"></i> اتصال
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- نافذة حاسبة الأقساط التفاعلية -->
     <div id="calculatorModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
-            <button onclick="toggleCalculatorModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <button onclick="toggleCalculatorModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <div class="text-center">
                 <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl"><i class="fa-solid fa-calculator"></i></div>
                 <h3 class="text-xl font-black text-slate-900">حاسبة الأقساط العقارية</h3>
@@ -408,37 +844,44 @@
         </div>
     </div>
 
-    <!-- نافذة حساب العميل والمفضلة -->
+    <!-- نافذة تسجيل دخول العميل وحسابه الشخصي -->
     <div id="clientAuthModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="toggleClientAuthModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
 
             <div id="clientLoggedOutView">
                 <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner"><i class="fa-solid fa-user-circle"></i></div>
-                    <h3 class="text-2xl font-black text-slate-900">حساب العميل والمفضلة</h3>
-                    <p class="text-gray-500 text-sm mt-1">سجل اسمك ورقمك لحفظ العقارات وتسجيل اهتمامك بضغطة واحدة</p>
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner"><i class="fa-solid fa-user-plus"></i></div>
+                    <h3 class="text-2xl font-black text-slate-900">تسجيل حساب عميل جديد</h3>
+                    <p class="text-gray-500 text-xs mt-1">سجل بياناتك لحفظ العقارات المفضلة والتواصل السريع مع المستشار</p>
                 </div>
-                <form onsubmit="clientLogin(event)" class="space-y-4">
+                <form onsubmit="clientLogin(event)" class="space-y-3.5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">اسمك الكريم *</label>
-                        <input type="text" id="clientLoginName" required placeholder="مثال: محمد أحمد" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-amber-500 bg-gray-50">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الاسم بالكامل *</label>
+                        <input type="text" id="clientLoginName" required placeholder="مثال: أحمد سمير" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-amber-500 bg-gray-50">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف *</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني *</label>
+                        <input type="email" id="clientLoginEmail" required placeholder="example@gmail.com" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-amber-500 bg-gray-50" dir="ltr">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف / واتساب *</label>
                         <input type="tel" id="clientLoginPhone" required placeholder="010xxxxxxxx" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-amber-500 bg-gray-50" dir="ltr">
                     </div>
-                    <button type="submit" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow transition"><i class="fa-solid fa-right-to-bracket ml-1"></i> دخول لحسابي</button>
+                    <button type="submit" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow transition"><i class="fa-solid fa-check-circle ml-1"></i> تسجيل ودخول لحسابي</button>
                 </form>
             </div>
 
             <div id="clientLoggedInView" class="hidden space-y-6">
                 <div class="flex justify-between items-center border-b pb-4">
-                    <div>
-                        <h3 class="text-xl font-black text-slate-900">مرحباً، <span id="clientProfileName" class="text-amber-600"></span></h3>
-                        <p class="text-xs text-gray-500">إدارة عقاراتك المفضلة وطلباتك الخاصة</p>
+                    <div class="flex items-center gap-3">
+                        <div id="clientProfileAvatarInitial" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-black text-xl flex items-center justify-center">أ</div>
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900">مرحباً، <span id="clientProfileName" class="text-amber-600"></span></h3>
+                            <p id="clientProfileEmailView" class="text-xs text-gray-500"></p>
+                        </div>
                     </div>
-                    <button onclick="clientLogout()" class="text-xs bg-red-100 text-red-600 px-3 py-1.5 rounded-lg font-bold">تسجيل خروج</button>
+                    <button onclick="clientLogout()" class="text-xs bg-red-100 text-red-600 px-3 py-1.5 rounded-lg font-bold">خروج</button>
                 </div>
 
                 <div>
@@ -474,13 +917,13 @@
         </div>
     </div>
 
-    <!-- نافذة عرض سجل الإشعارات والمهتمين (Leads CRM للأدمن) -->
+    <!-- نافذة عرض سجل الإشعارات العامة للزوار -->
     <div id="notificationsModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[80vh] overflow-y-auto">
             <button onclick="toggleNotificationsModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-xl font-black text-slate-900 mb-4 border-b pb-2 flex items-center gap-2">
                 <i class="fa-solid fa-bell text-amber-500"></i>
-                <span>سجل الإشعارات وعملاء Leads المهتمين</span>
+                <span>أحدث إشعارات الموقع</span>
             </h3>
             <div id="notificationsListContent" class="space-y-3">
                 <p class="text-center text-gray-400 py-6 text-sm">لا توجد إشعارات جديدة حالياً.</p>
@@ -488,222 +931,8 @@
         </div>
     </div>
 
-    <!-- قسم آراء العملاء -->
-    <section class="bg-slate-900 text-white py-16 px-4 mt-12 border-t-4 border-amber-500">
-        <div class="container mx-auto max-w-5xl">
-            <div class="text-center mb-10">
-                <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-4 py-1 rounded-full text-xs font-bold">ثقة عملائنا سر نجاحنا</span>
-                <h3 class="text-3xl font-extrabold mt-3">آراء وتقييمات العملاء</h3>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div class="lg:col-span-7 bg-slate-800/90 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl relative min-h-[230px] flex flex-col justify-between overflow-hidden">
-                    <i class="fa-solid fa-quote-left text-6xl text-amber-500/10 absolute top-4 left-4"></i>
-                    <div id="reviewSliderBox" class="my-auto z-10"></div>
-                    <div class="flex items-center justify-between border-t border-slate-700/80 pt-4 mt-4 z-10">
-                        <div class="flex items-center gap-2">
-                            <button onclick="prevReview()" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-amber-500 text-white flex items-center justify-center transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                            <button onclick="nextReview()" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-amber-500 text-white flex items-center justify-center transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        </div>
-                        <span id="reviewCounterText" class="text-xs text-amber-400 font-bold"></span>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5 bg-white text-slate-800 rounded-2xl p-6 shadow-xl">
-                    <h4 class="font-bold text-lg mb-4 text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-pen-to-square text-amber-500"></i>
-                        <span>شاركنا رأيك وتجربتك</span>
-                    </h4>
-                    <form id="addReviewForm" onsubmit="submitClientReview(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">الاسم الكريم *</label>
-                            <input type="text" id="reviewerName" required placeholder="اكتب اسمك هنا..." class="w-full border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-amber-500 bg-gray-50">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">رأيك في خدماتنا *</label>
-                            <textarea id="reviewerComment" rows="3" required placeholder="اكتب تجربتك مع م / محمود عبدالله..." class="w-full border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-amber-500 bg-gray-50"></textarea>
-                        </div>
-                        <button type="submit" id="submitReviewBtn" class="w-full gold-gradient text-white font-bold py-2.5 rounded-xl shadow hover:opacity-95 transition text-sm">
-                            <i class="fa-solid fa-paper-plane ml-1"></i> إرسال الرأي
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- لوحة تحكم الأدمن -->
-    <div id="adminModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-3 md:p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-3xl w-full p-5 md:p-7 shadow-2xl relative my-8 max-h-[92vh] overflow-y-auto">
-            <button onclick="toggleAdminModal()" class="absolute top-4 left-4 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 w-9 h-9 rounded-full flex items-center justify-center text-lg transition"><i class="fa-solid fa-xmark"></i></button>
-
-            <div id="adminLoginSection" class="py-6">
-                <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner"><i class="fa-solid fa-user-shield"></i></div>
-                    <h3 class="text-2xl font-black text-slate-900">إدارة موقع مستشارك العقاري</h3>
-                    <p class="text-gray-500 text-sm mt-1">خاص بـ م / محمود عبدالله لإضافة وعرض وتعديل العقارات</p>
-                </div>
-                <div class="max-w-sm mx-auto space-y-4">
-                    <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-700">كلمة المرور</label>
-                        <input type="password" id="adminPasswordInput" onkeydown="if(event.key==='Enter') loginAdmin()" placeholder="أدخل كلمة المرور الخاصة بك" class="w-full border-2 border-gray-200 rounded-xl p-3 focus:outline-none focus:border-amber-500 text-center text-lg tracking-widest">
-                    </div>
-                    <button onclick="loginAdmin()" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-95 transition"><i class="fa-solid fa-right-to-bracket ml-1"></i> دخول لوحة التحكم</button>
-                </div>
-            </div>
-
-            <div id="adminDashboardSection" class="hidden space-y-6">
-                <div class="flex flex-wrap justify-between items-center border-b pb-4 gap-2 pl-10">
-                    <div>
-                        <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-gauge-high text-amber-600"></i>
-                            <span>لوحة تحكم المستشار العقاري</span>
-                        </h3>
-                        <p class="text-xs text-gray-500">إدارة العقارات ومتابعة المشاهدات والمهتمين</p>
-                    </div>
-                    <button onclick="logoutAdmin()" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3.5 py-1.5 rounded-lg font-bold transition"><i class="fa-solid fa-power-off ml-1"></i>تسجيل خروج</button>
-                </div>
-
-                <div class="bg-amber-50 border-2 border-amber-300 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <img id="quickAdminAvatar" src="https://i.ibb.co/vxZ0Y5k/mahmoud.jpg" class="w-14 h-14 rounded-full object-cover object-top border-2 border-amber-600 shrink-0">
-                        <div>
-                            <h5 class="font-bold text-slate-900 text-xs md:text-sm">تثبيت صورة م / محمود عبدالله على الموقع</h5>
-                            <p class="text-[11px] text-amber-800">اختر صورتك الشخصية من هاتفك ليتم حفظها وإظهارها فوراً</p>
-                        </div>
-                    </div>
-                    <label class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer shadow shrink-0 transition">
-                        <i class="fa-solid fa-camera ml-1 text-amber-400"></i> اختر صورتك الآن
-                        <input type="file" accept="image/*" onchange="quickUploadOwnerPhoto(event)" class="hidden">
-                    </label>
-                </div>
-
-                <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl">
-                    <button type="button" onclick="switchAdminTab('addTab')" id="tabBtn-addTab" class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm bg-slate-900 text-white shadow transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-plus-circle text-amber-400"></i><span>إضافة عقار جديد</span></button>
-                    <button type="button" onclick="switchAdminTab('manageTab')" id="tabBtn-manageTab" class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm text-slate-600 hover:bg-white/60 transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-list-check text-amber-600"></i><span>إدارة وتعديل وتم البيع</span></button>
-                    <button type="button" onclick="switchAdminTab('profileTab')" id="tabBtn-profileTab" class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm text-slate-600 hover:bg-white/60 transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-id-card text-amber-600"></i><span>بيانات المستشار</span></button>
-                </div>
-
-                <div id="adminTab-addTab" class="space-y-4">
-                    <form id="addPropertyForm" onsubmit="addProperty(event)" class="bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">كود العقار (مثال: B1) *</label>
-                                <input type="text" id="propCode" required placeholder="B1" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500 uppercase font-bold text-amber-600">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-xs font-bold text-slate-700 mb-1">عنوان الإعلان العقاري *</label>
-                                <input type="text" id="propTitle" required placeholder="مثال: شقة 140م سوبر لوكس" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">السعر *</label>
-                                <input type="text" id="propPrice" required placeholder="4,500 ج/شهر" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">المدينة *</label>
-                                <select id="propCity" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
-                                    <option value="مدينة بدر">مدينة بدر</option>
-                                    <option value="مدينة الشروق">مدينة الشروق</option>
-                                    <option value="العبور">مدينة العبور</option>
-                                    <option value="العاصمة الإدارية">العاصمة الإدارية</option>
-                                    <option value="التجمع الخامس">التجمع الخامس</option>
-                                    <option value="مدن أخرى">مدن جديدة أخرى</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">نوع العقار *</label>
-                                <select id="propType" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
-                                    <option value="شقة">شقة سكنية</option>
-                                    <option value="محل تجاري">محل تجاري</option>
-                                    <option value="أرض فاضية">أراضي فضاء</option>
-                                    <option value="فيلا / دوبلكس">فيلات ودوبلكس</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">نوع العرض *</label>
-                                <select id="propStatus" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
-                                    <option value="إيجار">للإيجار</option>
-                                    <option value="تمليك">للبيع / تمليك</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">المساحة (م²) *</label>
-                                <input type="number" id="propArea" required placeholder="140" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm bg-white focus:outline-amber-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">صور العقار *</label>
-                                <input type="file" id="propImageFile" accept="image/*" multiple onchange="previewSelectedPropertyImages(event)" class="w-full border border-gray-300 rounded-xl p-2 text-xs bg-white">
-                            </div>
-                        </div>
-                        <div id="propImagesPreviewBox" class="flex flex-wrap gap-2 justify-center empty:hidden"></div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">التفاصيل الكاملة *</label>
-                            <textarea id="propDesc" rows="3" required placeholder="اكتب التفاصيل..." class="w-full border border-gray-300 rounded-xl p-3 text-sm bg-white focus:outline-amber-500"></textarea>
-                        </div>
-
-                        <button type="submit" id="submitBtn" class="w-full gold-gradient text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-95 transition text-base flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>نشر العقار الآن على الموقع</span>
-                        </button>
-                    </form>
-                </div>
-
-                <div id="adminTab-manageTab" class="hidden space-y-3">
-                    <div class="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-3 rounded-xl">
-                        <i class="fa-solid fa-circle-info ml-1 text-amber-600"></i>
-                        يمكنك من هنا متابعة <b>عدد المشاهدات والمهتمين</b>، وتعديل أو تفعيل <b>(تم البيع / التأجير)</b> أو الحذف الفوري.
-                    </div>
-                    <div id="adminPropertiesList" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
-                </div>
-
-                <div id="adminTab-profileTab" class="hidden">
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">اسم المستشار العقاري</label>
-                                <input type="text" id="ownerNameInput" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="م / محمود عبدالله">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">المسمى الوظيفي</label>
-                                <input type="text" id="ownerTitleInput" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="مستشارك العقاري بالمدن الجديدة">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">رقم الهاتف والواتساب</label>
-                                <input type="text" id="consultantPhoneInput" class="w-full border rounded-xl p-2.5 text-sm text-left bg-white" dir="ltr" placeholder="01070031535">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">رابط حساب فيسبوك</label>
-                                <input type="text" id="ownerFbInput" class="w-full border rounded-xl p-2.5 text-sm text-left bg-white" dir="ltr" placeholder="https://www.facebook.com/share/1JfpJ2n8FF/">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">النبذة التعريفية بالبطاقة</label>
-                            <textarea id="ownerBioInput" rows="3" class="w-full border rounded-xl p-2.5 text-sm bg-white"></textarea>
-                        </div>
-
-                        <button type="button" id="saveProfileBtn" onclick="saveOwnerProfile()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl text-sm font-bold transition shadow-lg">
-                            <i class="fa-solid fa-floppy-disk ml-1"></i> حفظ وتحديث البطاقة التعريفية
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
     <!-- نافذة تعديل العقار -->
-    <div id="editPropertyModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div id="editPropertyModal" class="fixed inset-0 bg-black/80 z-[70] hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="closeEditModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-xl font-black text-slate-900 mb-4 border-b pb-2"><i class="fa-solid fa-pen-to-square text-amber-600 ml-2"></i>تعديل تفاصيل العقار</h3>
@@ -762,6 +991,50 @@
         </div>
     </div>
 
+    <!-- قسم آراء العملاء -->
+    <section class="bg-slate-900 text-white py-16 px-4 mt-12 border-t-4 border-amber-500">
+        <div class="container mx-auto max-w-5xl">
+            <div class="text-center mb-10">
+                <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-4 py-1 rounded-full text-xs font-bold">ثقة عملائنا سر نجاحنا</span>
+                <h3 class="text-3xl font-extrabold mt-3">آراء وتقييمات العملاء</h3>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 bg-slate-800/90 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl relative min-h-[230px] flex flex-col justify-between overflow-hidden">
+                    <i class="fa-solid fa-quote-left text-6xl text-amber-500/10 absolute top-4 left-4"></i>
+                    <div id="reviewSliderBox" class="my-auto z-10"></div>
+                    <div class="flex items-center justify-between border-t border-slate-700/80 pt-4 mt-4 z-10">
+                        <div class="flex items-center gap-2">
+                            <button onclick="prevReview()" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-amber-500 text-white flex items-center justify-center transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                            <button onclick="nextReview()" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-amber-500 text-white flex items-center justify-center transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        </div>
+                        <span id="reviewCounterText" class="text-xs text-amber-400 font-bold"></span>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 bg-white text-slate-800 rounded-2xl p-6 shadow-xl">
+                    <h4 class="font-bold text-lg mb-4 text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-amber-500"></i>
+                        <span>شاركنا رأيك وتجربتك</span>
+                    </h4>
+                    <form id="addReviewForm" onsubmit="submitClientReview(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">الاسم الكريم *</label>
+                            <input type="text" id="reviewerName" required placeholder="اكتب اسمك هنا..." class="w-full border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-amber-500 bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">رأيك في خدماتنا *</label>
+                            <textarea id="reviewerComment" rows="3" required placeholder="اكتب تجربتك مع م / محمود عبدالله..." class="w-full border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-amber-500 bg-gray-50"></textarea>
+                        </div>
+                        <button type="submit" id="submitReviewBtn" class="w-full gold-gradient text-white font-bold py-2.5 rounded-xl shadow hover:opacity-95 transition text-sm">
+                            <i class="fa-solid fa-paper-plane ml-1"></i> إرسال الرأي
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- الفوتر -->
     <footer class="bg-slate-950 text-gray-400 py-10 text-center border-t border-slate-800">
         <div class="container mx-auto px-4">
@@ -784,6 +1057,7 @@
     <script>
         const IMGBB_API_KEY = "2115e7bcbba6ad8d5a2b0a58f9d8faab"; 
         const FIREBASE_URL = "https://mostasharak-akaraty-default-rtdb.firebaseio.com"; 
+        const ONESIGNAL_APP_ID = "b285d41e-1ab7-42c0-af36-c532394aac3b";
         const ADMIN_PASS = "31535";
 
         const isOnlineConfigured = !FIREBASE_URL.includes("YOUR_FIREBASE") && FIREBASE_URL.startsWith("https://");
@@ -801,6 +1075,43 @@
             icons: [{ src: "https://cdn-icons-png.flaticon.com/512/602/602175.png", sizes: "512x512", type: "image/png" }]
         };
         document.querySelector('#my-manifest-placeholder').setAttribute('href', URL.createObjectURL(new Blob([JSON.stringify(manifestData)], {type: 'application/json'})));
+
+        // تفعيل إشعارات الهاتف الخارجية عبر OneSignal و Notification API
+        async function enablePushNotifications() {
+            try {
+                if (window.OneSignalDeferred) {
+                    window.OneSignalDeferred.push(async function(OneSignal) {
+                        await OneSignal.Slidedown.promptPush();
+                    });
+                }
+                if ("Notification" in window) {
+                    const perm = await Notification.requestPermission();
+                    if (perm === "granted") {
+                        showToast("تم تفعيل إشعارات الهاتف بنجاح! ستصلك أحدث العقارات.");
+                        new Notification("مستشارك العقاري - م / محمود عبدالله", {
+                            body: "تم تفعيل إشعارات الهاتف بنجاح! ستصلك أحدث العروض العقارية فور نزولها.",
+                            icon: "https://cdn-icons-png.flaticon.com/512/602/602175.png"
+                        });
+                    } else {
+                        showToast("يرجى السماح بالإشعارات من إعدادات المتصفح لتصلك العروض على هاتفك.");
+                    }
+                }
+            } catch (e) {
+                showToast("تم إرسال طلب تفعيل إشعارات الهاتف.");
+            }
+        }
+
+        // إرسال إشعار لستارة الهاتف الخارجية
+        function triggerSystemPushNotification(title, bodyText) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: bodyText,
+                        icon: "https://cdn-icons-png.flaticon.com/512/602/602175.png"
+                    });
+                } catch (e) {}
+            }
+        }
 
         let ownerProfile = {
             name: "م / محمود عبدالله",
@@ -830,12 +1141,36 @@
             }
         ];
 
+        const defaultUsers = [
+            {
+                firebaseKey: "usr_admin",
+                uid: "ADMIN998877MAHMOUD",
+                name: "م / محمود عبدالله",
+                email: "mahmoud.akarat@gmail.com",
+                phone: "01070031535",
+                role: "Admin",
+                createdAt: "١ أكتوبر ٢٠٢٦ في ١٠:٠٠ ص",
+                interestedProps: ["B1 - شقة مميزة بمدينة بدر"]
+            },
+            {
+                firebaseKey: "usr_1",
+                uid: "USR882341AHMEDSAMIR",
+                name: "أحمد سمير",
+                email: "ahmed.samir@gmail.com",
+                phone: "01012345678",
+                role: "User",
+                createdAt: "٢٠ أكتوبر ٢٠٢٦ في ٠٨:٣٠ م",
+                interestedProps: ["B1 - شقة مميزة بمدينة بدر"]
+            }
+        ];
+
         const defaultReviews = [
             { firebaseKey: "rev_1", name: "أحمد محمود", comment: "تعامل راقي جداً ومصداقية عالية مع الباشمهندس محمود عبدالله." },
             { firebaseKey: "rev_2", name: "محمد عبد الرحمن", comment: "محترمين جداً وفاهمين السوق في الشروق وبدر كويس أوي." }
         ];
 
         let properties = [];
+        let registeredUsers = [];
         let reviews = [];
         let notifications = [];
         let clientUser = JSON.parse(localStorage.getItem('clientUserData')) || null;
@@ -894,7 +1229,7 @@
         async function quickUploadOwnerPhoto(event) {
             const file = event.target.files[0];
             if (!file) return;
-            showToast('جاري تثبيت وصورة م / محمود عبدالله...');
+            showToast('جاري تثبيت صورة م / محمود عبدالله...');
             const uploadedUrl = await uploadSingleImageSafely(file);
             ownerProfile.avatar = uploadedUrl;
             localStorage.setItem('ownerProfileData', JSON.stringify(ownerProfile));
@@ -919,7 +1254,7 @@
 
             const remaining = price - downPayment;
             if (remaining <= 0) {
-                alert('مقدم الحجز أكبر من أو يساوي سعر العقار!');
+                showToast('مقدم الحجز أكبر من أو يساوي سعر العقار!');
                 return;
             }
             const months = years * 12;
@@ -964,6 +1299,112 @@
             localStorage.setItem('localSiteVisits', visits);
             document.getElementById('heroVisitorsCount').innerText = visits.toLocaleString('ar-EG');
             document.getElementById('footerVisitorsCount').innerText = visits.toLocaleString('ar-EG');
+            const statVis = document.getElementById('statTotalVisitors');
+            if (statVis) statVis.innerText = visits.toLocaleString('ar-EG');
+        }
+
+        async function loadRegisteredUsers() {
+            const localUsers = JSON.parse(localStorage.getItem('registeredUsersList'));
+            registeredUsers = (localUsers && localUsers.length > 0) ? localUsers : defaultUsers;
+            renderUsersTable();
+
+            if (isOnlineConfigured) {
+                try {
+                    const res = await fetch(`${FIREBASE_URL}/users.json?t=${Date.now()}`, { cache: 'no-store' });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data) {
+                            const onlineUsers = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })).reverse();
+                            if (onlineUsers.length > 0) {
+                                registeredUsers = onlineUsers;
+                                localStorage.setItem('registeredUsersList', JSON.stringify(registeredUsers));
+                                renderUsersTable();
+                            }
+                        }
+                    }
+                } catch (e) {}
+            }
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('adminUsersTableBody');
+            const statUsers = document.getElementById('statTotalUsers');
+            if (statUsers) statUsers.innerText = registeredUsers.length;
+            if (!tbody) return;
+
+            const query = (document.getElementById('adminUserSearchInput')?.value || '').trim().toLowerCase();
+            const filtered = registeredUsers.filter(u => {
+                return !query || 
+                       (u.name && u.name.toLowerCase().includes(query)) ||
+                       (u.email && u.email.toLowerCase().includes(query)) ||
+                       (u.phone && u.phone.includes(query)) ||
+                       (u.uid && u.uid.toLowerCase().includes(query));
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-500">لا يوجد مستخدمين مطابقين للبحث</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(u => {
+                const initial = u.name ? u.name.charAt(0).toUpperCase() : 'U';
+                const isRoleAdmin = u.role === 'Admin';
+                const roleBadge = isRoleAdmin 
+                    ? `<span class="bg-amber-950/90 text-amber-400 border border-amber-700/50 text-[11px] font-bold px-3 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[9px]"></i> Admin</span>`
+                    : `<span class="bg-slate-800 text-blue-300 border border-slate-700 text-[11px] font-bold px-3 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-user text-[9px]"></i> User</span>`;
+
+                return `
+                    <tr onclick="openUserProfileModal('${u.uid}')" class="hover:bg-gray-800/50 cursor-pointer transition">
+                        <td class="py-3.5 px-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center text-sm shadow shrink-0">${initial}</div>
+                                <div>
+                                    <p class="font-bold text-white text-xs md:text-sm">${u.name}</p>
+                                    <span class="text-[11px] text-gray-400">${u.phone || ''}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-3 text-xs text-gray-300 font-mono" dir="ltr">${u.email || '---'}</td>
+                        <td class="py-3.5 px-3">${roleBadge}</td>
+                        <td class="py-3.5 px-3 text-[11px] text-gray-400 font-mono truncate max-w-[120px]" dir="ltr">${u.uid}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openUserProfileModal(uid) {
+            const user = registeredUsers.find(u => u.uid === uid);
+            if (!user) return;
+
+            const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+            document.getElementById('profModalName').innerText = user.name;
+            document.getElementById('profModalEmail').innerText = user.email || 'بدون بريد';
+            document.getElementById('profModalInitial').innerText = initial;
+
+            document.getElementById('profBoxName').innerText = user.name;
+            document.getElementById('profBoxEmail').innerText = user.email || '---';
+            document.getElementById('profBoxPhone').innerText = user.phone || '---';
+            document.getElementById('profBoxUid').innerText = user.uid;
+            document.getElementById('profBoxDate').innerText = user.createdAt || 'أكتوبر ٢٠٢٦';
+
+            const interests = user.interestedProps || [];
+            document.getElementById('profBoxInterestsCount').innerText = interests.length;
+            const listEl = document.getElementById('profBoxInterestsList');
+            if (interests.length > 0) {
+                listEl.innerHTML = interests.map(item => `<div class="bg-gray-900 px-2.5 py-1.5 rounded-lg border border-gray-800 text-amber-400 font-semibold">• ${item}</div>`).join('');
+            } else {
+                listEl.innerHTML = `<p class="text-gray-500">لم يضغط "مهتم" على أي إعلان بعد</p>`;
+            }
+
+            const waPhone = (user.phone && user.phone.startsWith('0')) ? '2' + user.phone : (user.phone || consultantPhone);
+            document.getElementById('profModalWaBtn').href = `https://wa.me/${waPhone}?text=${encodeURIComponent('مرحباً أ/ ' + user.name + '، معك م / محمود عبدالله من موقع مستشارك العقاري')}`;
+            document.getElementById('profModalCallBtn').href = `tel:${user.phone || consultantPhone}`;
+
+            document.getElementById('userProfileDetailModal').classList.remove('hidden');
+        }
+
+        function closeUserProfileModal() {
+            document.getElementById('userProfileDetailModal').classList.add('hidden');
         }
 
         function toggleClientAuthModal() {
@@ -971,14 +1412,44 @@
             updateClientAuthUI();
         }
 
-        function clientLogin(e) {
+        async function clientLogin(e) {
             e.preventDefault();
             const name = document.getElementById('clientLoginName').value.trim();
+            const email = document.getElementById('clientLoginEmail').value.trim();
             const phone = document.getElementById('clientLoginPhone').value.trim();
-            clientUser = { name, phone };
+            
+            const nowStr = new Date().toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const generatedUid = "UID" + Math.random().toString(36).substring(2, 10).toUpperCase() + Date.now().toString().slice(-4);
+
+            clientUser = {
+                uid: generatedUid,
+                name,
+                email,
+                phone,
+                role: "User",
+                createdAt: nowStr,
+                interestedProps: []
+            };
+
             localStorage.setItem('clientUserData', JSON.stringify(clientUser));
+
+            registeredUsers.unshift(clientUser);
+            localStorage.setItem('registeredUsersList', JSON.stringify(registeredUsers));
+            renderUsersTable();
+
+            if (isOnlineConfigured) {
+                try {
+                    const res = await fetch(`${FIREBASE_URL}/users.json`, { method: 'POST', body: JSON.stringify(clientUser) });
+                    if (res.ok) {
+                        const d = await res.json();
+                        clientUser.firebaseKey = d.name;
+                        localStorage.setItem('clientUserData', JSON.stringify(clientUser));
+                    }
+                } catch (err) {}
+            }
+
             updateClientAuthUI();
-            showToast(`مرحباً بك يا ${name}! تم تسجيل دخولك بنجاح.`);
+            showToast(`مرحباً بك يا ${name}! تم تسجيل حسابك بنجاح.`);
         }
 
         function clientLogout() {
@@ -997,18 +1468,20 @@
                 loggedInView.classList.remove('hidden');
                 clientNavName.innerText = clientUser.name;
                 document.getElementById('clientProfileName').innerText = clientUser.name;
+                document.getElementById('clientProfileEmailView').innerText = clientUser.email || clientUser.phone;
+                document.getElementById('clientProfileAvatarInitial').innerText = clientUser.name.charAt(0);
                 renderWishlist();
             } else {
                 loggedOutView.classList.remove('hidden');
                 loggedInView.classList.add('hidden');
-                clientNavName.innerText = "حسابي";
+                clientNavName.innerText = "تسجيل دخول";
             }
         }
 
         function toggleWishlist(propKey, event) {
             if (event) event.stopPropagation();
             if (!clientUser) {
-                showToast('سجل اسمك ورقمك أولاً لحفظ العقارات في مفضلتك');
+                showToast('سجل حسابك أولاً لحفظ العقارات في مفضلتك');
                 toggleClientAuthModal();
                 return;
             }
@@ -1062,7 +1535,14 @@
             const desc = document.getElementById('propertyRequestDesc').value.trim();
             const reqText = `طلب عقار خاص من العميل (${clientUser.name} - ${clientUser.phone}): ${desc}`;
             
-            const newNotif = { text: reqText, time: "طلب عميل" };
+            const newNotif = {
+                text: reqText,
+                clientName: clientUser.name,
+                clientPhone: clientUser.phone,
+                clientEmail: clientUser.email,
+                propCode: "طلب خاص",
+                time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+            };
             notifications.unshift(newNotif);
             localStorage.setItem('siteNotifications', JSON.stringify(notifications));
             updateNotifBadge();
@@ -1112,6 +1592,7 @@
             startFinalTwoStagesIntro();
             incrementAndLoadSiteVisitors();
             loadData();
+            loadRegisteredUsers();
             loadReviews();
             loadNotifications();
             updateClientAuthUI();
@@ -1124,15 +1605,29 @@
             if (!editModal.classList.contains('hidden')) editModal.classList.add('hidden');
         });
 
-        function switchAdminTab(tabName) {
-            ['addTab', 'manageTab', 'profileTab'].forEach(t => {
-                document.getElementById(`adminTab-${t}`).classList.add('hidden');
-                const btn = document.getElementById(`tabBtn-${t}`);
-                btn.className = "py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm text-slate-600 hover:bg-white/60 transition flex items-center justify-center gap-1.5";
+        function switchAdminPage(pageId) {
+            const pages = ['usersPage', 'leadsPage', 'addPropPage', 'managePropPage', 'statsPage'];
+            const titles = {
+                usersPage: ['المستخدمين', 'إدارة المستخدمين المسجلين في الموقع'],
+                leadsPage: ['المهتمين بالإعلانات', 'متابعة العملاء الذين ضغطوا "مهتم" على العقارات'],
+                addPropPage: ['إضافة عقار جديد', 'نشر عرض عقاري جديد في الموقع'],
+                managePropPage: ['إدارة المحتوى والعقارات', 'تعديل العروض أو تفعيل ختم تم البيع'],
+                statsPage: ['الإحصائيات وبيانات المستشار', 'متابعة أرقام الموقع وتحديث البطاقة التعريفية']
+            };
+
+            pages.forEach(p => {
+                document.getElementById(`adminPage-${p}`).classList.add('hidden');
+                document.getElementById(`sideBtn-${p}`).classList.remove('active');
             });
-            document.getElementById(`adminTab-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tabBtn-${tabName}`).className = "py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm bg-slate-900 text-white shadow transition flex items-center justify-center gap-1.5";
-            if (tabName === 'manageTab') renderAdminManageList();
+
+            document.getElementById(`adminPage-${pageId}`).classList.remove('hidden');
+            document.getElementById(`sideBtn-${pageId}`).classList.add('active');
+            document.getElementById('adminPageHeaderTitle').innerText = titles[pageId][0];
+            document.getElementById('adminPageHeaderSub').innerText = titles[pageId][1];
+
+            if (pageId === 'managePropPage') renderAdminManageList();
+            if (pageId === 'usersPage') renderUsersTable();
+            if (pageId === 'leadsPage') updateNotifBadge();
         }
 
         function previewSelectedPropertyImages(event) {
@@ -1252,7 +1747,7 @@
                 showToast('تم حفظ البيانات بنجاح!');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk ml-1"></i> حفظ وتحديث البطاقة التعريفية';
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk ml-1"></i> حفظ التعديلات';
             }
         }
 
@@ -1278,12 +1773,13 @@
 
         async function sendNewPropertyNotification(propTitle, propCode, propCity) {
             const notifText = `تم إضافة عقار جديد: ${propTitle} (كود: ${propCode}) في ${propCity}`;
-            const newNotif = { text: notifText, time: "الآن" };
+            const newNotif = { text: notifText, time: "إعلان جديد" };
 
             notifications.unshift(newNotif);
             localStorage.setItem('siteNotifications', JSON.stringify(notifications));
             updateNotifBadge();
             showToast(notifText);
+            triggerSystemPushNotification("عقار جديد - مستشارك العقاري", notifText);
 
             if (isOnlineConfigured) {
                 try { await fetch(`${FIREBASE_URL}/notifications.json`, { method: 'POST', body: JSON.stringify(newNotif) }); } catch (e) {}
@@ -1304,19 +1800,47 @@
 
         function updateNotifBadge() {
             const badge = document.getElementById('notifBadge');
+            const sideBadge = document.getElementById('sidebarLeadsBadge');
+            const statLeads = document.getElementById('statTotalLeads');
             const listContent = document.getElementById('notificationsListContent');
+            const adminLeadsBox = document.getElementById('adminLeadsListContainer');
+
+            if (sideBadge) sideBadge.innerText = notifications.length;
+            if (statLeads) statLeads.innerText = notifications.length;
+
             if (notifications.length > 0) {
                 badge.innerText = notifications.length;
                 badge.classList.remove('hidden');
+
                 listContent.innerHTML = notifications.map(n => `
                     <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs flex items-start gap-2.5">
                         <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i>
                         <div><p class="font-bold text-slate-900">${n.text}</p><span class="text-[10px] text-gray-400">${n.time}</span></div>
                     </div>
                 `).join('');
+
+                if (adminLeadsBox) {
+                    adminLeadsBox.innerHTML = notifications.map(n => `
+                        <div class="bg-[#0b0f19] border border-gray-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-bell"></i></div>
+                                <div>
+                                    <p class="text-sm font-bold text-white">${n.text}</p>
+                                    <span class="text-xs text-amber-400">${n.time || ''} ${n.clientPhone ? ' • هاتف: ' + n.clientPhone : ''}</span>
+                                </div>
+                            </div>
+                            ${n.clientPhone ? `
+                                <a href="https://wa.me/2${n.clientPhone}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+                                    <i class="fa-brands fa-whatsapp"></i> تواصل مع المهتم
+                                </a>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                }
             } else {
                 badge.classList.add('hidden');
                 listContent.innerHTML = `<p class="text-center text-gray-400 py-6 text-sm">لا توجد إشعارات جديدة حالياً.</p>`;
+                if (adminLeadsBox) adminLeadsBox.innerHTML = `<p class="text-center text-gray-500 py-8 text-sm">لا توجد إشعارات مهتمين حالياً.</p>`;
             }
         }
 
@@ -1366,7 +1890,7 @@
                 properties.unshift(newProp);
                 localStorage.setItem('realEstateData', JSON.stringify(properties));
                 resetFilters();
-                if (isAdminLoggedIn) renderAdminManageList();
+                renderAdminManageList();
 
                 if (isOnlineConfigured) {
                     try {
@@ -1377,7 +1901,7 @@
                                 newProp.firebaseKey = resData.name;
                                 localStorage.setItem('realEstateData', JSON.stringify(properties));
                                 renderProperties();
-                                if (isAdminLoggedIn) renderAdminManageList();
+                                renderAdminManageList();
                             }
                         }
                     } catch (onlineErr) {}
@@ -1386,12 +1910,12 @@
                 await sendNewPropertyNotification(propTitleVal, propCodeVal, propCityVal);
                 document.getElementById('addPropertyForm').reset();
                 document.getElementById('propImagesPreviewBox').innerHTML = '';
-                toggleAdminModal();
+                switchAdminPage('managePropPage');
             } catch (err) {
                 showToast('حدث خطأ أثناء الرفع.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up ml-2"></i>نشر العقار الآن على الموقع';
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i><span>نشر العقار وإرسال إشعار للمشتركين</span>';
             }
         }
 
@@ -1431,7 +1955,7 @@
 
             localStorage.setItem('realEstateData', JSON.stringify(properties));
             renderProperties();
-            if (isAdminLoggedIn) renderAdminManageList();
+            renderAdminManageList();
 
             if (isOnlineConfigured && !key.startsWith('local_')) {
                 try { await fetch(`${FIREBASE_URL}/properties/${key}.json`, { method: 'PATCH', body: JSON.stringify(updatedData) }); } catch (e) {}
@@ -1443,9 +1967,11 @@
 
         function renderAdminManageList() {
             const list = document.getElementById('adminPropertiesList');
+            const statProps = document.getElementById('statTotalProps');
+            if (statProps) statProps.innerText = properties.length;
             if (!list) return;
             if (properties.length === 0) {
-                list.innerHTML = `<p class="text-center text-gray-400 py-6 text-sm">لا توجد عقارات مضافة حالياً.</p>`;
+                list.innerHTML = `<p class="text-center text-gray-500 py-6 text-sm">لا توجد عقارات مضافة حالياً.</p>`;
                 return;
             }
             list.innerHTML = '';
@@ -1453,22 +1979,22 @@
                 const img = (p.images && p.images[0]) ? p.images[0] : p.image;
                 const soldLabel = p.status === 'إيجار' ? 'تم التأجير' : 'تم البيع';
                 list.innerHTML += `
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0b0f19] p-3.5 rounded-2xl border border-gray-800">
                         <div class="flex items-center gap-3 min-w-0">
-                            <img src="${img}" class="w-14 h-14 rounded-lg object-cover shrink-0 border">
+                            <img src="${img}" class="w-16 h-16 rounded-xl object-cover shrink-0 border border-gray-700">
                             <div class="truncate">
-                                <h5 class="font-bold text-sm text-slate-900 truncate"><span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-xs ml-1 font-bold">${p.code || 'بدون'}</span> ${p.title}</h5>
-                                <p class="text-xs text-amber-600 font-bold">${p.price} • ${p.city}</p>
-                                <div class="flex items-center gap-3 text-[11px] text-gray-500 mt-1">
-                                    <span><i class="fa-solid fa-eye text-blue-500 ml-1"></i>فتح التفاصيل: <b>${p.views || 0}</b></span>
-                                    <span><i class="fa-solid fa-hand-holding-heart text-rose-500 ml-1"></i>مهتمون: <b>${p.interestedCount || 0}</b></span>
+                                <h5 class="font-bold text-sm text-white truncate"><span class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded text-xs ml-1 font-black">${p.code || 'بدون'}</span> ${p.title}</h5>
+                                <p class="text-xs text-amber-400 font-bold mt-0.5">${p.price} • ${p.city}</p>
+                                <div class="flex items-center gap-3 text-[11px] text-gray-400 mt-1">
+                                    <span><i class="fa-solid fa-eye text-blue-400 ml-1"></i>المشاهدات: <b>${p.views || 0}</b></span>
+                                    <span><i class="fa-solid fa-hand-holding-heart text-rose-400 ml-1"></i>المهتمون: <b>${p.interestedCount || 0}</b></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-1.5 shrink-0 justify-end">
-                            <button onclick="openEditModal('${p.firebaseKey}')" class="bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-pen"></i> تعديل</button>
-                            <button onclick="toggleSoldStatus('${p.firebaseKey}', event)" class="${p.sold ? 'bg-emerald-600' : 'bg-slate-800'} text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow transition">${p.sold ? 'إلغاء ' + soldLabel : soldLabel}</button>
-                            <button onclick="deleteProperty('${p.firebaseKey}', event)" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-trash"></i> حذف</button>
+                        <div class="flex items-center gap-2 shrink-0 justify-end">
+                            <button onclick="openEditModal('${p.firebaseKey}')" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-pen"></i> تعديل</button>
+                            <button onclick="toggleSoldStatus('${p.firebaseKey}', event)" class="${p.sold ? 'bg-emerald-600' : 'bg-amber-600'} text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow transition">${p.sold ? 'إلغاء ' + soldLabel : soldLabel}</button>
+                            <button onclick="deleteProperty('${p.firebaseKey}', event)" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-trash"></i> حذف</button>
                         </div>
                     </div>
                 `;
@@ -1485,7 +2011,7 @@
 
             localStorage.setItem('realEstateData', JSON.stringify(properties));
             renderProperties();
-            if (isAdminLoggedIn) renderAdminManageList();
+            renderAdminManageList();
 
             if (isOnlineConfigured && !firebaseKey.startsWith('local_')) {
                 try { await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, { method: 'PATCH', body: JSON.stringify({ sold: newSoldState }) }); } catch (e) {}
@@ -1574,7 +2100,7 @@
                     <div class="pt-2">
                         <button id="interestedBtnModal" onclick="registerInterestInProperty('${propKey}')" class="w-full ${isAlreadyInterested ? 'bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'} text-white py-3.5 rounded-xl font-black text-base flex items-center justify-center gap-2 shadow-lg transition">
                             <i class="fa-solid fa-hand-holding-heart text-xl"></i>
-                            <span id="interestedBtnText">${isAlreadyInterested ? 'تم تسجيل اهتمامك بهذا العقار بنجاح ✓' : 'أنا مهتم بهذا العقار (اضغط لتسجيل اهتمامك)'}</span>
+                            <span id="interestedBtnText">${isAlreadyInterested ? 'تم تسجيل اهتمامك بهذا العقار وإشعار الأدمن ✓' : 'أنا مهتم بهذا العقار (اضغط لإرسال إشعار للأدمن)'}</span>
                         </button>
                     </div>
 
@@ -1591,25 +2117,44 @@
             const prop = properties.find(p => p.firebaseKey === propKey);
             if (!prop) return;
 
+            if (!clientUser) {
+                showToast('من فضلك سجل اسمك ورقمك أولاً ليتمكن م / محمود عبدالله من التواصل معك!');
+                closeDetailsModal();
+                toggleClientAuthModal();
+                return;
+            }
+
             if (!interestedList.includes(propKey)) {
                 interestedList.push(propKey);
                 localStorage.setItem('clientInterestedList', JSON.stringify(interestedList));
                 prop.interestedCount = (parseInt(prop.interestedCount) || 0) + 1;
                 localStorage.setItem('realEstateData', JSON.stringify(properties));
 
+                const propSummary = `${prop.code || ''} - ${prop.title}`;
+                const targetUser = registeredUsers.find(u => u.uid === clientUser.uid);
+                if (targetUser) {
+                    if (!targetUser.interestedProps) targetUser.interestedProps = [];
+                    targetUser.interestedProps.push(propSummary);
+                    localStorage.setItem('registeredUsersList', JSON.stringify(registeredUsers));
+                }
+
                 if (isOnlineConfigured && !propKey.startsWith('local_')) {
                     fetch(`${FIREBASE_URL}/properties/${propKey}.json`, { method: 'PATCH', body: JSON.stringify({ interestedCount: prop.interestedCount }) }).catch(() => {});
                 }
 
-                const clientInfo = clientUser ? `العميل (${clientUser.name} - ${clientUser.phone})` : 'أحد الزوار';
                 const interestNotif = {
-                    text: `🔥 اهتمام جديد: ${clientInfo} ضغط "مهتم" بالعقار (${prop.title} - كود: ${prop.code || 'بدون'})`,
-                    time: "مهتم بالعقار"
+                    text: `🔥 العميل (${clientUser.name}) مهتم بالعقار: ${prop.title} (كود: ${prop.code || 'بدون'})`,
+                    clientName: clientUser.name,
+                    clientPhone: clientUser.phone,
+                    clientEmail: clientUser.email,
+                    propCode: prop.code || '',
+                    time: new Date().toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
                 };
 
                 notifications.unshift(interestNotif);
                 localStorage.setItem('siteNotifications', JSON.stringify(notifications));
                 updateNotifBadge();
+                triggerSystemPushNotification("عميل مهتم بعقار!", interestNotif.text);
 
                 if (isOnlineConfigured) {
                     fetch(`${FIREBASE_URL}/notifications.json`, { method: 'POST', body: JSON.stringify(interestNotif) }).catch(() => {});
@@ -1619,11 +2164,11 @@
                 const btnText = document.getElementById('interestedBtnText');
                 const btnEl = document.getElementById('interestedBtnModal');
                 if (countEl) countEl.innerText = prop.interestedCount;
-                if (btnText) btnText.innerText = 'تم تسجيل اهتمامك بهذا العقار بنجاح ✓';
+                if (btnText) btnText.innerText = 'تم تسجيل اهتمامك بهذا العقار وإشعار الأدمن ✓';
                 if (btnEl) btnEl.className = "w-full bg-emerald-700 text-white py-3.5 rounded-xl font-black text-base flex items-center justify-center gap-2 shadow-lg transition";
 
                 renderProperties();
-                showToast('تم تسجيل اهتمامك بالعقار وإبلاغ م / محمود عبدالله!');
+                showToast('تم إرسال إشعار باهتمامك إلى صفحة الأدمن (م / محمود عبدالله)!');
             } else {
                 showToast('لقد قمت بتسجيل اهتمامك بهذا العقار بالفعل!');
             }
@@ -1651,7 +2196,7 @@
             properties = properties.filter(p => p.firebaseKey !== firebaseKey);
             localStorage.setItem('realEstateData', JSON.stringify(properties));
             renderProperties();
-            if (isAdminLoggedIn) renderAdminManageList();
+            renderAdminManageList();
 
             if (isOnlineConfigured && !firebaseKey.startsWith('local_')) {
                 try { await fetch(`${FIREBASE_URL}/properties/${firebaseKey}.json`, { method: 'DELETE' }); } catch (e) {}
@@ -1868,28 +2413,44 @@
             showToast('تم حذف الرأي');
         }
 
-        function toggleAdminModal() { document.getElementById('adminModal').classList.toggle('hidden'); }
+        function openAdminSystem() {
+            if (isAdminLoggedIn) {
+                document.getElementById('adminFullDashboard').classList.remove('hidden');
+                renderUsersTable();
+                renderAdminManageList();
+                updateNotifBadge();
+            } else {
+                document.getElementById('adminLoginModal').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('adminFullDashboard').classList.add('hidden');
+        }
         
         function loginAdmin() {
             if (document.getElementById('adminPasswordInput').value === ADMIN_PASS) {
                 isAdminLoggedIn = true;
-                document.getElementById('adminLoginSection').classList.add('hidden');
-                document.getElementById('adminDashboardSection').classList.remove('hidden');
+                document.getElementById('adminLoginModal').classList.add('hidden');
+                document.getElementById('adminFullDashboard').classList.remove('hidden');
                 renderProperties();
                 renderCurrentReview();
+                renderUsersTable();
                 renderAdminManageList();
-                showToast('مرحباً بك م / محمود في لوحة التحكم');
-            } else { showToast('كلمة المرور غير صحيحة!'); }
+                updateNotifBadge();
+                showToast('مرحباً بك م / محمود في لوحة التحكم المركزية');
+            } else {
+                showToast('كلمة المرور غير صحيحة!');
+            }
         }
 
         function logoutAdmin() {
             isAdminLoggedIn = false;
             document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('adminLoginSection').classList.remove('hidden');
-            document.getElementById('adminDashboardSection').classList.add('hidden');
-            toggleAdminModal();
+            document.getElementById('adminFullDashboard').classList.add('hidden');
             renderProperties();
             renderCurrentReview();
+            showToast('تم تسجيل خروج الأدمن');
         }
     </script>
 </body>
