@@ -143,6 +143,18 @@
         #adminFullDashboard .text-gray-300, #adminFullDashboard .text-gray-400, #adminFullDashboard .text-gray-500 { color:#687386 !important; }
         #adminFullDashboard .bg-blue-600, #adminFullDashboard .bg-indigo-600 { background:#b88a1d !important; }
         #adminFullDashboard .hover\:bg-blue-700:hover { background:#987017 !important; }
+
+        /* ستايل شات الموقع */
+        #siteChatWidget {
+            transition: all 0.3s ease;
+            bottom: 20px;
+            left: 20px;
+            z-index: 90;
+        }
+        .chat-message-bubble {
+            max-width: 85%;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body class="text-slate-800">
@@ -384,7 +396,7 @@
          لوحة تحكم الأدمن الاحترافية الكاملة بالوضع الليلي
          ========================================================================= -->
     
-    <div id="adminLoginModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/80 z-[110] hidden flex items-center justify-center p-4">
         <div class="admin-card-bg text-white rounded-3xl max-w-md w-full p-7 shadow-2xl relative">
             <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <div class="text-center mb-6">
@@ -403,8 +415,8 @@
     </div>
 
     <!-- شاشة لوحة التحكم الكاملة -->
-    <div id="adminFullDashboard" class="fixed inset-0 admin-dark-bg z-50 hidden flex flex-col md:flex-row overflow-hidden">
-        <aside class="w-full md:w-64 bg-[#111827] border-b md:border-b-0 md:border-l border-gray-800 flex flex-col justify-between shrink-0">
+    <div id="adminFullDashboard" class="fixed inset-0 admin-dark-bg z-[100] hidden flex flex-col md:flex-row overflow-hidden">
+        <aside class="w-full md:w-64 bg-[#111827] border-b md:border-b-0 md:border-l border-gray-800 flex flex-col justify-between shrink-0 h-[30vh] md:h-screen overflow-y-auto">
             <div>
                 <div class="p-4 flex items-center justify-between border-b border-gray-800">
                     <div class="flex items-center gap-3">
@@ -414,18 +426,26 @@
                             <span class="text-[11px] text-gray-400 block">لوحة التحكم</span>
                         </div>
                     </div>
-                    <button onclick="closeAdminDashboard()" class="md:hidden text-gray-400 hover:text-white text-sm bg-gray-800 px-3 py-1.5 rounded-lg">العودة للموقع</button>
+                    <button onclick="closeAdminDashboard()" class="md:hidden text-gray-400 hover:text-white text-sm bg-gray-800 px-3 py-1.5 rounded-lg">إغلاق</button>
                 </div>
 
-                <nav class="p-3 flex md:flex-col gap-1 overflow-x-auto">
+                <nav class="p-3 flex flex-row md:flex-col gap-1 overflow-x-auto md:overflow-visible">
                     <button onclick="switchAdminPage('usersPage')" id="sideBtn-usersPage" class="admin-sidebar-btn active py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
                         <i class="fa-solid fa-users text-indigo-400 w-5"></i>
                         <span>المستخدمين المسجلين</span>
                     </button>
                     <button onclick="switchAdminPage('leadsPage')" id="sideBtn-leadsPage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
-                        <i class="fa-solid fa-fire text-rose-400 w-5"></i>
-                        <span>المهتمين بالإعلانات</span>
+                        <i class="fa-solid fa-bell text-rose-400 w-5"></i>
+                        <span>الإشعارات والطلبات</span>
                         <span id="sidebarLeadsBadge" class="mr-auto bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-full">0</span>
+                    </button>
+                    <button onclick="switchAdminPage('propInsightsPage')" id="sideBtn-propInsightsPage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
+                        <i class="fa-solid fa-chart-bar text-cyan-400 w-5"></i>
+                        <span>تفاصيل العقارات (المهتمين)</span>
+                    </button>
+                    <button onclick="switchAdminPage('chatManagePage')" id="sideBtn-chatManagePage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
+                        <i class="fa-solid fa-comments text-purple-400 w-5"></i>
+                        <span>إدارة الدردشة الجماعية</span>
                     </button>
                     <button onclick="switchAdminPage('addPropPage')" id="sideBtn-addPropPage" class="admin-sidebar-btn py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold text-gray-300 hover:bg-gray-800/60 transition flex items-center gap-2.5 shrink-0">
                         <i class="fa-solid fa-plus-circle text-emerald-400 w-5"></i>
@@ -442,7 +462,7 @@
                 </nav>
             </div>
 
-            <div class="hidden md:block p-4 border-t border-gray-800 space-y-2">
+            <div class="hidden md:block p-4 border-t border-gray-800 space-y-2 mt-auto">
                 <button onclick="closeAdminDashboard()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-200 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-globe"></i>
                     <span>العودة لواجهة الموقع</span>
@@ -454,14 +474,14 @@
             </div>
         </aside>
 
-        <div class="flex-1 flex flex-col overflow-y-auto">
+        <div class="flex-1 flex flex-col h-[70vh] md:h-screen overflow-y-auto">
             <header class="bg-[#111827]/90 border-b border-gray-800 px-6 py-4 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
                 <div>
                     <h2 id="adminPageHeaderTitle" class="text-xl md:text-2xl font-black text-white">المستخدمين</h2>
                     <p id="adminPageHeaderSub" class="text-xs text-gray-400">إدارة المستخدمين المسجلين في الموقع</p>
                 </div>
 
-                <div class="flex items-center gap-3 bg-[#1e293b] border border-gray-700 px-3.5 py-1.5 rounded-2xl">
+                <div class="flex items-center gap-3 bg-[#1e293b] border border-gray-700 px-3.5 py-1.5 rounded-2xl hidden md:flex">
                     <div class="text-left">
                         <p class="text-xs font-bold text-white leading-tight">م / محمود عبدالله</p>
                         <span class="text-[10px] text-amber-400 block">Admin • مستشارك العقاري</span>
@@ -472,6 +492,7 @@
 
             <div class="p-4 md:p-8 flex-1">
 
+                <!-- صفحة المستخدمين -->
                 <div id="adminPage-usersPage" class="space-y-6">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
                         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -509,21 +530,90 @@
                     </div>
                 </div>
 
+                <!-- صفحة الإشعارات وطلبات العقارات -->
                 <div id="adminPage-leadsPage" class="hidden space-y-6">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
                         <div class="flex items-center justify-between mb-6">
                             <div>
                                 <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
-                                    <i class="fa-solid fa-fire text-rose-500"></i>
-                                    <span>سجل العملاء المهتمين بالإعلانات وطلبات العقارات</span>
+                                    <i class="fa-solid fa-bell text-rose-500"></i>
+                                    <span>طلبات العقارات والمهتمين بالإعلانات</span>
                                 </h3>
-                                <p class="text-xs text-gray-400">كل عميل يضغط على زر "أنا مهتم" في أي عقار يظهر إشعاره وبياناته هنا فوراً</p>
+                                <p class="text-xs text-gray-400">يظهر هنا طلبات العملاء الخاصة، ومن ضغطوا "أنا مهتم" على العقارات</p>
                             </div>
                         </div>
                         <div id="adminLeadsListContainer" class="space-y-3"></div>
                     </div>
                 </div>
 
+                <!-- صفحة تفاصيل العقارات (رؤية من شاهد ومن اهتم) -->
+                <div id="adminPage-propInsightsPage" class="hidden space-y-6">
+                    <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
+                        <div class="mb-6 border-b border-gray-800 pb-4">
+                            <h3 class="text-lg font-extrabold text-white flex items-center gap-2 mb-2">
+                                <i class="fa-solid fa-chart-bar text-cyan-400"></i>
+                                <span>اختر عقاراً لعرض المهتمين به</span>
+                            </h3>
+                            <select id="insightsPropSelect" onchange="renderPropInsights()" class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-cyan-500">
+                                <option value="">-- اختر العقار --</option>
+                            </select>
+                        </div>
+                        
+                        <div id="insightsResultArea" class="hidden">
+                            <div class="flex justify-between items-center mb-4 bg-gray-900 p-3 rounded-xl border border-gray-800">
+                                <span class="text-sm font-bold text-white">إجمالي المشاهدات: <b id="insightsViewsCount" class="text-cyan-400">0</b></span>
+                                <span class="text-sm font-bold text-white">إجمالي المهتمين: <b id="insightsInterestCount" class="text-rose-400">0</b></span>
+                            </div>
+                            <h4 class="font-bold text-white text-sm mb-3">قائمة العملاء المهتمين بهذا العقار:</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-right border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-gray-800 text-gray-400 text-xs">
+                                            <th class="pb-3 px-3">العميل</th>
+                                            <th class="pb-3 px-3">الهاتف</th>
+                                            <th class="pb-3 px-3">البريد الإلكتروني</th>
+                                            <th class="pb-3 px-3">تواصل</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="insightsTableBody" class="divide-y divide-gray-800/80 text-sm"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحة إدارة الدردشة الجماعية -->
+                <div id="adminPage-chatManagePage" class="hidden space-y-6">
+                    <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
+                        <div class="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+                            <div>
+                                <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-comments text-purple-400"></i>
+                                    <span>إدارة الدردشة العامة للموقع</span>
+                                </h3>
+                                <p class="text-xs text-gray-400 mt-1">تحكم في تفعيل أو إيقاف الدردشة، وحذف الرسائل غير اللائقة.</p>
+                            </div>
+                            <button onclick="toggleChatStatus()" id="adminChatStatusBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition">
+                                إيقاف الدردشة
+                            </button>
+                        </div>
+                        
+                        <div class="bg-[#0b0f19] border border-gray-800 rounded-xl h-96 flex flex-col relative">
+                            <div id="adminChatOverlay" class="absolute inset-0 bg-black/60 z-10 hidden flex-col items-center justify-center rounded-xl backdrop-blur-sm">
+                                <i class="fa-solid fa-lock text-4xl text-gray-400 mb-3"></i>
+                                <span class="text-white font-bold">الدردشة متوقفة حالياً</span>
+                            </div>
+                            <div id="adminChatMessagesArea" class="flex-1 p-4 overflow-y-auto space-y-3">
+                                <!-- رسائل الأدمن ستظهر هنا -->
+                            </div>
+                            <div class="p-3 border-t border-gray-800 bg-gray-900 rounded-b-xl flex gap-2">
+                                <button onclick="clearAllChat()" class="bg-red-900 hover:bg-red-800 text-white px-4 py-2 rounded-xl text-xs font-bold w-full transition border border-red-700">حذف جميع الرسائل (مسح الدردشة)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحة إضافة عقار -->
                 <div id="adminPage-addPropPage" class="hidden">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl max-w-3xl mx-auto">
                         <h3 class="text-lg font-extrabold text-white mb-4 border-b border-gray-800 pb-3 flex items-center gap-2">
@@ -601,6 +691,7 @@
                     </div>
                 </div>
 
+                <!-- صفحة إدارة العقارات -->
                 <div id="adminPage-managePropPage" class="hidden space-y-4">
                     <div class="admin-card-bg rounded-2xl p-5 md:p-6 shadow-xl">
                         <h3 class="text-lg font-extrabold text-white mb-4">إدارة جميع العقارات المعروضة</h3>
@@ -608,6 +699,7 @@
                     </div>
                 </div>
 
+                <!-- صفحة الإحصائيات وبيانات المستشار -->
                 <div id="adminPage-statsPage" class="hidden space-y-6">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="admin-card-bg p-4 rounded-2xl">
@@ -623,7 +715,7 @@
                             <b id="statTotalProps" class="text-2xl font-black text-amber-400 mt-1 block">0</b>
                         </div>
                         <div class="admin-card-bg p-4 rounded-2xl">
-                            <span class="text-xs text-gray-400 block">إشعارات المهتمين</span>
+                            <span class="text-xs text-gray-400 block">طلبات وإشعارات مهتمين</span>
                             <b id="statTotalLeads" class="text-2xl font-black text-rose-400 mt-1 block">0</b>
                         </div>
                     </div>
@@ -681,8 +773,8 @@
         </div>
     </div>
 
-    <!-- نافذة "الملف الشخصي للمستخدم" المنبثقة -->
-    <div id="userProfileDetailModal" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <!-- نافذة "الملف الشخصي للمستخدم" المنبثقة للأدمن -->
+    <div id="userProfileDetailModal" class="fixed inset-0 bg-black/80 z-[120] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 text-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-5">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
                 <button onclick="closeUserProfileModal()" class="w-8 h-8 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white flex items-center justify-center transition">
@@ -814,7 +906,7 @@
     </div>
 
     <!-- نافذة تسجيل دخول العميل وحسابه الشخصي -->
-    <div id="clientAuthModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
+    <div id="clientAuthModal" class="fixed inset-0 bg-black/75 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="toggleClientAuthModal()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 text-2xl"><i class="fa-solid fa-xmark"></i></button>
 
@@ -866,17 +958,43 @@
                         <i class="fa-solid fa-heart text-red-500"></i>
                         <span>عقاراتي المفضلة (<span id="wishlistCount">0</span>)</span>
                     </h4>
-                    <div id="wishlistContainer" class="space-y-2.5 max-h-60 overflow-y-auto pr-1"></div>
+                    <div id="wishlistContainer" class="space-y-2.5 max-h-40 overflow-y-auto pr-1"></div>
                 </div>
 
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                <!-- نموذج اطلب عقار المطور -->
+                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 space-y-3">
                     <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
                         <i class="fa-solid fa-house-medical text-amber-600"></i>
                         <span>اطلب عقار بمواصفات خاصة</span>
                     </h4>
+                    <p class="text-[10px] text-gray-500">سجل مواصفات العقار الذي تبحث عنه وسيتواصل معك المستشار فور توافره.</p>
                     <form onsubmit="submitPropertyRequest(event)" class="space-y-3">
-                        <textarea id="propertyRequestDesc" rows="2" required placeholder="اكتب ما تبحث عنه (مثلاً: شقة إيجار في بدر 3 غرف)..." class="w-full border rounded-xl p-2.5 text-xs bg-white focus:outline-amber-500"></textarea>
-                        <button type="submit" class="w-full bg-slate-900 text-white font-bold py-2 rounded-xl text-xs transition shadow">إرسال الطلب للمستشار</button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 mb-1">المدينة المطلوبة</label>
+                                <select id="reqPropCity" required class="w-full border rounded-lg p-2 text-xs bg-white">
+                                    <option value="مدينة بدر">مدينة بدر</option>
+                                    <option value="مدينة الشروق">مدينة الشروق</option>
+                                    <option value="العبور">العبور</option>
+                                    <option value="أخرى">أخرى</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 mb-1">المساحة التقريبية</label>
+                                <input type="text" id="reqPropArea" required placeholder="مثال: 100 متر" class="w-full border rounded-lg p-2 text-xs bg-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-700 mb-1">الميزانية المقترحة</label>
+                            <input type="text" id="reqPropBudget" required placeholder="مثال: مليون أو 2 مليون جنيه" class="w-full border rounded-lg p-2 text-xs bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-700 mb-1">تفاصيل إضافية</label>
+                            <textarea id="propertyRequestDesc" rows="2" placeholder="عدد الغرف، الدور، أو أي تفاصيل أخرى..." class="w-full border rounded-lg p-2.5 text-xs bg-white focus:outline-amber-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs transition shadow flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> إرسال الطلب للأدمن
+                        </button>
                     </form>
                 </div>
             </div>
@@ -1037,6 +1155,43 @@
         </div>
     </footer>
 
+    <!-- زر وأيقونة الدردشة الجماعية العائمة (خارج الفوتر) -->
+    <div id="siteChatWidget" class="fixed">
+        <!-- أيقونة فتح الشات -->
+        <button id="openChatBtn" onclick="toggleSiteChatWindow()" class="bg-purple-600 hover:bg-purple-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform hover:scale-110 border-2 border-white">
+            <i class="fa-solid fa-comments"></i>
+            <span id="chatUnreadBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">!</span>
+        </button>
+
+        <!-- نافذة الشات -->
+        <div id="siteChatWindow" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden" style="height: 450px; max-height: 80vh;">
+            <div class="bg-purple-600 text-white px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i>
+                    <h4 class="font-bold text-sm">الدردشة العامة للموقع</h4>
+                </div>
+                <button onclick="toggleSiteChatWindow()" class="text-purple-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div id="chatDisabledOverlay" class="hidden absolute inset-0 bg-white/90 z-10 flex-col items-center justify-center mt-12 p-4 text-center">
+                <i class="fa-solid fa-lock text-4xl text-gray-400 mb-2"></i>
+                <h5 class="font-bold text-slate-800">الدردشة متوقفة حالياً</h5>
+                <p class="text-xs text-gray-500 mt-1">قام الإدارة بإيقاف الدردشة العامة في الوقت الحالي.</p>
+            </div>
+
+            <div id="publicChatMessages" class="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-3">
+                <div class="text-center text-xs text-gray-400 py-2">مرحباً بك في دردشة مستشارك العقاري. <br>تواصل باحترام مع باقي الأعضاء.</div>
+            </div>
+
+            <form onsubmit="sendPublicChatMessage(event)" class="p-3 bg-white border-t border-gray-200 flex items-center gap-2">
+                <input type="text" id="publicChatInput" required placeholder="اكتب رسالتك هنا..." class="flex-1 bg-gray-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
@@ -1065,6 +1220,7 @@
         const auth = firebase.auth();
         const database = firebase.database();
         const messaging = firebase.messaging();
+        
         let clientAuthMode = 'signup';
         function setClientAuthMode(mode) {
             clientAuthMode = mode;
@@ -1211,6 +1367,9 @@
         let registeredUsers = [];
         let reviews = [];
         let notifications = [];
+        let chatMessages = [];
+        let chatEnabled = true;
+        
         let clientUser = JSON.parse(localStorage.getItem('clientUserData')) || null;
         let wishlist = JSON.parse(localStorage.getItem('clientWishlist')) || [];
         let interestedList = JSON.parse(localStorage.getItem('clientInterestedList')) || [];
@@ -1569,8 +1728,12 @@
 
         async function submitPropertyRequest(e) {
             e.preventDefault();
+            const city = document.getElementById('reqPropCity').value;
+            const area = document.getElementById('reqPropArea').value.trim();
+            const budget = document.getElementById('reqPropBudget').value.trim();
             const desc = document.getElementById('propertyRequestDesc').value.trim();
-            const reqText = `طلب عقار خاص من العميل (${clientUser.name} - ${clientUser.phone}): ${desc}`;
+            
+            const reqText = `طلب عقار خاص: محتاج عقار في ${city} بمساحة ${area} وميزانية ${budget}. التفاصيل الإضافية: ${desc || 'لا يوجد'}`;
             
             const newNotif = {
                 text: reqText,
@@ -1578,8 +1741,10 @@
                 clientPhone: clientUser.phone,
                 clientEmail: clientUser.email,
                 propCode: "طلب خاص",
-                time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+                type: "request",
+                time: new Date().toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
             };
+            
             notifications.unshift(newNotif);
             localStorage.setItem('siteNotifications', JSON.stringify(notifications));
             updateNotifBadge();
@@ -1587,7 +1752,12 @@
             if (isOnlineConfigured) {
                 try { await fetch(`${FIREBASE_URL}/notifications.json`, { method: 'POST', body: JSON.stringify(newNotif) }); } catch (e) {}
             }
+            
+            triggerSystemPushNotification("طلب عقار جديد!", "تلقيت طلب عقار جديد من " + clientUser.name);
             showToast('تم إرسال طلبك بنجاح إلى م / محمود عبدالله!');
+            
+            document.getElementById('reqPropArea').value = '';
+            document.getElementById('reqPropBudget').value = '';
             document.getElementById('propertyRequestDesc').value = '';
         }
 
@@ -1632,6 +1802,7 @@
             loadRegisteredUsers();
             loadReviews();
             loadNotifications();
+            loadChatMessages();
             updateClientAuthUI();
         });
 
@@ -1643,10 +1814,12 @@
         });
 
         function switchAdminPage(pageId) {
-            const pages = ['usersPage', 'leadsPage', 'addPropPage', 'managePropPage', 'statsPage'];
+            const pages = ['usersPage', 'leadsPage', 'propInsightsPage', 'chatManagePage', 'addPropPage', 'managePropPage', 'statsPage'];
             const titles = {
                 usersPage: ['المستخدمين', 'إدارة المستخدمين المسجلين في الموقع'],
-                leadsPage: ['المهتمين بالإعلانات', 'متابعة العملاء الذين ضغطوا "مهتم" على العقارات'],
+                leadsPage: ['المهتمين والطلبات', 'متابعة العملاء الذين ضغطوا "مهتم" وطلبات العقارات الخاصة'],
+                propInsightsPage: ['إحصائيات العقارات', 'معرفة من شاهد ومن اهتم بكل عقار على حدة'],
+                chatManagePage: ['إدارة الدردشة', 'التحكم في الدردشة الجماعية ورسائل الزوار'],
                 addPropPage: ['إضافة عقار جديد', 'نشر عرض عقاري جديد في الموقع'],
                 managePropPage: ['إدارة المحتوى والعقارات', 'تعديل العروض أو تفعيل ختم تم البيع'],
                 statsPage: ['الإحصائيات وبيانات المستشار', 'متابعة أرقام الموقع وتحديث البطاقة التعريفية']
@@ -1665,6 +1838,60 @@
             if (pageId === 'managePropPage') renderAdminManageList();
             if (pageId === 'usersPage') renderUsersTable();
             if (pageId === 'leadsPage') updateNotifBadge();
+            if (pageId === 'propInsightsPage') populateInsightsDropdown();
+            if (pageId === 'chatManagePage') renderAdminChat();
+        }
+
+        function populateInsightsDropdown() {
+            const select = document.getElementById('insightsPropSelect');
+            select.innerHTML = '<option value="">-- اختر العقار لعرض المهتمين --</option>';
+            properties.forEach(p => {
+                select.innerHTML += `<option value="${p.firebaseKey}">${p.code || ''} - ${p.title}</option>`;
+            });
+            document.getElementById('insightsResultArea').classList.add('hidden');
+        }
+
+        function renderPropInsights() {
+            const propKey = document.getElementById('insightsPropSelect').value;
+            const area = document.getElementById('insightsResultArea');
+            const tbody = document.getElementById('insightsTableBody');
+            
+            if (!propKey) {
+                area.classList.add('hidden');
+                return;
+            }
+            
+            const prop = properties.find(p => p.firebaseKey === propKey);
+            if (!prop) return;
+            
+            document.getElementById('insightsViewsCount').innerText = prop.views || 0;
+            document.getElementById('insightsInterestCount').innerText = prop.interestedCount || 0;
+            
+            const propSummary = `${prop.code || ''} - ${prop.title}`;
+            const interestedUsers = registeredUsers.filter(u => u.interestedProps && u.interestedProps.includes(propSummary));
+            
+            area.classList.remove('hidden');
+            
+            if (interestedUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-500">لم يقم أحد بتسجيل اهتمامه بهذا العقار بعد.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = interestedUsers.map(u => {
+                const waPhone = (u.phone && u.phone.startsWith('0')) ? '2' + u.phone : u.phone;
+                return `
+                    <tr class="hover:bg-gray-800/50 transition">
+                        <td class="py-3 px-3 font-bold text-white text-sm">${u.name}</td>
+                        <td class="py-3 px-3 text-amber-400 font-mono text-sm" dir="ltr">${u.phone || '---'}</td>
+                        <td class="py-3 px-3 text-gray-400 font-mono text-xs" dir="ltr">${u.email || '---'}</td>
+                        <td class="py-3 px-3">
+                            <a href="https://wa.me/${waPhone}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold inline-flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> واتساب
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function previewSelectedPropertyImages(event) {
@@ -1857,27 +2084,37 @@
                 `).join('');
 
                 if (adminLeadsBox) {
-                    adminLeadsBox.innerHTML = notifications.map(n => `
-                        <div class="bg-[#0b0f19] border border-gray-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-bell"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold text-white">${n.text}</p>
-                                    <span class="text-xs text-amber-400">${n.time || ''} ${n.clientPhone ? ' • هاتف: ' + n.clientPhone : ''}</span>
+                    adminLeadsBox.innerHTML = notifications.map(n => {
+                        const isRequest = n.type === 'request';
+                        const iconClass = isRequest ? 'fa-house-medical text-amber-500' : 'fa-fire text-rose-500';
+                        const bgClass = isRequest ? 'bg-amber-500/20 border-amber-500/30' : 'bg-rose-500/20 border-rose-500/30';
+                        const emailDisplay = n.clientEmail ? `<span class="block text-gray-400 text-[10px] mt-0.5" dir="ltr"><i class="fa-solid fa-envelope ml-1"></i>${n.clientEmail}</span>` : '';
+                        
+                        return `
+                        <div class="bg-[#0b0f19] border border-gray-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start gap-3 w-full sm:w-auto">
+                                <div class="w-10 h-10 rounded-xl ${bgClass} flex items-center justify-center shrink-0"><i class="fa-solid ${iconClass}"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold text-white leading-relaxed">${n.text}</p>
+                                    <div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                                        <span class="text-xs text-amber-400"><i class="fa-regular fa-clock ml-1"></i>${n.time || ''}</span>
+                                        ${n.clientPhone ? `<span class="text-xs text-cyan-400"><i class="fa-solid fa-phone ml-1"></i>${n.clientPhone}</span>` : ''}
+                                    </div>
+                                    ${emailDisplay}
                                 </div>
                             </div>
                             ${n.clientPhone ? `
-                                <a href="https://wa.me/2${n.clientPhone}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shrink-0 self-end sm:self-center">
-                                    <i class="fa-brands fa-whatsapp"></i> تواصل مع المهتم
+                                <a href="https://wa.me/2${n.clientPhone}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 shrink-0 self-stretch sm:self-center shadow">
+                                    <i class="fa-brands fa-whatsapp text-sm"></i> واتساب
                                 </a>
                             ` : ''}
                         </div>
-                    `).join('');
+                    `}).join('');
                 }
             } else {
                 badge.classList.add('hidden');
                 listContent.innerHTML = `<p class="text-center text-gray-400 py-6 text-sm">لا توجد إشعارات جديدة حالياً.</p>`;
-                if (adminLeadsBox) adminLeadsBox.innerHTML = `<p class="text-center text-gray-500 py-8 text-sm">لا توجد إشعارات مهتمين حالياً.</p>`;
+                if (adminLeadsBox) adminLeadsBox.innerHTML = `<p class="text-center text-gray-500 py-8 text-sm">لا توجد طلبات أو إشعارات مهتمين حالياً.</p>`;
             }
         }
 
@@ -2173,6 +2410,9 @@
                     if (!targetUser.interestedProps) targetUser.interestedProps = [];
                     targetUser.interestedProps.push(propSummary);
                     localStorage.setItem('registeredUsersList', JSON.stringify(registeredUsers));
+                    if (isOnlineConfigured && targetUser.firebaseKey) {
+                        fetch(`${FIREBASE_URL}/users/${targetUser.firebaseKey}.json`, { method: 'PATCH', body: JSON.stringify({ interestedProps: targetUser.interestedProps }) }).catch(() => {});
+                    }
                 }
 
                 if (isOnlineConfigured && !propKey.startsWith('local_')) {
@@ -2185,6 +2425,7 @@
                     clientPhone: clientUser.phone,
                     clientEmail: clientUser.email,
                     propCode: prop.code || '',
+                    type: "interest",
                     time: new Date().toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
                 };
 
@@ -2454,12 +2695,225 @@
             showToast('تم حذف الرأي');
         }
 
+        /* ---------------- وظائف الدردشة الجماعية ---------------- */
+        function toggleSiteChatWindow() {
+            const chatWindow = document.getElementById('siteChatWindow');
+            chatWindow.classList.toggle('hidden');
+            if(!chatWindow.classList.contains('hidden')) {
+                document.getElementById('chatUnreadBadge').classList.add('hidden');
+                setTimeout(() => {
+                    const msgArea = document.getElementById('publicChatMessages');
+                    msgArea.scrollTop = msgArea.scrollHeight;
+                }, 100);
+            }
+        }
+
+        async function loadChatMessages() {
+            chatEnabled = JSON.parse(localStorage.getItem('chatEnabledStatus') ?? 'true');
+            chatMessages = JSON.parse(localStorage.getItem('groupChatMessages')) || [];
+            updateChatUI();
+
+            if (isOnlineConfigured) {
+                try {
+                    const statusRes = await fetch(`${FIREBASE_URL}/settings/chatEnabled.json`);
+                    if (statusRes.ok) {
+                        const statusVal = await statusRes.json();
+                        chatEnabled = statusVal !== null ? statusVal : true;
+                        localStorage.setItem('chatEnabledStatus', chatEnabled);
+                    }
+                    
+                    // استخدام Realtime DB listener للدردشة لتحديث فوري
+                    database.ref('chat').on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            chatMessages = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] }));
+                            localStorage.setItem('groupChatMessages', JSON.stringify(chatMessages));
+                            updateChatUI();
+                            if(document.getElementById('siteChatWindow').classList.contains('hidden')) {
+                                document.getElementById('chatUnreadBadge').classList.remove('hidden');
+                            }
+                        } else {
+                            chatMessages = [];
+                            updateChatUI();
+                        }
+                    });
+                    
+                    database.ref('settings/chatEnabled').on('value', (snapshot) => {
+                        const val = snapshot.val();
+                        chatEnabled = val !== null ? val : true;
+                        localStorage.setItem('chatEnabledStatus', chatEnabled);
+                        updateChatUI();
+                    });
+                } catch (e) {}
+            }
+        }
+
+        function updateChatUI() {
+            const publicArea = document.getElementById('publicChatMessages');
+            const inputField = document.getElementById('publicChatInput');
+            const overlay = document.getElementById('chatDisabledOverlay');
+            const adminArea = document.getElementById('adminChatMessagesArea');
+            const adminOverlay = document.getElementById('adminChatOverlay');
+            const adminBtn = document.getElementById('adminChatStatusBtn');
+            
+            // حالة الدردشة (مفعلة/متوقفة)
+            if (chatEnabled) {
+                overlay.classList.add('hidden');
+                inputField.disabled = false;
+                if(adminOverlay) adminOverlay.classList.add('hidden');
+                if(adminBtn) {
+                    adminBtn.innerText = "إيقاف الدردشة";
+                    adminBtn.className = "bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition";
+                }
+            } else {
+                overlay.classList.remove('hidden');
+                inputField.disabled = true;
+                if(adminOverlay) adminOverlay.classList.remove('hidden');
+                if(adminBtn) {
+                    adminBtn.innerText = "تفعيل الدردشة";
+                    adminBtn.className = "bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition";
+                }
+            }
+
+            // رسم الرسائل للعامة
+            let publicHtml = `<div class="text-center text-xs text-gray-400 py-2">مرحباً بك في دردشة مستشارك العقاري. تواصل باحترام.</div>`;
+            chatMessages.forEach(msg => {
+                const isMe = clientUser && clientUser.uid === msg.uid;
+                const isAdmin = msg.role === 'Admin';
+                
+                if (isMe) {
+                    publicHtml += `
+                        <div class="flex justify-end">
+                            <div class="chat-message-bubble bg-purple-600 text-white p-2.5 rounded-2xl rounded-br-none shadow-sm text-sm">
+                                <span class="text-[10px] text-purple-200 block mb-0.5">أنت • ${msg.time}</span>
+                                ${msg.text}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const nameColor = isAdmin ? 'text-amber-600' : 'text-slate-500';
+                    const adminBadge = isAdmin ? '<i class="fa-solid fa-crown text-[9px] ml-1"></i>' : '';
+                    publicHtml += `
+                        <div class="flex justify-start">
+                            <div class="chat-message-bubble bg-white border border-gray-200 text-slate-800 p-2.5 rounded-2xl rounded-bl-none shadow-sm text-sm">
+                                <span class="text-[10px] ${nameColor} font-bold block mb-0.5">${adminBadge}${msg.name} • ${msg.time}</span>
+                                ${msg.text}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            publicArea.innerHTML = publicHtml;
+            publicArea.scrollTop = publicArea.scrollHeight;
+
+            // رسم الرسائل للأدمن
+            if (isAdminLoggedIn && adminArea) renderAdminChat();
+        }
+
+        async function sendPublicChatMessage(e) {
+            e.preventDefault();
+            if (!clientUser && !isAdminLoggedIn) {
+                showToast("يرجى تسجيل الدخول أولاً للمشاركة في الدردشة.");
+                toggleSiteChatWindow();
+                toggleClientAuthModal();
+                return;
+            }
+            if (!chatEnabled) return;
+
+            const input = document.getElementById('publicChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const newMsg = {
+                uid: isAdminLoggedIn ? 'ADMIN' : clientUser.uid,
+                name: isAdminLoggedIn ? 'م / محمود عبدالله' : clientUser.name,
+                role: isAdminLoggedIn ? 'Admin' : 'User',
+                text: text,
+                time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now()
+            };
+
+            input.value = '';
+            
+            if (isOnlineConfigured) {
+                database.ref('chat').push(newMsg); // Realtime DB handle UI update automatically
+            } else {
+                newMsg.firebaseKey = 'msg_' + Date.now();
+                chatMessages.push(newMsg);
+                localStorage.setItem('groupChatMessages', JSON.stringify(chatMessages));
+                updateChatUI();
+            }
+        }
+
+        function renderAdminChat() {
+            const adminArea = document.getElementById('adminChatMessagesArea');
+            if (!adminArea) return;
+
+            if (chatMessages.length === 0) {
+                adminArea.innerHTML = `<p class="text-center text-gray-500 py-6">لا توجد رسائل حالياً.</p>`;
+                return;
+            }
+
+            adminArea.innerHTML = chatMessages.map(msg => {
+                const isAdmin = msg.role === 'Admin';
+                return `
+                    <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-start gap-3">
+                        <div>
+                            <span class="text-xs ${isAdmin ? 'text-amber-400' : 'text-blue-400'} font-bold block mb-1">${msg.name} <span class="text-gray-500 font-normal">(${msg.time})</span></span>
+                            <p class="text-sm text-white">${msg.text}</p>
+                        </div>
+                        <button onclick="deleteChatMessage('${msg.firebaseKey}')" class="bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            adminArea.scrollTop = adminArea.scrollHeight;
+        }
+
+        async function toggleChatStatus() {
+            chatEnabled = !chatEnabled;
+            localStorage.setItem('chatEnabledStatus', chatEnabled);
+            updateChatUI();
+            
+            if (isOnlineConfigured) {
+                database.ref('settings/chatEnabled').set(chatEnabled);
+            }
+            showToast(chatEnabled ? "تم تفعيل الدردشة للزوار" : "تم إيقاف الدردشة");
+        }
+
+        async function deleteChatMessage(key) {
+            if (isOnlineConfigured && !key.startsWith('msg_')) {
+                database.ref('chat/' + key).remove();
+            } else {
+                chatMessages = chatMessages.filter(m => m.firebaseKey !== key);
+                localStorage.setItem('groupChatMessages', JSON.stringify(chatMessages));
+                updateChatUI();
+            }
+        }
+
+        async function clearAllChat() {
+            if(confirm("هل أنت متأكد من مسح جميع رسائل الدردشة؟ لا يمكن التراجع عن هذا الإجراء.")) {
+                if (isOnlineConfigured) {
+                    database.ref('chat').remove();
+                } else {
+                    chatMessages = [];
+                    localStorage.setItem('groupChatMessages', JSON.stringify([]));
+                    updateChatUI();
+                }
+                showToast("تم مسح الدردشة بالكامل.");
+            }
+        }
+        /* -------------------------------------------------------- */
+
         function openAdminSystem() {
             if (isAdminLoggedIn) {
                 document.getElementById('adminFullDashboard').classList.remove('hidden');
                 renderUsersTable();
                 renderAdminManageList();
                 updateNotifBadge();
+                populateInsightsDropdown();
+                renderAdminChat();
             } else {
                 document.getElementById('adminLoginModal').classList.remove('hidden');
             }
@@ -2479,6 +2933,7 @@
                 renderUsersTable();
                 renderAdminManageList();
                 updateNotifBadge();
+                populateInsightsDropdown();
                 showToast('مرحباً بك م / محمود في لوحة التحكم المركزية');
             } else { showToast('كلمة المرور غير صحيحة!'); }
         }
@@ -2486,11 +2941,10 @@
         function logoutAdmin() {
             isAdminLoggedIn = false;
             document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('adminLoginSection').classList.remove('hidden');
-            document.getElementById('adminDashboardSection').classList.add('hidden');
-            toggleAdminModal();
+            document.getElementById('adminFullDashboard').classList.add('hidden');
             renderProperties();
             renderCurrentReview();
+            showToast('تم تسجيل الخروج بنجاح.');
         }
     </script>
 </body>
