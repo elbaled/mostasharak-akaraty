@@ -2707,20 +2707,36 @@
                 }, 100);
             }
         }
-
         async function loadChatMessages() {
             chatEnabled = JSON.parse(localStorage.getItem('chatEnabledStatus') ?? 'true');
-            chatMessages = JSON.parse(localStorage.getItem('groupChatMessages')) || [];
-            updateChatUI();
+            
+            // قراءة فورية ومستمرة من الفايربيس
+            database.ref('chat').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    chatMessages = Object.keys(data).map(key => ({
+                        firebaseKey: key,
+                        ...data[key]
+                    }));
+                } else {
+                    chatMessages = [];
+                }
+                updateChatUI();
+            }, (error) => {
+                console.error("خطأ في قراءة الشات:", error);
+            });
 
-            if (isOnlineConfigured) {
-                try {
-                    const statusRes = await fetch(`${FIREBASE_URL}/settings/chatEnabled.json`);
-                    if (statusRes.ok) {
-                        const statusVal = await statusRes.json();
-                        chatEnabled = statusVal !== null ? statusVal : true;
-                        localStorage.setItem('chatEnabledStatus', chatEnabled);
-                    }
+            // مراقبة حالة تشغيل الشات
+            database.ref('settings/chatEnabled').on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val !== null) {
+                    chatEnabled = val;
+                    localStorage.setItem('chatEnabledStatus', chatEnabled);
+                    updateChatUI();
+                }
+            });
+        }
+
                     
                     // استخدام Realtime DB listener للدردشة لتحديث فوري
                     database.ref('chat').on('value', (snapshot) => {
@@ -2804,46 +2820,59 @@
                 }
             });
             publicArea.innerHTML = publicHtml;
-            publicArea.scrollTop = publicArea.scrollHeight;
+            setTimeout(() => {
+    publicArea.scrollTop = publicArea.scrollHeight;
+}, 50);
+
 
             // رسم الرسائل للأدمن
             if (isAdminLoggedIn && adminArea) renderAdminChat();
         }
-
         async function sendPublicChatMessage(e) {
             e.preventDefault();
+            
+            // التحقق من تسجيل الدخول
             if (!clientUser && !isAdminLoggedIn) {
-                showToast("يرجى تسجيل الدخول أولاً للمشاركة في الدردشة.");
+                showToast("يرجى تسجيل الدخول أولاً لتتمكن من إرسال رسالة!");
                 toggleSiteChatWindow();
                 toggleClientAuthModal();
                 return;
             }
-            if (!chatEnabled) return;
+
+            if (!chatEnabled) {
+                showToast("الدردشة متوقفة حالياً من قبل الإدارة.");
+                return;
+            }
 
             const input = document.getElementById('publicChatInput');
             const text = input.value.trim();
             if (!text) return;
 
+            // تحديد بيانات المرسل بدقة
+            const senderUid = isAdminLoggedIn ? 'ADMIN' : (clientUser ? clientUser.uid : 'GUEST');
+            const senderName = isAdminLoggedIn ? 'م / محمود عبدالله' : (clientUser ? clientUser.name : 'عميل');
+            const senderRole = isAdminLoggedIn ? 'Admin' : 'User';
+
             const newMsg = {
-                uid: isAdminLoggedIn ? 'ADMIN' : clientUser.uid,
-                name: isAdminLoggedIn ? 'م / محمود عبدالله' : clientUser.name,
-                role: isAdminLoggedIn ? 'Admin' : 'User',
+                uid: senderUid,
+                name: senderName,
+                role: senderRole,
                 text: text,
                 time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-                timestamp: Date.now()
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
             input.value = '';
-            
-            if (isOnlineConfigured) {
-                database.ref('chat').push(newMsg); // Realtime DB handle UI update automatically
-            } else {
-                newMsg.firebaseKey = 'msg_' + Date.now();
-                chatMessages.push(newMsg);
-                localStorage.setItem('groupChatMessages', JSON.stringify(chatMessages));
-                updateChatUI();
+
+            try {
+                // إرسال مباشر للفايربيس
+                await database.ref('chat').push(newMsg);
+            } catch (err) {
+                console.error("فشل الإرسال:", err);
+                showToast("تعذر إرسال الرسالة، تأكد من الاتصال!");
             }
         }
+
 
         function renderAdminChat() {
             const adminArea = document.getElementById('adminChatMessagesArea');
