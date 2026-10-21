@@ -2703,64 +2703,41 @@
                 document.getElementById('chatUnreadBadge').classList.add('hidden');
                 setTimeout(() => {
                     const msgArea = document.getElementById('publicChatMessages');
-                    msgArea.scrollTop = msgArea.scrollHeight;
+                    if(msgArea) msgArea.scrollTop = msgArea.scrollHeight;
                 }, 100);
             }
         }
+
         async function loadChatMessages() {
             chatEnabled = JSON.parse(localStorage.getItem('chatEnabledStatus') ?? 'true');
             
-            // قراءة فورية ومستمرة من الفايربيس
-            database.ref('chat').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    chatMessages = Object.keys(data).map(key => ({
-                        firebaseKey: key,
-                        ...data[key]
-                    }));
-                } else {
-                    chatMessages = [];
-                }
-                updateChatUI();
-            }, (error) => {
-                console.error("خطأ في قراءة الشات:", error);
-            });
-
-            // مراقبة حالة تشغيل الشات
-            database.ref('settings/chatEnabled').on('value', (snapshot) => {
-                const val = snapshot.val();
-                if (val !== null) {
-                    chatEnabled = val;
-                    localStorage.setItem('chatEnabledStatus', chatEnabled);
+            if (isOnlineConfigured) {
+                database.ref('chat').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        chatMessages = Object.keys(data).map(key => ({
+                            firebaseKey: key,
+                            ...data[key]
+                        }));
+                    } else {
+                        chatMessages = [];
+                    }
                     updateChatUI();
-                }
-            });
-        }
+                }, (error) => {
+                    console.error("خطأ في قراءة الشات:", error);
+                });
 
-                    
-                    // استخدام Realtime DB listener للدردشة لتحديث فوري
-                    database.ref('chat').on('value', (snapshot) => {
-                        const data = snapshot.val();
-                        if (data) {
-                            chatMessages = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] }));
-                            localStorage.setItem('groupChatMessages', JSON.stringify(chatMessages));
-                            updateChatUI();
-                            if(document.getElementById('siteChatWindow').classList.contains('hidden')) {
-                                document.getElementById('chatUnreadBadge').classList.remove('hidden');
-                            }
-                        } else {
-                            chatMessages = [];
-                            updateChatUI();
-                        }
-                    });
-                    
-                    database.ref('settings/chatEnabled').on('value', (snapshot) => {
-                        const val = snapshot.val();
-                        chatEnabled = val !== null ? val : true;
+                database.ref('settings/chatEnabled').on('value', (snapshot) => {
+                    const val = snapshot.val();
+                    if (val !== null) {
+                        chatEnabled = val;
                         localStorage.setItem('chatEnabledStatus', chatEnabled);
                         updateChatUI();
-                    });
-                } catch (e) {}
+                    }
+                });
+            } else {
+                 chatMessages = JSON.parse(localStorage.getItem('groupChatMessages')) || [];
+                 updateChatUI();
             }
         }
 
@@ -2772,18 +2749,17 @@
             const adminOverlay = document.getElementById('adminChatOverlay');
             const adminBtn = document.getElementById('adminChatStatusBtn');
             
-            // حالة الدردشة (مفعلة/متوقفة)
             if (chatEnabled) {
-                overlay.classList.add('hidden');
-                inputField.disabled = false;
+                if(overlay) overlay.classList.add('hidden');
+                if(inputField) inputField.disabled = false;
                 if(adminOverlay) adminOverlay.classList.add('hidden');
                 if(adminBtn) {
                     adminBtn.innerText = "إيقاف الدردشة";
                     adminBtn.className = "bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition";
                 }
             } else {
-                overlay.classList.remove('hidden');
-                inputField.disabled = true;
+                if(overlay) overlay.classList.remove('hidden');
+                if(inputField) inputField.disabled = true;
                 if(adminOverlay) adminOverlay.classList.remove('hidden');
                 if(adminBtn) {
                     adminBtn.innerText = "تفعيل الدردشة";
@@ -2791,7 +2767,6 @@
                 }
             }
 
-            // رسم الرسائل للعامة
             let publicHtml = `<div class="text-center text-xs text-gray-400 py-2">مرحباً بك في دردشة مستشارك العقاري. تواصل باحترام.</div>`;
             chatMessages.forEach(msg => {
                 const isMe = clientUser && clientUser.uid === msg.uid;
@@ -2819,19 +2794,20 @@
                     `;
                 }
             });
-            publicArea.innerHTML = publicHtml;
-            setTimeout(() => {
-    publicArea.scrollTop = publicArea.scrollHeight;
-}, 50);
+            
+            if (publicArea) {
+                publicArea.innerHTML = publicHtml;
+                setTimeout(() => {
+                    publicArea.scrollTop = publicArea.scrollHeight;
+                }, 50);
+            }
 
-
-            // رسم الرسائل للأدمن
             if (isAdminLoggedIn && adminArea) renderAdminChat();
         }
+
         async function sendPublicChatMessage(e) {
             e.preventDefault();
             
-            // التحقق من تسجيل الدخول
             if (!clientUser && !isAdminLoggedIn) {
                 showToast("يرجى تسجيل الدخول أولاً لتتمكن من إرسال رسالة!");
                 toggleSiteChatWindow();
@@ -2848,7 +2824,6 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // تحديد بيانات المرسل بدقة
             const senderUid = isAdminLoggedIn ? 'ADMIN' : (clientUser ? clientUser.uid : 'GUEST');
             const senderName = isAdminLoggedIn ? 'م / محمود عبدالله' : (clientUser ? clientUser.name : 'عميل');
             const senderRole = isAdminLoggedIn ? 'Admin' : 'User';
@@ -2865,14 +2840,19 @@
             input.value = '';
 
             try {
-                // إرسال مباشر للفايربيس
-                await database.ref('chat').push(newMsg);
+                if(isOnlineConfigured) {
+                    await database.ref('chat').push(newMsg);
+                } else {
+                    newMsg.firebaseKey = 'msg_' + Date.now();
+                    chatMessages.push(newMsg);
+                    localStorage.setItem('groupChatMessages', JSON.stringify(chatMessages));
+                    updateChatUI();
+                }
             } catch (err) {
                 console.error("فشل الإرسال:", err);
                 showToast("تعذر إرسال الرسالة، تأكد من الاتصال!");
             }
         }
-
 
         function renderAdminChat() {
             const adminArea = document.getElementById('adminChatMessagesArea');
@@ -2934,6 +2914,7 @@
             }
         }
         /* -------------------------------------------------------- */
+
 
         function openAdminSystem() {
             if (isAdminLoggedIn) {
