@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head> 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,7 +23,102 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- خط Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <!-- كود ضبط الشاشة وزر الرجوع للموبايل -->
+<script>
+(function() {
+    let stateStack = [];
+    let isRestoring = false;
+
+    // تحديد كل الأقسام والنوافذ في الموقع مع استبعاد شاشة الـ Intro الافتتاحية
+    function getTrackedElements() {
+        return document.querySelectorAll('div[id]:not(#introScreen):not(#sceneWrapper):not(#houseSvgContainer), section, main, .modal, [id*="Modal"], [id*="modal"], [id*="Page"], [id*="page"], [id*="View"], [id*="view"]');
+    }
+
+    function isElementHidden(el) {
+        const style = window.getComputedStyle(el);
+        return el.classList.contains('hidden') || el.style.display === 'none' || style.display === 'none' || style.visibility === 'hidden';
+    }
+
+    function captureState() {
+        const elements = getTrackedElements();
+        const snapshot = [];
+        elements.forEach(el => {
+            snapshot.push({
+                el: el,
+                display: el.style.display,
+                className: el.className,
+                hidden: isElementHidden(el)
+            });
+        });
+        return snapshot;
+    }
+
+    // التأكد إن فيه قسم أو نافذة اتفتحت أو اتقفلت فعلياً
+    function statesAreDifferent(stateA, stateB) {
+        if (!stateA || !stateB || stateA.length !== stateB.length) return false;
+        for (let i = 0; i < stateA.length; i++) {
+            if (stateA[i].hidden !== stateB[i].hidden) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function restoreState(snapshot) {
+        isRestoring = true;
+        snapshot.forEach(item => {
+            item.el.style.display = item.display;
+            item.el.className = item.className;
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => { isRestoring = false; }, 150);
+    }
+
+    // تهيئة الحماية من الخروج عند فتح الموقع
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            stateStack.push(captureState());
+        }, 500);
+        window.history.replaceState({ step: 0 }, "", window.location.href);
+        window.history.pushState({ step: 1 }, "", window.location.href);
+    });
+
+    // حفظ الخطوة تلقائياً لما المستخدم يدوس على أي زرار يفتح صفحة أو نافذة
+    document.addEventListener('click', () => {
+        if (isRestoring) return;
+        setTimeout(() => {
+            if (stateStack.length === 0) {
+                stateStack.push(captureState());
+                return;
+            }
+            const currentState = captureState();
+            const lastState = stateStack[stateStack.length - 1];
+
+            if (statesAreDifferent(lastState, currentState)) {
+                stateStack.push(currentState);
+                window.history.pushState({ step: stateStack.length }, "", window.location.href);
+            }
+        }, 120);
+    });
+
+    // تشغيل الرجوع للخلف ومنع الخروج بره الموقع
+    window.addEventListener('popstate', () => {
+        if (stateStack.length > 1) {
+            stateStack.pop();
+            const previousState = stateStack[stateStack.length - 1];
+            restoreState(previousState);
+
+            if (stateStack.length === 1) {
+                window.history.pushState({ step: 1 }, "", window.location.href);
+            }
+        } else {
+            // لو وصل للرئيسية وداس رجوع، يثبته جوه الموقع وميطلعش بره
+            window.history.pushState({ step: 1 }, "", window.location.href);
+        }
+    });
+})();
+</script>
+
     <style>
         body {
             font-family: 'Cairo', sans-serif;
@@ -2957,5 +3053,88 @@
             showToast('تم تسجيل الخروج بنجاح.');
         }
     </script>
+    <script>
+(function() {
+    let stateStack = [];
+    let isRestoring = false;
+
+    // حفظ حالة الأقسام الظاهرة والمخفية حالياً
+    function captureState() {
+        const elements = document.querySelectorAll('body > div, body > section, body > main, .page, .screen, .view, .tab-content, .modal');
+        const snapshot = [];
+        elements.forEach((el, index) => {
+            snapshot.push({
+                el: el,
+                display: el.style.display,
+                className: el.className
+            });
+        });
+        return snapshot;
+    }
+
+    // مقارنة هل الصفحة اتغيرت بعد الضغط ولا لأ
+    function statesAreDifferent(stateA, stateB) {
+        if (!stateA || !stateB || stateA.length !== stateB.length) return true;
+        for (let i = 0; i < stateA.length; i++) {
+            if (stateA[i].display !== stateB[i].display || stateA[i].className !== stateB[i].className) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // استرجاع الصفحة السابقة لما يدوس رجوع
+    function restoreState(snapshot) {
+        isRestoring = true;
+        snapshot.forEach(item => {
+            item.el.style.display = item.display;
+            item.el.className = item.className;
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => { isRestoring = false; }, 100);
+    }
+
+    // أول ما الموقع يفتح نسجل الصفحة الرئيسية ونقفل الخروج
+    window.addEventListener('DOMContentLoaded', () => {
+        stateStack.push(captureState());
+        window.history.replaceState({ step: 0 }, "", window.location.href);
+        window.history.pushState({ step: 1 }, "", window.location.href);
+    });
+
+    // مراقبة أي ضغطة زرار بتفتح قسم جديد جوه الموقع
+    document.addEventListener('click', () => {
+        if (isRestoring) return;
+        setTimeout(() => {
+            const currentState = captureState();
+            const lastState = stateStack[stateStack.length - 1];
+            
+            if (statesAreDifferent(lastState, currentState)) {
+                stateStack.push(currentState);
+                window.history.pushState({ step: stateStack.length }, "", window.location.href);
+            }
+        }, 50);
+    });
+
+    // التعامل مع زرار الرجوع في الفون
+    window.addEventListener('popstate', (e) => {
+        if (stateStack.length > 1) {
+            // نمسح الصفحة الحالية ونرجع للي قبلها
+            stateStack.pop();
+            const previousState = stateStack[stateStack.length - 1];
+            restoreState(previousState);
+            
+            // لو رجع لأول صفحة خالص، نحط حاجز عشان لو داس رجوع تاني ميخرجش بره الموقع
+            if (stateStack.length === 1) {
+                window.history.pushState({ step: 1 }, "", window.location.href);
+            }
+        } else {
+            // تثبيت المستخدم جوه الصفحة الرئيسية ومنع الخروج
+            window.history.pushState({ step: 1 }, "", window.location.href);
+        }
+    });
+})();
+</script>
+
 </body>
+    
 </html>
