@@ -1351,7 +1351,7 @@
 
         let swRegistration = null;
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('firebase-messaging-sw.js').then(reg => {
+            navigator.serviceWorker.register('./firebase-messaging-sw.js').then(reg => {
                 swRegistration = reg;
             }).catch(err => console.error(err));
         }
@@ -1360,7 +1360,7 @@
             try {
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
-                    if (!swRegistration) swRegistration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+                    if (!swRegistration) swRegistration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
                     const token = await messaging.getToken({
                         vapidKey: "BCv8jnhB4F5w_1zBza1ULauK25zEw8n1_pYKKC2AZoYIucjqbJLFooQ-gsnC6LwGKVcaaRBAw98BVzqRfIvZCQk",
                         serviceWorkerRegistration: swRegistration
@@ -1401,13 +1401,62 @@
 
         function triggerSystemPushNotification(title, bodyText) {
             if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, {
-                        body: bodyText,
-                        icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg"
+                if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+                    navigator.serviceWorker.ready.then(reg => {
+                        reg.showNotification(title, {
+                            body: bodyText,
+                            icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg",
+                            badge: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg",
+                            vibrate: [200, 100, 200]
+                        });
+                    }).catch(() => {
+                        try {
+                            new Notification(title, {
+                                body: bodyText,
+                                icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg"
+                            });
+                        } catch (e) {}
                     });
-                } catch (e) {}
+                } else {
+                    try {
+                        new Notification(title, {
+                            body: bodyText,
+                            icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg"
+                        });
+                    } catch (e) {}
+                }
             }
+        }
+
+        let isInitialPropertiesLoad = true;
+        let isInitialNotificationsLoad = true;
+
+        function startRealtimePushListeners() {
+            if (!isOnlineConfigured) return;
+
+            // مراقبة العقارات الجديدة وإرسال إشعار فوري عند الإضافة
+            database.ref('properties').limitToLast(1).on('child_added', (snapshot) => {
+                if (isInitialPropertiesLoad) return;
+                const newProp = snapshot.val();
+                if (newProp && newProp.title) {
+                    const notifyText = `تم إضافة عقار جديد: ${newProp.title} (${newProp.price || ''}) في ${newProp.city || ''}`;
+                    showToast(notifyText);
+                    triggerSystemPushNotification("عقار جديد معروض الآن! 🏢", notifyText);
+                }
+            });
+
+            // مراقبة الإشعارات العامة
+            database.ref('notifications').limitToLast(1).on('child_added', (snapshot) => {
+                if (isInitialNotificationsLoad) return;
+                const notif = snapshot.val();
+                if (notif && notif.text) {
+                    showToast(notif.text);
+                    triggerSystemPushNotification("تنبيه جديد - مستشارك العقاري", notif.text);
+                }
+            });
+
+            setTimeout(() => { isInitialPropertiesLoad = false; }, 3500);
+            setTimeout(() => { isInitialNotificationsLoad = false; }, 3500);
         }
 
         let ownerProfile = {
@@ -1907,6 +1956,7 @@
             loadNotifications();
             loadChatMessages();
             updateClientAuthUI();
+            startRealtimePushListeners();
         });
 
         window.addEventListener('popstate', () => {
@@ -2292,7 +2342,7 @@
                 showToast('حدث خطأ أثناء الرفع.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i><span>نشر العقار الآن على الموقع</span>';
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i><span>نشر العقار وإرسال إشعار للمشتركين</span>';
             }
         }
 
@@ -3192,5 +3242,4 @@
 </script>
 
 </body>
-    
 </html>
