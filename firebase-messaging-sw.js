@@ -1,24 +1,25 @@
-importScripts('https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.4.0/firebase-messaging-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyBnyFEgU-LQggS5kKceH3_WeAaBsYzwqLo",
+  apiKey: "ضع_API_KEY_الخاص_بك",
   authDomain: "mostasharak-akaraty.firebaseapp.com",
-  databaseURL: "https://mostasharak-akaraty-default-rtdb.firebaseio.com",
   projectId: "mostasharak-akaraty",
-  storageBucket: "mostasharak-akaraty.firebasestorage.app",
-  messagingSenderId: "287363939919",
-  appId: "1:287363939919:web:e53f13b518c6273043f43a"
+  storageBucket: "mostasharak-akaraty.appspot.com",
+  messagingSenderId: "ضع_SENDER_ID",
+  appId: "ضع_APP_ID"
 });
 
 const messaging = firebase.messaging();
 
+// إظهار الإشعار حتى والموقع/التطبيق مغلق
 messaging.onBackgroundMessage(function(payload) {
-  const notificationTitle = payload.notification.title || 'مستشارك العقاري';
+  const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: 'https://cdn-icons-png.flaticon.com/512/602/602175.png',
-    dir: 'rtl'
+    icon: 'https://elbaled.github.io/mostasharak-akaraty/icon.png', // رابط لوجو موقعك
+    vibrate: [200, 100, 200]
   };
+
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
