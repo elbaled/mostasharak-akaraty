@@ -1422,21 +1422,22 @@
         };
         document.querySelector('#my-manifest-placeholder').setAttribute('href', URL.createObjectURL(new Blob([JSON.stringify(manifestData)], {type: 'application/json'})));
 
-        function triggerSystemPushNotification(title, bodyText) {
+                function triggerSystemPushNotification(title, bodyText) {
             if ("Notification" in window && Notification.permission === "granted") {
                 if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
                     navigator.serviceWorker.ready.then(reg => {
                         reg.showNotification(title, {
                             body: bodyText,
-                            icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg",
-                            badge: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg",
+                            icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg", // اللوجو الملون
+                            badge: "https://cdn-icons-png.flaticon.com/512/25/25694.png", // الأيقونة الشفافة لحل المربع الأبيض
                             vibrate: [200, 100, 200]
                         });
                     }).catch(() => {
                         try {
                             new Notification(title, {
                                 body: bodyText,
-                                icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg"
+                                icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg",
+                                badge: "https://cdn-icons-png.flaticon.com/512/25/25694.png"
                             });
                         } catch (e) {}
                     });
@@ -1444,12 +1445,14 @@
                     try {
                         new Notification(title, {
                             body: bodyText,
-                            icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg"
+                            icon: "https://i.ibb.co/1JGjZNQ0/1792600720890.jpg",
+                            badge: "https://cdn-icons-png.flaticon.com/512/25/25694.png"
                         });
                     } catch (e) {}
                 }
             }
         }
+
 
         let isInitialPropertiesLoad = true;
         let isInitialNotificationsLoad = true;
