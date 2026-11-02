@@ -413,6 +413,21 @@
             #openChatBtn { width:48px !important; height:48px !important; font-size:20px !important; }
             body { padding-bottom:calc(84px + env(safe-area-inset-bottom,0px)); }
         }
+
+        /* ===== بروفايل العميل ===== */
+        .pf-card { border:1px solid #e5e7eb; border-radius:1rem; background:#fff; overflow:hidden; }
+        .pf-card > summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:.6rem; padding:.9rem 1rem; font-weight:700; font-size:.92rem; color:#0f172a; position:relative; }
+        .pf-card > summary::-webkit-details-marker { display:none; }
+        .pf-card > summary::after { content:"\f078"; font-family:"Font Awesome 6 Free"; font-weight:900; font-size:.7rem; color:#94a3b8; margin-right:auto; transition:transform .25s ease; }
+        .pf-card[open] > summary::after { transform:rotate(180deg); }
+        .pf-card[open] > summary { border-bottom:1px solid #f1f5f9; }
+        .pf-body { padding:1rem; }
+        .pf-lbl { display:block; font-size:.72rem; font-weight:700; color:#334155; margin-bottom:.25rem; }
+        .pf-in { width:100%; border:1px solid #d1d5db; border-radius:.75rem; padding:.6rem .8rem; font-size:.9rem; background:#f9fafb; }
+        .pf-in:focus { outline:2px solid #f59e0b; background:#fff; }
+        #navAvatar { width:24px; height:24px; border-radius:50%; background:#f59e0b center/cover; color:#0f172a; font-size:11px; font-weight:900; align-items:center; justify-content:center; display:none; }
+        #clientNavBtn[data-in="1"] > i { display:none; }
+        #clientNavBtn[data-in="1"] #navAvatar { display:flex; }
     </style>
 </head>
 <body class="text-slate-800">
@@ -1263,6 +1278,11 @@
                         <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور *</label>
                         <input type="password" id="clientLoginPassword" required minlength="6" autocomplete="new-password" placeholder="6 أحرف على الأقل" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-amber-500 bg-gray-50" dir="ltr">
                     </div>
+                    <div class="flex items-center justify-between gap-2 text-xs">
+                        <label class="flex items-center gap-1.5 text-gray-500 cursor-pointer"><input type="checkbox" id="pfShowPass" onchange="document.getElementById('clientLoginPassword').type=this.checked?'text':'password'" style="width:auto"> إظهار كلمة السر</label>
+                        <button type="button" id="pfForgot" onclick="resetClientPassword()" class="hidden text-amber-700 font-bold underline">نسيت كلمة السر؟</button>
+                    </div>
+                    <p class="text-[11px] text-gray-400 text-center">سيبقى حسابك مسجّلاً على هذا الجهاز حتى تضغط "خروج".</p>
                     <div class="flex gap-2">
                         <button type="button" onclick="setClientAuthMode('signup')" id="clientSignupModeBtn" class="flex-1 border border-amber-500 text-amber-700 font-bold py-2 rounded-xl text-sm">إنشاء حساب</button>
                         <button type="button" onclick="setClientAuthMode('login')" id="clientLoginModeBtn" class="flex-1 border border-gray-300 text-gray-600 font-bold py-2 rounded-xl text-sm">لدي حساب بالفعل</button>
@@ -1271,39 +1291,55 @@
                 </form>
             </div>
 
-            <div id="clientLoggedInView" class="hidden space-y-6">
+            <div id="clientLoggedInView" class="hidden space-y-3">
                 <div class="flex justify-between items-center border-b pb-4">
                     <div class="flex items-center gap-3">
-                        <div id="clientProfileAvatarInitial" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-black text-xl flex items-center justify-center">أ</div>
-                        <div>
-                            <h3 class="text-lg font-black text-slate-900">مرحباً، <span id="clientProfileName" class="text-amber-600"></span></h3>
-                            <p id="clientProfileEmailView" class="text-xs text-gray-500"></p>
+                        <label class="relative cursor-pointer shrink-0" title="تغيير الصورة الشخصية">
+                            <div id="clientProfileAvatarInitial" class="w-14 h-14 rounded-2xl bg-indigo-600 text-white font-black text-xl flex items-center justify-center bg-cover bg-center"></div>
+                            <span class="absolute -bottom-1 -left-1 bg-amber-500 text-slate-900 w-6 h-6 rounded-full text-[10px] flex items-center justify-center shadow"><i class="fa-solid fa-camera"></i></span>
+                            <input type="file" accept="image/*" class="hidden" onchange="changeClientPhoto(this)">
+                        </label>
+                        <div class="min-w-0">
+                            <h3 class="text-lg font-black text-slate-900 truncate">مرحباً <span id="clientProfileName" class="text-amber-600"></span></h3>
+                            <p id="clientProfileEmailView" class="text-xs text-gray-500 truncate"></p>
                         </div>
                     </div>
-                    <button onclick="clientLogout()" class="text-xs bg-red-100 text-red-600 px-3 py-1.5 rounded-lg font-bold">خروج</button>
+                    <button onclick="clientLogout()" class="text-xs bg-red-100 text-red-600 px-3 py-1.5 rounded-lg font-bold shrink-0">خروج</button>
                 </div>
 
-                <div>
-                    <h4 class="font-bold text-slate-900 text-base mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-heart text-red-500"></i>
-                        <span>عقاراتي المفضلة (<span id="wishlistCount">0</span>)</span>
-                    </h4>
-                    <div id="wishlistContainer" class="space-y-2.5 max-h-40 overflow-y-auto pr-1"></div>
-                </div>
+                <details class="pf-card" open>
+                    <summary><i class="fa-solid fa-id-card text-indigo-500"></i><span>بيانات حسابي</span></summary>
+                    <form onsubmit="saveClientProfile(event)" class="pf-body space-y-3">
+                        <div><label class="pf-lbl">الاسم</label><input id="pfName" type="text" required minlength="2" class="pf-in"></div>
+                        <div><label class="pf-lbl">رقم الهاتف / واتساب</label><input id="pfPhone" type="tel" required dir="ltr" class="pf-in"></div>
+                        <div><label class="pf-lbl">البريد الإلكتروني (للدخول)</label><input id="pfEmail" type="email" readonly dir="ltr" class="pf-in bg-gray-100 text-gray-500"></div>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 gold-gradient text-white font-bold py-2.5 rounded-xl text-sm">حفظ التعديلات</button>
+                            <button type="button" onclick="changeClientPassword()" class="flex-1 border border-gray-300 text-gray-700 font-bold py-2.5 rounded-xl text-sm">تغيير كلمة السر</button>
+                        </div>
+                    </form>
+                </details>
 
-                <!-- نموذج اطلب عقار المطور -->
-                <button type="button" onclick="openPrivateChat()" class="w-full flex items-center justify-between gap-3 bg-slate-900 hover:bg-slate-800 text-white px-4 py-3 rounded-2xl font-bold text-sm shadow transition">
-                    <span class="flex items-center gap-2"><i class="fa-solid fa-comment-dots text-amber-400"></i> محادثة خاصة مع الإدارة</span>
+                <details class="pf-card">
+                    <summary><i class="fa-solid fa-heart text-red-500"></i><span>العقارات المفضلة (<span id="wishlistCount">0</span>)</span></summary>
+                    <div class="pf-body"><div id="wishlistContainer" class="space-y-2.5 max-h-48 overflow-y-auto pr-1"></div></div>
+                </details>
+
+                <details class="pf-card">
+                    <summary><i class="fa-solid fa-bookmark text-amber-500"></i><span>عقارات أبديت اهتمامي بها (<span id="pfInterestedCount">0</span>)</span></summary>
+                    <div class="pf-body"><div id="pfInterestedList" class="space-y-2 max-h-48 overflow-y-auto"></div></div>
+                </details>
+
+                <button type="button" onclick="openPrivateChat()" class="w-full flex items-center justify-between gap-3 bg-slate-900 hover:bg-slate-800 text-white px-4 py-3.5 rounded-2xl font-bold text-sm shadow transition">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-comment-dots text-amber-400"></i> المحادثة مع الإدارة</span>
                     <span id="pcBadge" class="pc-dot hidden">جديد</span>
                 </button>
 
-                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 space-y-3">
-                    <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-house-medical text-amber-600"></i>
-                        <span>اطلب عقار بمواصفات خاصة</span>
-                    </h4>
-                    <p class="text-[10px] text-gray-500">سجل مواصفات العقار الذي تبحث عنه وسيتواصل معك المستشار فور توافره.</p>
-                    <form onsubmit="submitPropertyRequest(event)" class="space-y-3">
+                <details class="pf-card">
+                    <summary><i class="fa-solid fa-house-medical text-amber-600"></i><span>اطلب عقارك من الأدمن</span></summary>
+                    <div class="pf-body space-y-3">
+                        <p class="text-[11px] text-gray-500">اكتب مواصفات العقار المطلوب وسيتواصل معك الأدمن بالعروض المناسبة.</p>
+                        <form onsubmit="submitPropertyRequest(event)" class="space-y-3">
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-700 mb-1">المدينة المطلوبة</label>
@@ -1331,7 +1367,8 @@
                             <i class="fa-solid fa-paper-plane"></i> إرسال الطلب للأدمن
                         </button>
                     </form>
-                </div>
+                    </div>
+                </details>
             </div>
         </div>
     </div>
@@ -3708,6 +3745,123 @@ const INTRO_VIDEO = { youtubeId: "", file: "" };   // مثال: { youtubeId: "dQ
     fabs.forEach(function(f){ f.classList.add('fab-dim'); });
     clearTimeout(timer); timer=setTimeout(function(){ fabs.forEach(function(f){ f.classList.remove('fab-dim'); }); },600);
   },{passive:true});
+})();
+</script>
+<script>
+/* ===== بروفايل العميل: تعديل البيانات، الصورة، نسيت كلمة السر، تذكّر الدخول ===== */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var toast=function(m){ if(typeof showToast==='function') showToast(m); else alert(m); };
+  try{ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
+  var photoCache={};
+
+  function curUser(){ return (typeof clientUser!=='undefined') ? clientUser : null; }
+  function paintAvatar(el,u,photo){
+    if(!el) return;
+    if(photo){ el.style.backgroundImage='url('+photo+')'; el.style.fontSize='0'; el.textContent=''; }
+    else { el.style.backgroundImage=''; el.style.fontSize=''; el.textContent=(u.name||'؟').charAt(0); }
+  }
+  function loadPhoto(uid){
+    if(photoCache[uid]!==undefined) return;
+    photoCache[uid]=localStorage.getItem('pf_photo_'+uid)||null;
+    database.ref('userPhotos/'+uid).once('value').then(function(s){
+      var v=s.val(); if(v){ photoCache[uid]=v; try{localStorage.setItem('pf_photo_'+uid,v);}catch(e){} decorate(); }
+    }).catch(function(){});
+  }
+  function decorate(){
+    var u=curUser(), btn=$('clientNavBtn');
+    if(btn && !$('navAvatar')){ var sp=document.createElement('span'); sp.id='navAvatar'; btn.insertBefore(sp,btn.firstChild); }
+    if(!u){ if(btn) btn.removeAttribute('data-in'); return; }
+    loadPhoto(u.uid);
+    var photo=photoCache[u.uid];
+    if(btn){ btn.setAttribute('data-in','1'); paintAvatar($('navAvatar'),u,photo); var n=$('clientNavName'); if(n) n.textContent='حسابي'; }
+    paintAvatar($('clientProfileAvatarInitial'),u,photo);
+    var a=document.activeElement;
+    if($('pfName') && a!==$('pfName')) $('pfName').value=u.name||'';
+    if($('pfPhone') && a!==$('pfPhone')) $('pfPhone').value=u.phone||'';
+    if($('pfEmail')) $('pfEmail').value=u.email||'';
+    var list=u.interestedProps;
+    if(!list || !list.length){ var r=(typeof registeredUsers!=='undefined'?registeredUsers:[]).find(function(x){return x.uid===u.uid;}); list=(r&&r.interestedProps)||[]; }
+    var box=$('pfInterestedList'); if(box){
+      box.innerHTML=''; $('pfInterestedCount').textContent=list.length;
+      if(!list.length){ var e=document.createElement('p'); e.className='text-xs text-gray-400 text-center py-3'; e.textContent='لم تسجّل اهتمامك بأي عقار بعد. افتح أي عقار واضغط "أنا مهتم".'; box.appendChild(e); }
+      list.forEach(function(x){ var d=document.createElement('div'); d.className='bg-slate-50 border rounded-xl px-3 py-2 text-xs font-semibold text-slate-700'; d.textContent=x; box.appendChild(d); });
+    }
+  }
+  var origUI=window.updateClientAuthUI;
+  window.updateClientAuthUI=function(){ origUI.apply(this,arguments); try{ decorate(); }catch(e){} };
+
+  /* حفظ بيانات الحساب */
+  window.saveClientProfile=async function(e){
+    e.preventDefault(); var u=auth.currentUser, c=curUser(); if(!u||!c){ toast('سجّل دخولك أولاً'); return; }
+    var name=$('pfName').value.trim(), phone=$('pfPhone').value.trim().replace(/[\s-]/g,'');
+    if(name.length<2){ toast('اكتب اسمك بشكل صحيح'); return; }
+    if(!/^\+?[0-9]{8,15}$/.test(phone)){ toast('اكتب رقم هاتف صحيح'); return; }
+    var btn=e.target.querySelector('button[type="submit"]'); btn.disabled=true;
+    try{
+      await database.ref('users/'+u.uid).update({name:name,phone:phone});
+      try{ await u.updateProfile({displayName:name}); }catch(_){}
+      c.name=name; c.phone=phone; localStorage.setItem('clientUserData',JSON.stringify(c));
+      if(typeof registeredUsers!=='undefined'){ var i=registeredUsers.findIndex(function(x){return x.uid===u.uid;}); if(i>=0){ registeredUsers[i].name=name; registeredUsers[i].phone=phone; localStorage.setItem('registeredUsersList',JSON.stringify(registeredUsers)); } }
+      updateClientAuthUI(); toast('تم حفظ بياناتك ✔');
+    }catch(err){ console.error(err); toast('تعذر حفظ البيانات، حاول مرة أخرى'); }
+    btn.disabled=false;
+  };
+
+  /* تغيير كلمة السر: رابط على الإيميل */
+  window.changeClientPassword=async function(){
+    var c=curUser(); if(!c||!c.email){ toast('لا يوجد بريد مسجّل'); return; }
+    try{ await auth.sendPasswordResetEmail(c.email); toast('أرسلنا رابط تغيير كلمة السر إلى '+c.email); }
+    catch(e){ toast('تعذر إرسال الرابط الآن'); }
+  };
+
+  /* نسيت كلمة السر */
+  window.resetClientPassword=async function(){
+    var em=$('clientLoginEmail').value.trim();
+    if(!em){ toast('اكتب بريدك الإلكتروني أولاً ثم اضغط "نسيت كلمة السر"'); $('clientLoginEmail').focus(); return; }
+    try{ await auth.sendPasswordResetEmail(em); toast('تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك. راجع الوارد أو الرسائل غير المرغوبة.'); }
+    catch(e){ toast(e.code==='auth/invalid-email'?'البريد الإلكتروني غير صحيح':e.code==='auth/network-request-failed'?'تحقق من الاتصال بالإنترنت':'تعذر إرسال الرابط، تأكد من البريد وحاول مرة أخرى'); }
+  };
+
+  /* تغيير الصورة الشخصية (تُصغَّر قبل الحفظ) */
+  window.changeClientPhoto=function(input){
+    var f=input.files&&input.files[0], u=auth.currentUser; input.value='';
+    if(!f||!u){ return; }
+    var img=new Image(), url=URL.createObjectURL(f);
+    img.onload=function(){
+      var S=192, c=document.createElement('canvas'); c.width=c.height=S; var x=c.getContext('2d');
+      var m=Math.min(img.width,img.height), sx=(img.width-m)/2, sy=(img.height-m)/2;
+      x.drawImage(img,sx,sy,m,m,0,0,S,S); URL.revokeObjectURL(url);
+      var data=c.toDataURL('image/jpeg',.82);
+      database.ref('userPhotos/'+u.uid).set(data).then(function(){
+        photoCache[u.uid]=data; try{localStorage.setItem('pf_photo_'+u.uid,data);}catch(e){} decorate(); toast('تم تحديث صورتك ✔');
+      }).catch(function(){ toast('تعذر حفظ الصورة. تأكد من تحديث قواعد Firebase (userPhotos).'); });
+    };
+    img.onerror=function(){ toast('تعذر قراءة الصورة'); };
+    img.src=url;
+  };
+
+  /* نموذج الدخول: عناوين حسب الوضع + إكمال تلقائي + رابط نسيت كلمة السر */
+  var origMode=window.setClientAuthMode;
+  window.setClientAuthMode=function(m){
+    origMode(m); var login=(m==='login');
+    var pw=$('clientLoginPassword'), em=$('clientLoginEmail');
+    if(pw) pw.setAttribute('autocomplete',login?'current-password':'new-password');
+    if(em) em.setAttribute('autocomplete',login?'username':'email');
+    var h=document.querySelector('#clientLoggedOutView h3'), p=document.querySelector('#clientLoggedOutView p.text-gray-500');
+    if(h) h.textContent=login?'تسجيل الدخول لحسابك':'إنشاء حساب عميل جديد';
+    if(p) p.textContent=login?'ادخل ببريدك وكلمة السر للوصول لبروفايلك والمفضلة والمحادثة مع الإدارة':'سجّل بياناتك مرة واحدة لتتابع العقارات وتتواصل مع الإدارة';
+    var fg=$('pfForgot'); if(fg) fg.classList.toggle('hidden',!login);
+  };
+  var origToggle=window.toggleClientAuthModal;
+  window.toggleClientAuthModal=function(){
+    origToggle.apply(this,arguments);
+    var open=!$('clientAuthModal').classList.contains('hidden');
+    if(open && !curUser() && localStorage.getItem('clientHadAccount')==='1') window.setClientAuthMode('login');
+  };
+  auth.onAuthStateChanged(function(u){ if(u) localStorage.setItem('clientHadAccount','1'); });
+  window.setClientAuthMode(typeof clientAuthMode!=='undefined'?clientAuthMode:'signup');
+  decorate();
 })();
 </script>
 </body>
